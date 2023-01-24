@@ -20,12 +20,12 @@
 ##
 golem::fill_desc(
   pkg_name = "BirdNETmonitor", # The Name of the package containing the App
-  pkg_title = "PKG_TITLE", # The Title of the package containing the App
-  pkg_description = "PKG_DESC.", # The Description of the package containing the App
-  author_first_name = "AUTHOR_FIRST", # Your First Name
-  author_last_name = "AUTHOR_LAST", # Your Last Name
-  author_email = "AUTHOR@MAIL.COM", # Your Email
-  repo_url = NULL # The URL of the GitHub Repo (optional)
+  pkg_title = "BirdNETMonitor", # The Title of the package containing the App
+  pkg_description = "Shiny frontend to field recorders using BirdNET for live monitoring.", # The Description of the package containing the App
+  author_first_name = "Felix", # Your First Name
+  author_last_name = "Günther", # Your Last Name
+  author_email = "felix.guenther@informatik.tu-chemnitz.de", # Your Email
+  repo_url = "https://github.com/BirdNETPlus/BirdNETmonitor" # The URL of the GitHub Repo (optional)
 )
 
 ## Set {golem} options ----

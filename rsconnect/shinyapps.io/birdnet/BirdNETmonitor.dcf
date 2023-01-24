@@ -1,0 +1,13 @@
+name: BirdNETmonitor
+title: BirdNETmonitor
+username:
+account: birdnet
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8116614
+bundleId: 6769686
+url: https://birdnet.shinyapps.io/BirdNETmonitor/
+when: 1674587002.10868
+lastSyncTime: 1674587002.10871
+asMultiple: FALSE
+asStatic: FALSE

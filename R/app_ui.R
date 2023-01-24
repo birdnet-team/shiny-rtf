@@ -3,14 +3,40 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @import bs4Dash
 #' @noRd
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # Your application UI logic
-    fluidPage(
-      h1("BirdNETmonitor")
+    dashboardPage(
+      title = "Hawaii monitoring",
+      dashboardHeader(
+        title = "Hawaii monitoring",
+        compact = TRUE,
+        div(
+          mod_get_data_daterange_ui("get_data_daterange_1"),
+          style = "margin-bottom: -20px;"
+        )
+      ),
+      dashboardSidebar(
+        sidebarMenu(
+          menuItem("Overview", tabName = "overview", icon = icon("home"))
+        )
+      ),
+      dashboardBody(
+        tabItems(
+          tabItem(
+            tabName = "overview",
+            h4("Logs"),
+            mod_status_overview_ui("status_overview_1"),
+            h2(""),
+            h4("Detections"),
+            mod_detections_table_ui("detections_table_1")
+          )
+        )
+      )
     )
   )
 }
@@ -33,7 +59,7 @@ golem_add_external_resources <- function() {
     favicon(),
     bundle_resources(
       path = app_sys("app/www"),
-      app_title = "BirdNETmonitor"
+      app_title = "HawaiFrontend"
     )
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()

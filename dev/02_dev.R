@@ -20,7 +20,7 @@ attachment::att_amend_desc()
 
 ## Add modules ----
 ## Create a module infrastructure in R/
-golem::add_module(name = "name_of_module1", with_test = TRUE) # Name of the module
+golem::add_module(name = "get_data_daterange", with_test = FALSE) # Name of the module
 golem::add_module(name = "name_of_module2", with_test = TRUE) # Name of the module
 
 ## Add helper functions ----
@@ -61,7 +61,7 @@ covrpage::covrpage()
 ## service for your application
 ##
 ## (You'll need GitHub there)
-usethis::use_github()
+usethis::use_github(organisation = "BirdNETPlus", private = TRUE)
 
 # GitHub Actions
 usethis::use_github_action()
