@@ -12,6 +12,7 @@ app_ui <- function(request) {
     # Your application UI logic
     dashboardPage(
       title = "Hawaii Monitoring",
+      dark = NULL,
       dashboardHeader(
         title = dashboardBrand("Hawaii Monitoring", image = "www/logo-birdnet_icon.png"),
         compact = TRUE,
