@@ -38,6 +38,8 @@ mod_detections_table_server <- function(id, data) {
         ) %>%
         reactable(
           defaultSorted = list(datetime = "desc"),
+          filterable = TRUE,
+          resizable = TRUE,
           columns = list(
             uid = colDef(show = FALSE),
             recorder_id = colDef(name = "Recorder ID"),
@@ -47,8 +49,10 @@ mod_detections_table_server <- function(id, data) {
             lat = colDef(show = FALSE),
             lon = colDef(show = FALSE),
             snippet_path = colDef(show = FALSE),
+            confirmed = colDef(show = FALSE),
             audio_url = colDef(show = FALSE),
             audio = colDef(
+              filterable = FALSE,
               cell = function(value) htmltools::tags$button(icon("play"))
             )
           ),
