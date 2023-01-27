@@ -13,6 +13,9 @@ mod_get_data_daterange_ui <- function(id) {
     ns("timerange"),
     NULL,
     choices = c(
+      "Last 1 hour" = 1,
+      "Last 2 hours" = 2,
+      "Lst 6 hours" = 6,
       "Last 12 hours" = 12,
       "Last 24 hours" = 24,
       "Last 3 days" = 72,
