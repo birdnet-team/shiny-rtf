@@ -40,16 +40,31 @@ mod_detections_table_server <- function(id, data) {
           defaultSorted = list(datetime = "desc"),
           filterable = TRUE,
           resizable = TRUE,
+          elementId = "detections-list",
           columns = list(
             uid = colDef(show = FALSE),
-            recorder_id = colDef(name = "Recorder ID"),
+            recorder_id = colDef(
+              name = "Recorder ID",
+              filterInput = dataListFilter("detections-list")
+              ),
             start = colDef(show = FALSE),
             end = colDef(show = FALSE),
-            species_code = colDef(name = "Species Code"),
+            species_code = colDef(
+              name = "Species Code",
+              filterInput = dataListFilter("detections-list")
+              ),
             lat = colDef(show = FALSE),
             lon = colDef(show = FALSE),
             snippet_path = colDef(show = FALSE),
             confirmed = colDef(show = FALSE),
+            confidence = colDef(
+              filterable = TRUE,
+              filterMethod = JS("function(rows, columnId, filterValue) {
+                return rows.filter(function(row) {
+                  return row.values[columnId] >= filterValue
+                })
+              }"),
+            ),
             audio_url = colDef(show = FALSE),
             audio = colDef(
               filterable = FALSE,
