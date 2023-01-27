@@ -7,6 +7,12 @@
 app_server <- function(input, output, session) {
   # Your application server logic
   url <- "https://reco.birdnet.tucmi.de/reco"
+
+
+  # Authentication --------------------------------------------------------------------------------------------------
+  mod_sign_out_server("sign_out_1")
+
+
   # Get Detections and logs
   data <- mod_get_data_daterange_server("get_data_daterange_1", url)
 
