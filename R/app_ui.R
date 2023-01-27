@@ -13,8 +13,9 @@ app_ui <- function(request) {
     dashboardPage(
       title = "Hawaii Monitoring",
       dashboardHeader(
-        title = "Hawaii Monitoring",
+        title = dashboardBrand("Hawaii Monitoring", image = "www/logo-birdnet_icon.png"),
         compact = TRUE,
+        rightUi =  mod_sign_out_ui("sign_out_1"),
         div(
           mod_get_data_daterange_ui("get_data_daterange_1"),
           style = "margin-bottom: -20px;"
