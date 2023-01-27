@@ -14,10 +14,16 @@ run_app <- function(
   uiPattern = "/",
   ...
 ) {
+  polished::polished_config(
+    app_name = "BirdNETmonitor",
+    api_key = "1AjI1zHTrL6k2C4qoTQg2aoN9DqcJRmTdc",
+    cookie_expires = NULL
+  )
+
   with_golem_options(
     app = shinyApp(
-      ui = app_ui,
-      server = app_server,
+      ui = polished::secure_ui(app_ui), #app_ui,
+      server = polished::secure_server(app_server), #app_server,
       onStart = onStart,
       options = options,
       enableBookmarking = enableBookmarking,
