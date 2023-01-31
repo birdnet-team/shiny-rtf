@@ -94,7 +94,7 @@ mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "
         datetime_range$end <- NULL
         datetime_range$start <- NULL
       } else {
-        datetime_range$end <- lubridate::now(tz_out)
+        datetime_range$end <- lubridate::now(tz_server)
         datetime_range$start <-
           datetime_range$end - lubridate::hours(input$timerange)
       }
