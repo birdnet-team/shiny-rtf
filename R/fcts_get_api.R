@@ -42,9 +42,8 @@ perform_get_request <- function(url, path, params = NULL) {
 resp_body_json_to_df <- function(api_response) {
   api_response |>
     resp_body_json() |>
-    map_dfr(function(x) {
-      flatten_dfc(x)
-    })
+    data.table::rbindlist() |>
+    data.table::setDF()
 }
 
 
