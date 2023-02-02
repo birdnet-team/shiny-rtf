@@ -8,6 +8,7 @@
 #'
 #' @importFrom shiny NS tagList
 #' @import reactable
+#' @import reactablefmtr
 #' @import httr2
 #' @import dplyr
 mod_detections_table_ui <- function(id) {
@@ -25,70 +26,86 @@ mod_detections_table_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    output$table <- renderReactable({
+    table_dats <- reactive({
       req(data$detections)
       data$detections %>%
         mutate(
-          audio_url = ifelse(
-            is.na(snippet_path),
-            NA,
-            paste0("https://reco.birdnet.tucmi.de/reco/det/", uid, "/audio")
+          datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime))
+        )
+    })
+
+    observe({
+      golem::message_dev("DETECTIONS TABLE")
+      golem::print_dev(glimpse(
+        table_dats() %>%
+          arrange(desc(datetime))
+      ))
+    })
+
+    output$table <- renderReactable({
+      reactable(
+        table_dats(),
+        defaultSorted = list(datetime = "desc"),
+        filterable = TRUE,
+        resizable = TRUE,
+        elementId = "detections-list",
+        columns = list(
+          uid = colDef(show = FALSE),
+          recorder_id = colDef(
+            name = "Recorder ID",
+            filterInput = dataListFilter("detections-list")
           ),
-          audio = NA
-        ) %>%
-        reactable(
-          defaultSorted = list(datetime = "desc"),
-          filterable = TRUE,
-          resizable = TRUE,
-          elementId = "detections-list",
-          columns = list(
-            uid = colDef(show = FALSE),
-            recorder_id = colDef(
-              name = "Recorder ID",
-              filterInput = dataListFilter("detections-list")
-              ),
-            start = colDef(show = FALSE),
-            end = colDef(show = FALSE),
-            species_code = colDef(
-              name = "Species Code",
-              filterInput = dataListFilter("detections-list")
-              ),
-            lat = colDef(show = FALSE),
-            lon = colDef(show = FALSE),
-            snippet_path = colDef(show = FALSE),
-            confirmed = colDef(show = FALSE),
-            confidence = colDef(
-              filterable = TRUE,
-              filterMethod = JS("function(rows, columnId, filterValue) {
+          datetime = colDef(
+            name = "Datetime"
+            #format = colFormat(datetime = TRUE)
+          ),
+          start = colDef(show = FALSE),
+          end = colDef(show = FALSE),
+          species_code = colDef(
+            name = "Species Code",
+            filterInput = dataListFilter("detections-list")
+          ),
+          snippet_path = colDef(
+            html = TRUE,
+            cell = function(value) {
+              if (value == "None") {
+                '<i class="fa-solid fa-music", style = "color:#eaecee "></i>'
+              } else {
+                '<i class="fa-solid fa-music", style = "color:#008080"></i>'
+              }
+            }
+          ),
+          lat = colDef(show = FALSE),
+          lon = colDef(show = FALSE),
+          confirmed = colDef(show = FALSE),
+          confidence = colDef(
+            filterable = TRUE,
+            filterMethod = JS("function(rows, columnId, filterValue) {
                 return rows.filter(function(row) {
                   return row.values[columnId] >= filterValue
                 })
               }"),
-            ),
-            audio_url = colDef(show = FALSE),
-            audio = colDef(
-              filterable = FALSE,
-              cell = function(value) htmltools::tags$button(icon("play"))
-            )
-          ),
-          onClick = JS("function(rowInfo, column) {
+          )
+        ),
+        onClick = JS("function(rowInfo, column) {
             // Only handle click events on the 'details' column
-            if (column.id !== 'audio') {
-              return
-            }
+            //if (column.id !== 'audio') {
+            //  return
+            //}
 
             // Display an alert dialog with details for the row
             //window.alert('Details for row ' + rowInfo.index + ':\\n' + rowInfo.values.audio_url)
-            var audio = new Audio(rowInfo.values.audio_url);
+            var audio_url = 'https://reco.birdnet.tucmi.de/reco/det/' + rowInfo.values.uid + '/audio'
+            var audio = new Audio(audio_url);
             audio.play();
 
             // Send the click event to Shiny, which will be available in input$show_details
             // Note that the row index starts at 0 in JavaScript, so we add 1
-            if (window.Shiny) {
-              Shiny.setInputValue('show_details', { index: rowInfo.index + 1 }, { priority: 'event' })
-            }
+            //if (window.Shiny) {
+            //  Shiny.setInputValue('show_details', { index: rowInfo.index + 1 }, { priority: 'event' })
+            //}
           }")
-        )
+      )
     })
   })
 }
