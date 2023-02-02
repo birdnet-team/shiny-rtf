@@ -12,10 +12,9 @@ app_server <- function(input, output, session) {
   # Authentication --------------------------------------------------------------------------------------------------
   mod_sign_out_server("sign_out_1")
 
-
   # Get Detections and logs
   data <- mod_get_data_daterange_server("get_data_daterange_1", url)
-
+  #
   observe({
     golem::message_dev("DATA")
     golem::print_dev(dplyr::glimpse(data$detections))
@@ -26,6 +25,7 @@ app_server <- function(input, output, session) {
 
 
   mod_status_overview_server("status_overview_1", data)
+  mod_set_timezone_server("set_timezone_1")
   # detections_filtered <- mod_filter_detections_server("filter_detections_1", detections)
   #
  mod_detections_table_server("detections_table_1", data)
