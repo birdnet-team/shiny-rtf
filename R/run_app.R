@@ -14,7 +14,11 @@ run_app <- function(
   uiPattern = "/",
   ...
 ) {
-  polished::polished_config(app_name = "BirdNETmonitor", api_key = "1AjI1zHTrL6k2C4qoTQg2aoN9DqcJRmTdc", cookie_expires = NULL)
+  polished::polished_config(
+    app_name = "BirdNETmonitor",
+    api_key = "1AjI1zHTrL6k2C4qoTQg2aoN9DqcJRmTdc",
+    cookie_expires = NULL
+  )
 
   with_golem_options(
     app = shinyApp(

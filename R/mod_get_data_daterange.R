@@ -11,7 +11,6 @@ mod_get_data_daterange_ui <- function(id) {
   ns <- NS(id)
   tagList(selectizeInput(
     ns("timerange"),
-    #ns("daterange"),
     NULL,
     choices = c(
       "Last 1 hour" = 1,
@@ -37,18 +36,30 @@ mod_get_data_daterange_ui <- function(id) {
 #' @param tz_out timezone of the returned date-time vector. (`lubridate::with_tz()`)
 #'
 #' @noRd
-mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "HST") {moduleServer(id, function(input, output, session) {
+mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "HST") {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # rV that holds all data on detections and logs
-    data <- reactiveValues(detections = NULL, logs = NULL)
+    data <-
+      reactiveValues(
+        detections = NULL,
+        logs = NULL
+      )
 
     # rV filtered on input timerange
     # one might start with 'last 24h' but then wants filter to 'last 6h'
-    data_timerange <- reactiveValues(detections = NULL, logs = NULL)
+    data_timerange <-
+      reactiveValues(
+        detections = NULL,
+        logs = NULL
+      )
 
     # rV that stores start and end
-    datetime_range <- reactiveValues(start = NULL, end = NULL)
+    datetime_range <- reactiveValues(
+      start = NULL,
+      end = NULL
+    )
     # GET data from server.
     # For simplicity, we only GET greater than, and not less than
     # Could be added later.
