@@ -38,12 +38,11 @@ perform_get_request <- function(url, path, params = NULL) {
 #' api_response <- perform_get_request("https://reco.birdnet.tucmi.de/reco", "det", list("recorder_id_id" = "BirdNET-HI111"))
 #' resp_body_json_to_df(api_response)
 #' @importFrom httr2 resp_body_json
-#' @importFrom purrr map_dfr flatten_dfc
 resp_body_json_to_df <- function(api_response) {
   api_response |>
     resp_body_json() |>
     data.table::rbindlist() |>
-    data.table::setDF()
+    tibble::as_tibble()
 }
 
 
