@@ -8,7 +8,6 @@
 #'
 #' @importFrom shiny NS tagList
 #' @import reactable
-#' @import reactablefmtr
 #' @import httr2
 #' @import dplyr
 mod_detections_table_ui <- function(id) {
