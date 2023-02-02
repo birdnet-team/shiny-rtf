@@ -23,7 +23,7 @@ mod_get_data_daterange_ui <- function(id) {
       "Last 14 days" = 336,
       "All" = NULL
     ),
-    selected = "Last 24 hours"
+    selected = 12
   ))
 }
 
