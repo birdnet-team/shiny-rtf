@@ -9,7 +9,6 @@ app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
-    # Your application UI logic
     dashboardPage(
       title = "Hawaii Monitoring",
       dark = NULL,
@@ -19,6 +18,10 @@ app_ui <- function(request) {
         rightUi =  mod_sign_out_ui("sign_out_1"),
         div(
           mod_get_data_daterange_ui("get_data_daterange_1"),
+          style = "margin-bottom: -20px;"
+        ),
+        div(
+          mod_set_timezone_ui("set_timezone_1"),
           style = "margin-bottom: -20px;"
         )
       ),
