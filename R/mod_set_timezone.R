@@ -28,16 +28,36 @@ mod_set_timezone_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
+    # reactiveValue that hold the timezone
+    # starts with NULL
+    tz <- reactiveVal()
+
+    # get timezone from browser and set input from JS
     observe({
       cmd <- sprintf(
-        'var tz = Intl.DateTimeFormat().resolvedOptions().timeZone; Shiny.setInputValue("%s", tz);',
-        session$ns("timezone")
+        'var tz_browser = Intl.DateTimeFormat().resolvedOptions().timeZone; Shiny.setInputValue("%s", tz_browser);',
+        session$ns("tz_browser")
       )
       shinyjs::runjs(cmd)
-      golem::message_dev("TIMEZONE")
-      golem::print_dev(cmd)
-      golem::print_dev(input$timezone)
     })
+
+    # when Browser TZ is available, update selectInput
+    observe({
+      updateSelectizeInput(
+        session,
+        "timezone",
+        selected = input$tz_browser
+      )
+    })
+
+    # when browser TZ is available, update reactiveValue
+    observe({
+      req(input$tz_browser)
+      tz(input$timezone)
+    }) %>% bindEvent(input$timezone)
+
+    return(tz)
+
   })
 }
 

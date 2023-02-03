@@ -22,7 +22,7 @@ app_ui <- function(request) {
         ),
         div(
           mod_set_timezone_ui("set_timezone_1"),
-          style = "margin-bottom: -20px;"
+          style = "margin-bottom: -20px; margin-left: 12px"
         )
       ),
       dashboardSidebar(
