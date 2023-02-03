@@ -13,8 +13,7 @@ app_server <- function(input, output, session) {
   mod_sign_out_server("sign_out_1")
 
 
-  # Get/Set timezone ------------------------------------------------
-  # needs to be called early
+  # Get timezone ------------------------------------------------
   tz <- mod_set_timezone_server("set_timezone_1")
 
   observe({
