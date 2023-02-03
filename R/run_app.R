@@ -20,10 +20,10 @@ run_app <- function(
     cookie_expires = NULL
   )
   my_custom_sign_in_page <- sign_in_ui_default(
-    color = "#42647B",
+    color = "#999999",
     company_name = "BirdNET Monitoring",
     logo_top = tags$img(
-      src = "www/logo-birdnet_monitoring_XX-02_dark-01-01.png",
+      src = "www/logo-birdnet_monitoring_XX-03_ocean_blue_fonted-01-01.png",
       alt = "BirdNET Logo",
       style = "width: 155px; margin-top: 30px; margin-bottom: 30px;"
     ),
