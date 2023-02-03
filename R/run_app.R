@@ -23,13 +23,13 @@ run_app <- function(
     color = "#999999",
     company_name = "BirdNET Monitoring",
     logo_top = tags$img(
-      src = "www/logo-birdnet_monitoring_XX-03_ocean_blue_fonted-01-01.png",
-      alt = "BirdNET Logo",
+      src = "www/logo-birdnet_monitoring_XX-03_ocean_blue_white-01-01-01.png",
+      alt = "Logo: BirdNET",
       style = "width: 155px; margin-top: 30px; margin-bottom: 30px;"
     ),
     logo_bottom = tags$img(
-      src = "www/the-cornell-lab-logo-short-small-1.png",
-      alt = "Cornell Lab Logo",
+      src = "www/Logo-The CornellLab_KLYCCB-01.png",
+      alt = "Logo: The CornellLab_KLYCCB-01.png",
       style = "width: 200px; margin-bottom: 15px; padding-top: 15px;"
     ),
     icon_href = "www/logo-birdnet_icon.png",
