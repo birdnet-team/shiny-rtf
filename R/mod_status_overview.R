@@ -95,9 +95,7 @@ mod_status_overview_server <- function(id, data){
     })
 
     output$status_boxes <- renderUI({
-      # tagList(
         purrr::pmap(log_summary(), my_valuebox)
-      # )
     })
 
     # observe({
