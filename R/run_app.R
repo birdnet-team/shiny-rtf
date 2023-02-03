@@ -20,23 +20,21 @@ run_app <- function(
     cookie_expires = NULL
   )
   my_custom_sign_in_page <- sign_in_ui_default(
-    color = "#006CB5",
-    company_name = "Tychobra",
+    color = "#42647B",
+    company_name = "BirdNET Monitoring",
     logo_top = tags$img(
-      src = "www/logo-birdnet_icon.png",
+      src = "www/logo-birdNET-full-circled.png",
       alt = "BirdNET Logo",
       style = "width: 125px; margin-top: 30px; margin-bottom: 30px;"
     ),
     logo_bottom = tags$img(
-      src = "www/logo-birdnet_icon.png",
-      alt = "Cornell Logo",
+      src = "www/the-cornell-lab-logo-short-small-1.png",
+      alt = "Cornell Lab Logo",
       style = "width: 200px; margin-bottom: 15px; padding-top: 15px;"
     ),
     icon_href = "www/logo-birdnet_icon.png",
-    background_image = "www/logo-birdnet_icon.png"
+    #background_image = "www/logo-birdnet_icon.png"
   )
-
-
 
   with_golem_options(
     app = shinyApp(
