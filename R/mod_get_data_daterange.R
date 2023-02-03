@@ -73,8 +73,7 @@ mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "
       golem::print_dev(params)
       data$detections <-
         get_detections(url, params) %>%
-        dplyr::mutate(datetime = lubridate::force_tz(datetime, tz_server)) %>%
-        dplyr::mutate(datetime = lubridate::with_tz(datetime, tz_out))
+        dplyr::mutate(datetime = lubridate::force_tz(datetime, tz_server))
     }) %>% bindEvent(datetime_range$start)
 
     # LOGS
@@ -84,8 +83,7 @@ mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "
       golem::print_dev(params)
       data$logs <-
         get_log(url, params) %>%
-        dplyr::mutate(datetime_pi = lubridate::force_tz(datetime_pi, tz_server)) %>%
-        dplyr::mutate(datetime_pi = lubridate::with_tz(datetime_pi, tz_out))
+        dplyr::mutate(datetime_pi = lubridate::force_tz(datetime_pi, tz_server))
     }) %>% bindEvent(datetime_range$start)
 
     # DATETIME RANGE; updated via input
@@ -99,6 +97,20 @@ mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "
           datetime_range$end - lubridate::hours(input$timerange)
       }
     }) %>% bindEvent(input$timerange)
+
+
+    # change timezone
+    observe({
+      req(tz_out())
+      data$detections <-
+        data$detections %>%
+        dplyr::mutate(datetime = lubridate::with_tz(datetime, tz_out()))
+
+      data$logs <-
+        data$logs %>%
+        dplyr::mutate(datetime_pi = lubridate::with_tz(datetime_pi, tz_out()))
+
+    }) %>% bindEvent(tz_out(), data$detections)
 
 
     return(data)

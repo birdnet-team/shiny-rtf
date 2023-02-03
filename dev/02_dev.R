@@ -22,10 +22,13 @@ attachment::att_amend_desc()
 ## Create a module infrastructure in R/
 golem::add_module(name = "get_data_daterange", with_test = FALSE) # Name of the module
 golem::add_module(name = "sign_out", with_test = FALSE) # Name of the module
+golem::add_module(name = "set_timezone", with_test = FALSE)
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
 golem::add_fct("dataListFilter", with_test = FALSE)
+golem::add_fct("get_browser_timezone", with_test = FALSE)
+
 golem::add_utils("helpers", with_test = TRUE)
 
 ## External resources
