@@ -27,18 +27,25 @@ app_ui <- function(request) {
       ),
       dashboardSidebar(
         sidebarMenu(
-          menuItem("Overview", tabName = "overview", icon = icon("home"))
+          menuItem("Overview", tabName = "overview", icon = icon("home")),
+          menuItem("Detections", tabName = "detections", icon = icon("music")),
+          menuItem("Health", tabName = "health", icon = icon("wave-square"))
         )
       ),
       dashboardBody(
         tabItems(
           tabItem(
             tabName = "overview",
-            h4("Logs"),
             mod_status_overview_ui("status_overview_1"),
-            h2(""),
-            h4("Detections"),
+          ),
+          tabItem(
+            tabName = "detections",
             mod_detections_table_ui("detections_table_1")
+
+          ),
+          tabItem(
+            tabName = "health",
+            mod_health_ui("health_1")
           )
         )
       )
