@@ -7,18 +7,29 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_status_overview_ui <- function(id){
+mod_status_overview_ui <- function(id) {
   ns <- NS(id)
   tagList(
-      uiOutput(ns("status_boxes"))
+    fluidRow(
+      column(12, uiOutput(ns("status_boxes")))
+    ),
+    fluidRow(
+      column(6, box(
+        width = NULL,
+        collapsible = FALSE,
+        headerBorder = FALSE,
+        elevation = 1,
+        reactableOutput(ns("table_n_max_species"))
+      ))
+    )
   )
 }
 
 #' status_overview Server Functions
 #'
 #' @noRd
-mod_status_overview_server <- function(id, data){
-  moduleServer( id, function(input, output, session){
+mod_status_overview_server <- function(id, data) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     new_job_freq <- function(datetime_vec, task_vec, task, unit, now = FALSE) {
@@ -32,28 +43,21 @@ mod_status_overview_server <- function(id, data){
       return(length(dt_vec) / duration_h)
     }
 
-    # my_valuebox <- function(status_message, recorder_id, status_icon, status, last_event, freq_jobs, free_disk, n_errors, ...) {
-    #   bslib::value_box(
-    #     title = status_message,
-    #     value = recorder_id,
-    #     showcase = bsicons::bs_icon(status_icon),
-    #     theme_color = status,
-    #     p("Last event: ", strftime(last_event, "%F %T", usetz = TRUE, tz = lubridate::tz(last_event))),
-    #     p("Jobs per hour: ", round(freq_jobs), 1),
-    #     p("Free disc: ", free_disk),
-    #     p("Errors: ", n_errors)
-    #   )
-    # }
-    my_valuebox <- function(status_message, recorder_id, status_icon, status, last_event, time_since_last_job,...) {
+    my_infobox <- function(status_message, recorder_id, status_icon, status, last_event, time_since_last_job, ...) {
       bs4Dash::infoBox(
+        width = NULL,
         title = status_message,
         value = recorder_id,
-        subtitle = p("Last event",
-                     strftime(last_event, "%F %T", usetz = TRUE, tz = lubridate::tz(last_event)),
-                     br(),
-                     "(",round(time_since_last_job, 0), "minutes ago", ")"),
+        subtitle = p(
+          "Last event",
+          round(time_since_last_job, 0), "minutes ago",
+          br(),
+          strftime(last_event, "%a %b %e, %H:%M ", usetz = TRUE, tz = lubridate::tz(last_event)),
+        ),
         color = status,
-        icon = icon(status_icon)
+        icon = icon(status_icon),
+        elevation = 1,
+        iconElevation = 1
       )
     }
 
@@ -95,14 +99,35 @@ mod_status_overview_server <- function(id, data){
     })
 
     output$status_boxes <- renderUI({
-        purrr::pmap(log_summary(), my_valuebox)
+      bs4Dash::boxLayout(
+        type = "columns",
+        purrr::pmap(log_summary(), my_infobox)
+      )
     })
 
-    # observe({
-    #   golem::message_dev("log_summary")
-    #   golem::print_dev(log_summary())
-    # })
-
+    output$table_n_max_species <- renderReactable({
+      data$detections %>%
+        dplyr::count(recorder_id, species_code) %>%
+        dplyr::slice_max(n, n = 10, by = recorder_id) %>%
+        tidyr::pivot_wider(names_from = recorder_id, values_from = n, values_fill = 0) %>%
+        reactable::reactable(
+          defaultSortOrder = "desc",
+          compact = TRUE,
+          borderless = TRUE,
+          defaultColDef = colDef(
+            cell = reactablefmtr::data_bars(
+              data = .,
+              fill_color = viridis::mako(1000),
+              background = "#ffffff",
+              #round_edges = TRUE,
+              # min_value = 0,
+              # max_value = 10000,
+              text_position = "outside-end",
+              number_fmt = scales::comma
+            )
+          )
+        )
+    })
   })
 }
 
