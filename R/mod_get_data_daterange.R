@@ -73,7 +73,8 @@ mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "
       golem::print_dev(params)
       data$detections <-
         get_detections(url, params) %>%
-        dplyr::mutate(datetime = lubridate::force_tz(datetime, tz_server))
+        dplyr::mutate(datetime = lubridate::force_tz(datetime, tz_server)) %>%
+        dplyr::left_join(birdnames, by = c("species_code" = "code"))
     }) %>% bindEvent(datetime_range$start)
 
     # LOGS
