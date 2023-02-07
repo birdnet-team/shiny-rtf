@@ -20,6 +20,7 @@ run_app <- function(
     cookie_expires = NULL
   )
   my_custom_sign_in_page <- sign_in_ui_default(
+    sign_in_module = sign_in_module_ui("sign_in", register_link = NULL),
     color = "#999999",
     company_name = "BirdNET Monitoring",
     logo_top = tags$img(
