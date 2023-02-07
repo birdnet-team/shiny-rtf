@@ -7,11 +7,21 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @import leaflet
 mod_status_overview_ui <- function(id) {
   ns <- NS(id)
   tagList(
     fluidRow(
-      column(12, uiOutput(ns("status_boxes")))
+      column(6, uiOutput(ns("status_boxes"))),
+      column(
+        6,
+        box(
+          width = NULL,
+          collapsible = FALSE,
+          headerBorder = FALSE,
+          elevation = 1,
+          leafletOutput(ns("map")))
+      )
     ),
     fluidRow(
       column(6, box(
@@ -43,7 +53,7 @@ mod_status_overview_server <- function(id, data) {
       return(length(dt_vec) / duration_h)
     }
 
-    my_infobox <- function(status_message, recorder_id, status_icon, status, last_event, time_since_last_job, ...) {
+    my_infobox <- function(status_message, recorder_id, status_icon, status, status_color, last_event, time_since_last_job, ...) {
       bs4Dash::infoBox(
         width = NULL,
         title = status_message,
@@ -85,6 +95,11 @@ mod_status_overview_server <- function(id, data) {
             between(time_since_last_job, 30, 60) ~ "warning",
             time_since_last_job > 60 ~ "danger",
           ),
+          status_color = case_when(
+            status == "success" ~ "#198754",
+            status == "warning" ~ "#ffc107",
+            status == "danger" ~ "#dc3545",
+          ),
           status_message = case_when(
             status == "success" ~ "online",
             status == "warning" ~ "last job more than 30 minutes ago!",
@@ -98,16 +113,24 @@ mod_status_overview_server <- function(id, data) {
         )
     })
 
+    recorders <- reactive({
+      req(data$recorders)
+      req(log_summary)
+      data$recorders %>%
+        left_join(log_summary()) %>%
+        select(lat, lon, recorder_id, status_color)
+    })
+
     output$status_boxes <- renderUI({
       bs4Dash::boxLayout(
-        type = "columns",
+        type = "deck",
         purrr::pmap(log_summary(), my_infobox)
       )
     })
 
     output$table_n_max_species <- renderReactable({
       data$detections %>%
-        dplyr::count(recorder_id, species_code) %>%
+        dplyr::count(recorder_id, common) %>%
         dplyr::slice_max(n, n = 10, by = recorder_id) %>%
         tidyr::pivot_wider(names_from = recorder_id, values_from = n, values_fill = 0) %>%
         reactable::reactable(
@@ -119,12 +142,35 @@ mod_status_overview_server <- function(id, data) {
               data = .,
               fill_color = viridis::mako(1000),
               background = "#ffffff",
-              #round_edges = TRUE,
+              # round_edges = TRUE,
               # min_value = 0,
               # max_value = 10000,
               text_position = "outside-end",
               number_fmt = scales::comma
             )
+          )
+        )
+    })
+
+    output$map <- renderLeaflet({
+      leaflet(
+        recorders()
+      ) %>%
+        addTiles(group = "OpenStreetMap") %>%
+        addProviderTiles("Esri.WorldImagery", group = "Satellit") %>%
+        addLayersControl(
+          baseGroups = c("OpenStreetMap", "Satellit"),
+          position = "topleft",
+          options = layersControlOptions(collapsed = TRUE)
+        ) %>%
+        addCircleMarkers(
+          color = ~status_color,
+          fillOpacity = 0.8,
+          label = ~recorder_id,
+          labelOptions = labelOptions(
+            sticky = FALSE,
+            direction = "bottom",
+            offset = c(0, 10)
           )
         )
     })
