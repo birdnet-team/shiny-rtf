@@ -30,7 +30,8 @@ mod_detections_table_server <- function(id, data) {
       data$detections %>%
         mutate(
           datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime))
-        )
+        ) %>%
+        dplyr::relocate(common, .after = recorder_id)
     })
 
     observe({
@@ -63,10 +64,12 @@ mod_detections_table_server <- function(id, data) {
           ),
           start = colDef(show = FALSE),
           end = colDef(show = FALSE),
-          species_code = colDef(
-            name = "Species Code",
+          common = colDef(
+            name = "Species",
             filterInput = dataListFilter("detections-list")
           ),
+          scientific = colDef(show = FALSE),
+          species_code = colDef(show = FALSE),
           snippet_path = colDef(
             html = TRUE,
             cell = function(value) {
