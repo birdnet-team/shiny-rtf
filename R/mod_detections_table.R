@@ -47,6 +47,9 @@ mod_detections_table_server <- function(id, data) {
         defaultSorted = list(datetime = "desc"),
         filterable = TRUE,
         resizable = TRUE,
+        highlight = TRUE,
+        outlined = TRUE,
+        compact = TRUE,
         elementId = "detections-list",
         columns = list(
           uid = colDef(show = FALSE),

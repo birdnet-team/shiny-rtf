@@ -13,7 +13,7 @@ app_server <- function(input, output, session) {
   mod_sign_out_server("sign_out_1")
 
 
-  # Get timezone ------------------------------------------------
+  # Header ----------------------------------------------------------------------------------------------------------
   tz <- mod_set_timezone_server("set_timezone_1")
 
   observe({
@@ -33,9 +33,14 @@ app_server <- function(input, output, session) {
   #   golem::print_dev(data$logs$datetime_pi[1:2])
   # })
 
-
+  # Overview --------------------------------------------------------------------------------------------------------
   mod_status_overview_server("status_overview_1", data)
   # detections_filtered <- mod_filter_detections_server("filter_detections_1", detections)
   #
- mod_detections_table_server("detections_table_1", data)
+  mod_detections_table_server("detections_table_1", data)
+
+
+  # Health ----------------------------------------------------------------------------------------------------------
+  mod_health_server("health_1", data)
+
 }
