@@ -8,6 +8,8 @@ Description: Shiny frontend to field recorders using BirdNET for live
 License: What license is it under?
 URL: https://github.com/BirdNETPlus/BirdNETmonitor
 BugReports: https://github.com/BirdNETPlus/BirdNETmonitor/issues
+Depends: 
+    R (>= 2.10)
 Imports: 
     bs4Dash,
     config (>= 0.3.1),
