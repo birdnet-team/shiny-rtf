@@ -24,7 +24,7 @@ run_app <- function(
     color = "#999999",
     company_name = "BirdNET Monitoring",
     logo_top = tags$img(
-      src = "www/logo-birdnet_monitoring_XX-03_ocean_blue_white-01-01-01.png",
+      src = "www/logo-birdnet_monitoring_web_112x112-01.png",
       alt = "Logo: BirdNET",
       style = "width: 155px; margin-top: 30px; margin-bottom: 30px;"
     ),
