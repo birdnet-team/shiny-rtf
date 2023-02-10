@@ -44,7 +44,8 @@ mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "
     data <-
       reactiveValues(
         detections = NULL,
-        logs = NULL
+        logs = NULL,
+        recorders = NULL
       )
 
     # rV filtered on input timerange
@@ -65,6 +66,15 @@ mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "
     # Could be added later.
     # Split getting logs and detections on two oberservers
     # to potentially implement custom data fetching when clicking sidebar items
+
+    # RECORDERS
+    # get recorder data onl once
+    observe({
+      data$recorders <-
+        get_recorders(url) %>%
+        filter(recorder_id != "BirdNET-HI004")
+    }) %>% bindEvent(datetime_range$start, once = TRUE)
+
 
     # DETECTIONS
     observe({

@@ -114,3 +114,21 @@ get_log <- function(url, params = NULL) {
 
   return(api_data)
 }
+
+
+#' Retrieve recorder configs from a given URL
+#'
+#' @param url The URL of the API
+#' @param params Parameters to GET request as list. Can include Django field lookups
+#'
+#' @return Dataframe.
+#' @export
+#'
+#' @examples
+get_recorders <- function(url, params = NULL) {
+  api_response <-
+    perform_get_request(url, "rec", params)
+
+  api_response %>%
+    resp_body_json_to_df()
+}
