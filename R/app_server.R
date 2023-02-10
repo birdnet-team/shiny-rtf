@@ -13,20 +13,21 @@ app_server <- function(input, output, session) {
   mod_sign_out_server("sign_out_1")
 
 
+  # Header ----------------------------------------------------------------------------------------------------------
+  tz <- mod_set_timezone_server("set_timezone_1")
+
   # Get Detections and logs
-  data <- mod_get_data_daterange_server("get_data_daterange_1", url)
-
-  observe({
-    golem::message_dev("DATA")
-    golem::print_dev(dplyr::glimpse(data$detections))
-    golem::print_dev(dplyr::glimpse(data$logs))
-    golem::print_dev(data$detections$datetime[1:2])
-    golem::print_dev(data$logs$datetime_pi[1:2])
-  })
+  data <- mod_get_data_daterange_server("get_data_daterange_1", url, tz_server = "HST", tz_out = tz)
 
 
+  # Overview --------------------------------------------------------------------------------------------------------
   mod_status_overview_server("status_overview_1", data)
   # detections_filtered <- mod_filter_detections_server("filter_detections_1", detections)
   #
- mod_detections_table_server("detections_table_1", data)
+  mod_detections_table_server("detections_table_1", data)
+
+
+  # Health ----------------------------------------------------------------------------------------------------------
+  mod_health_server("health_1", data)
+
 }

@@ -1,0 +1,160 @@
+Acridotheres tristis_Common Myna,commyn
+Actitis hypoleucos_Common Sandpiper,comsan
+Actitis macularius_Spotted Sandpiper,sposan
+Agapornis roseicollis_Rosy-faced Lovebird,peflov
+Alauda arvensis_Eurasian Skylark,skylar
+Alectoris chukar_Chukar,chukar
+Amandava amandava_Red Avadavat,redava
+Anas acuta_Northern Pintail,norpin
+Anas crecca_Green-winged Teal,gnwtea
+Anas platyrhynchos_Mallard,mallar3
+Anous minutus_Black Noddy,blknod
+Anous stolidus_Brown Noddy,brnnod
+Anser albifrons_Greater White-fronted Goose,gwfgoo
+Anser caerulescens_Snow Goose,snogoo
+Ardea herodias_Great Blue Heron,grbher3
+Ardenna grisea_Sooty Shearwater,sooshe
+Ardenna pacifica_Wedge-tailed Shearwater,wetshe
+Ardenna tenuirostris_Short-tailed Shearwater,shtshe
+Arenaria interpres_Ruddy Turnstone,rudtur
+Asio flammeus_Short-eared Owl,sheowl
+Aythya affinis_Lesser Scaup,lessca
+Aythya collaris_Ring-necked Duck,rinduc
+Aythya marila_Greater Scaup,gresca
+Aythya valisineria_Canvasback,canvas
+Branta bernicla_Brant,brant
+Branta canadensis_Canada Goose,cangoo
+Branta hutchinsii_Cackling Goose,cacgoo1
+Branta sandvicensis_Hawaiian Goose,hawgoo
+Bubulcus ibis_Cattle Egret,categr
+Bucephala albeola_Bufflehead,buffle
+Bulweria bulwerii_Bulwer's Petrel,bulpet
+Buteo solitarius_Hawaiian Hawk,hawhaw
+Cacatua goffiniana_Tanimbar Corella,tancoc1
+Calidris acuminata_Sharp-tailed Sandpiper,shtsan
+Calidris alba_Sanderling,sander
+Calidris alpina_Dunlin,dunlin
+Calidris mauri_Western Sandpiper,wessan
+Calidris melanotos_Pectoral Sandpiper,pecsan
+Calidris minutilla_Least Sandpiper,leasan
+Calidris pugnax_Ruff,ruff
+Calidris subruficollis_Buff-breasted Sandpiper,bubsan
+Callipepla californica_California Quail,calqua
+Callipepla gambelii_Gambel's Quail,gamqua
+Cardinalis cardinalis_Northern Cardinal,norcar
+Charadrius semipalmatus_Semipalmated Plover,semplo
+Chasiempis sandwichensis_Hawaii Elepaio,elepai
+Chlorodrepanis virens_Hawaii Amakihi,hawama
+Chroicocephalus philadelphia_Bonaparte's Gull,bongul
+Chrysolophus pictus_Golden Pheasant,golphe
+Circus hudsonius_Northern Harrier,norhar2
+Columba livia_Rock Pigeon,rocpig
+Corvus hawaiiensis_Hawaiian Crow,hawcro
+Coturnix japonica_Japanese Quail,japqua
+Crithagra mozambica_Yellow-fronted Canary,yefcan
+Cyanoliseus patagonus_Burrowing Parakeet,burpar
+Drepanis coccinea_Iiwi,iiwi
+Estrilda astrild_Common Waxbill,comwax
+Euodice cantans_African Silverbill,afrsil1
+Falco columbarius_Merlin,merlin
+Falco peregrinus_Peregrine Falcon,perfal
+Francolinus francolinus_Black Francolin,blkfra
+Fregata minor_Great Frigatebird,grefri
+Fulica alai_Hawaiian Coot,hawcoo
+Gallinula galeata_Common Gallinule,comgal1
+Gallus gallus_Red Junglefowl,redjun
+Garrulax canorus_Chinese Hwamei,melthr
+Geopelia striata_Zebra Dove,zebdov
+Glaucestrilda caerulescens_Lavender Waxbill,lavwax
+Gygis alba_White Tern,whiter
+Haemorhous mexicanus_House Finch,houfin
+Hemignathus wilsoni_Akiapolaau,akiapo
+Himantopus mexicanus_Black-necked Stilt,bknsti
+Himatione sanguinea_Apapane,apapan
+Horornis diphone_Japanese Bush Warbler,jabwar
+Hydrobates castro_Band-rumped Storm-Petrel,barpet
+Hydrobates leucorhous_Leach's Storm-Petrel,lcspet
+Hydroprogne caspia_Caspian Tern,caster1
+Larosterna inca_Inca Tern,incter1
+Larus delawarensis_Ring-billed Gull,ribgul
+Larus glaucescens_Glaucous-winged Gull,glwgul
+Leiothrix lutea_Red-billed Leiothrix,reblei
+Leucophaeus atricilla_Laughing Gull,laugul
+Leucophaeus pipixcan_Franklin's Gull,fragul
+Limnodromus scolopaceus_Long-billed Dowitcher,lobdow
+Limosa haemastica_Hudsonian Godwit,hudgod
+Lonchura atricapilla_Chestnut Munia,chemun
+Lonchura punctulata_Scaly-breasted Munia,nutman
+Lophodytes cucullatus_Hooded Merganser,hoomer
+Lophura leucomelanos_Kalij Pheasant,kalphe
+Loxioides bailleui_Palila,palila
+Loxops caeruleirostris_Akekee,akekee
+Loxops coccineus_Hawaii Akepa,akepa1
+Loxops mana_Hawaii Creeper,hawcre
+Mareca americana_American Wigeon,amewig
+Mareca penelope_Eurasian Wigeon,eurwig
+Mareca strepera_Gadwall,gadwal
+Megaceryle alcyon_Belted Kingfisher,belkin1
+Meleagris gallopavo_Wild Turkey,wiltur
+Mimus polyglottos_Northern Mockingbird,normoc
+Myadestes obscurus_Omao,omao
+Myadestes palmeri_Puaiohi,puaioh
+Numenius tahitiensis_Bristle-thighed Curlew,brtcur
+Nycticorax nycticorax_Black-crowned Night-Heron,bcnher
+Onychoprion fuscatus_Sooty Tern,sooter1
+Onychoprion lunatus_Gray-backed Tern,gybter1
+Oreomystis bairdi_Akikiki,akikik
+Ortygornis pondicerianus_Gray Francolin,gryfra
+Padda oryzivora_Java Sparrow,javspa
+Palmeria dolei_Akohekohe,crehon
+Pandion haliaetus_Osprey,osprey
+Paroaria capitata_Yellow-billed Cardinal,yebcar
+Paroaria coronata_Red-crested Cardinal,reccar
+Paroreomyza montana_Maui Alauahio,mauala
+Passer domesticus_House Sparrow,houspa
+Pavo cristatus_Indian Peafowl,compea
+Phaethon lepturus_White-tailed Tropicbird,whttro
+Phaethon rubricauda_Red-tailed Tropicbird,rettro
+Phalaropus fulicarius_Red Phalarope,redpha1
+Phasianus colchicus_Ring-necked Pheasant,rinphe
+Phoebastria immutabilis_Laysan Albatross,layalb
+Phoebastria nigripes_Black-footed Albatross,bkfalb
+Plegadis chihi_White-faced Ibis,whfibi
+Pluvialis fulva_Pacific Golden-Plover,pagplo
+Pluvialis squatarola_Black-bellied Plover,bkbplo
+Podilymbus podiceps_Pied-billed Grebe,pibgre
+Porzana carolina_Sora,sora
+Pseudonestor xanthophrys_Maui Parrotbill,maupar
+Psittacara erythrogenys_Red-masked Parakeet,rempar
+Psittacara mitratus_Mitred Parakeet,mitpar
+Psittacula krameri_Rose-ringed Parakeet,rorpar
+Pternistis erckelii_Erckel's Francolin,ercfra
+Pterocles exustus_Chestnut-bellied Sandgrouse,chbsan
+Pterodroma cookii_Cook's Petrel,coopet
+Pterodroma externa_Juan Fernandez Petrel,jufpet
+Pterodroma inexpectata_Mottled Petrel,motpet
+Pterodroma neglecta_Kermadec Petrel,kerpet
+Pterodroma nigripennis_Black-winged Petrel,bkwpet
+Pterodroma sandwichensis_Hawaiian Petrel,hawpet1
+Puffinus nativitatis_Christmas Shearwater,chrshe
+Puffinus newelli_Newell's Shearwater,towshe2
+Sicalis flaveola_Saffron Finch,saffin
+Spatula clypeata_Northern Shoveler,norsho
+Spatula cyanoptera_Cinnamon Teal,cintea
+Spatula discors_Blue-winged Teal,buwtea
+Stercorarius longicaudus_Long-tailed Jaeger,lotjae
+Stercorarius maccormicki_South Polar Skua,sopsku1
+Stercorarius parasiticus_Parasitic Jaeger,parjae
+Stercorarius pomarinus_Pomarine Jaeger,pomjae
+Sterna paradisaea_Arctic Tern,arcter
+Sternula antillarum_Least Tern,leater1
+Streptopelia chinensis_Spotted Dove,spodov
+Sturnella neglecta_Western Meadowlark,wesmea
+Sula dactylatra_Masked Booby,masboo
+Sula leucogaster_Brown Booby,brnboo
+Sula sula_Red-footed Booby,refboo
+Tringa flavipes_Lesser Yellowlegs,lesyel
+Tringa incana_Wandering Tattler,wantat1
+Tyto alba_Barn Owl,brnowl
+Zenaida macroura_Mourning Dove,moudov
+Zosterops japonicus_Warbling White-eye,warwhe1

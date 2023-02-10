@@ -8,19 +8,30 @@ Description: Shiny frontend to field recorders using BirdNET for live
 License: What license is it under?
 URL: https://github.com/BirdNETPlus/BirdNETmonitor
 BugReports: https://github.com/BirdNETPlus/BirdNETmonitor/issues
+Depends: 
+    R (>= 2.10)
 Imports: 
     bs4Dash,
     config (>= 0.3.1),
     data.table,
     dplyr,
+    echarts4r,
     golem (>= 0.3.5),
     httr2,
+    leaflet,
     lubridate,
     polished,
+    purrr,
     reactable,
+    reactablefmtr,
+    scales,
     shiny (>= 1.7.4),
+    shinyjs,
     shinyWidgets,
-    tibble
+    stringr,
+    tibble,
+    tidyr,
+    viridis
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3

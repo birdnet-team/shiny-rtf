@@ -7,38 +7,319 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_status_overview_ui <- function(id){
+#' @import leaflet
+#' @import echarts4r
+mod_status_overview_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    reactableOutput(ns('overview_table'))
+    fluidRow(
+      div(
+        class = "indented-heading",
+        h4("Status of recorders")
+      )
+    ),
+    fluidRow(
+        column(
+          6,
+          # div(
+          #   class = "headless-box",
+          #   box(
+          #     width = NULL,
+          #     collapsible = FALSE,
+          #     headerBorder = FALSE,
+          #     elevation = 1,
+          #     div(
+          #       style = "height: 25vh",
+                uiOutput(ns("status_boxes"))
+          #     )
+          #   )
+          # )
+        ),
+      column(
+        6,
+        div(
+          class = "headless-box",
+          box(
+            width = NULL,
+            collapsible = FALSE,
+            headerBorder = FALSE,
+            elevation = 1,
+            div(
+              style = "height: 25vh",
+              leafletOutput(ns("map"), width = "100%", height = "100%")
+            )
+          )
+        )
+      )
+    ),
+    fluidRow(
+      h4(" "),
+      div(
+        class = "indented-heading",
+        h4("Activity")
+      )
+    ),
+    fluidRow(
+      column(
+        6,
+        div(
+          class = "headless-box",
+          box(
+            footer = "Detections per recorder and species in selected time range.",
+            width = NULL,
+            collapsible = FALSE,
+            headerBorder = FALSE,
+            elevation = 1,
+            div(
+              style = "height:45vh; overflow: auto;",
+              reactableOutput(ns("table_n_max_species"), width = "100%", height = "100%")
+            )
+          )
+        )
+      ),
+      column(
+        6,
+        div(
+          class = "headless-box",
+          box(
+            footer = "Detections per hour.\nCircle sizes are scaled within species and are not comparable between species.",
+            width = NULL,
+            collapsible = FALSE,
+            headerBorder = FALSE,
+            elevation = 1,
+            div(
+              style = "height:45vh",
+              echarts4rOutput(ns("bubble_timeline"), width = "100%", height = "100%")
+            )
+          )
+        )
+      )
+    )
   )
 }
 
 #' status_overview Server Functions
 #'
 #' @noRd
-mod_status_overview_server <- function(id, data){
-  moduleServer( id, function(input, output, session){
+mod_status_overview_server <- function(id, data) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    output$overview_table <- renderReactable({
-      req(data$logs)
-      golem::message_dev("datetime in overview")
-      golem::print_dev(data$logs$datetime_pi[1])
-      golem::print_dev(class(data$logs$datetime_pi[1]))
 
+    # Functions -------------------------------------------------------------------------------------------------------
+
+    new_job_freq <- function(datetime_vec, task_vec, task, unit, now = FALSE) {
+      dt_vec <- datetime_vec[task_vec == task]
+      if (now) {
+        end <- lubridate::now(tz = lubridate::tz(dt_vec[1]))
+      } else {
+        end <- max(dt_vec)
+      }
+      duration_h <- interval(min(dt_vec), end) %>% as.numeric(unit)
+      return(length(dt_vec) / duration_h)
+    }
+
+    my_infobox <- function(status_message, recorder_id, status_icon, status, status_color, last_event, time_since_last_job, ...) {
+      bs4Dash::infoBox(
+        width = NULL,
+        title = status_message,
+        value = recorder_id,
+        subtitle = p(
+          "Last event",
+          round(time_since_last_job, 0),
+          "minutes ago",
+          br(),
+          strftime(last_event, "%a %b %e, %H:%M ", usetz = TRUE, tz = lubridate::tz(last_event)),
+        ),
+        color = status,
+        icon = icon(status_icon),
+        elevation = 1,
+        iconElevation = 1
+      )
+    }
+
+    # Data ------------------------------------------------------------------------------------------------------------
+
+    log_summary <- reactive({
+      req(data$logs)
       data$logs %>%
-        select(-id) %>%
-        reactable(
-          groupBy = "recorder_id",
-          defaultSorted = list(datetime_pi = "desc"),
-          columns = list(
-            job_id = colDef(show = FALSE),
-            datetime_pi = colDef(name = "Datetime", aggregate = 'max', format = colFormat(datetime = TRUE))
+        group_by(recorder_id) %>%
+        arrange(desc(datetime_pi)) %>%
+        summarise(
+          last_event = dplyr::first(datetime_pi),
+          free_disk = dplyr::first(free_disk),
+          n_errors = sum(error != ""),
+          freq_jobs = new_job_freq(datetime_pi, task, "start new job", "hour", FALSE)
+        ) %>%
+        mutate(
+          time_since_last_job = lubridate::interval(
+            last_event,
+            lubridate::now(tz = lubridate::tz(last_event))
+          ) %>%
+            as.numeric("minutes")
+        ) %>%
+        mutate(
+          status = case_when(
+            time_since_last_job < 30 ~ "success",
+            between(time_since_last_job, 30, 60) ~ "warning",
+            time_since_last_job > 60 ~ "danger",
+          ),
+          status_color = case_when(
+            status == "success" ~ "#198754",
+            status == "warning" ~ "#ffc107",
+            status == "danger" ~ "#dc3545",
+          ),
+          status_message = case_when(
+            status == "success" ~ "online",
+            status == "warning" ~ "last job more than 30 minutes ago!",
+            status == "danger" ~ "last job more than 1 hour ago!",
+          ),
+          status_icon = case_when(
+            status == "success" ~ "check-circle",
+            status == "warning" ~ "exclamation-circle",
+            status == "danger" ~ "x-circle",
           )
         )
     })
 
+    recorders <- reactive({
+      req(data$recorders)
+      req(log_summary)
+      data$recorders %>%
+        left_join(log_summary()) %>%
+        select(lat, lon, recorder_id, status_color)
+    })
+
+    table_dats <- reactive({
+      data$detections %>%
+        dplyr::count(recorder_id, common) %>%
+        #dplyr::slice_max(n, n = 10, by = recorder_id) %>%
+        tidyr::pivot_wider(names_from = recorder_id, values_from = n, values_fill = 0) %>%
+        tibble::column_to_rownames("common")
+    })
+
+    bubble_timeline_dats <- reactive({
+      data$detections %>%
+        mutate(agg_timeunit = lubridate::floor_date(datetime, unit = "1 hour")) %>%
+        count(common, agg_timeunit) %>%
+        mutate(common = stringr::str_replace(common, " ", "\n"))
+      # %>%
+      # group_by(commonn) %>%
+      # mutate(total = sum(n)) %>%
+      # ungroup() %>%
+      # mutate(prop = signif((n / total), 1))
+    })
+
+
+    # Render Functions ------------------------------------------------------------------------------------------------
+
+    output$status_boxes <- renderUI({
+      bs4Dash::boxLayout(
+        type = "deck",
+        purrr::pmap(log_summary(), my_infobox)
+      )
+    })
+
+    output$map <- renderLeaflet({
+      leaflet(
+        recorders()
+      ) %>%
+        addTiles(group = "OpenStreetMap") %>%
+        addProviderTiles("Esri.WorldImagery", group = "Satellit") %>%
+        addLayersControl(
+          baseGroups = c("OpenStreetMap", "Satellit"),
+          position = "topleft",
+          options = layersControlOptions(collapsed = TRUE)
+        ) %>%
+        addCircleMarkers(
+          color = ~status_color,
+          fillOpacity = 0.8,
+          label = ~recorder_id,
+          labelOptions = labelOptions(
+            sticky = FALSE,
+            direction = "bottom",
+            offset = c(0, 10)
+          )
+        )
+    })
+
+    output$table_n_max_species <- renderReactable({
+      table_dats() %>%
+      reactable::reactable(
+          compact = TRUE,
+          borderless = TRUE,
+          pagination = FALSE,
+          sortable = TRUE,
+          showSortable = TRUE,
+          defaultColDef = colDef(
+            defaultSortOrder = "desc",
+            align = "left",
+            cell = reactablefmtr::data_bars(
+              data = .,
+              fill_color = viridis::mako(1000),
+              background = "#ffffff",
+              # round_edges = TRUE,
+              # min_value = 0,
+              # max_value = 10000,
+              text_position = "outside-end",
+              number_fmt = scales::comma
+            )
+          ),
+          columns = list(
+            .rownames = colDef(name = "Species", sortable  = TRUE)
+          )
+        )
+    })
+
+    output$bubble_timeline <- renderEcharts4r({
+      bubble_timeline_dats() %>%
+        group_by(common) %>%
+        e_charts(
+          agg_timeunit,
+          height = "100%",
+          width = "100%"
+          ) %>%
+        e_line(common, legend = FALSE, symbol = "none", lineStyle = list(width = 0.5, color = "lightgrey", opacity = 0.4)) %>%
+        e_scatter(common, size = n, legend = FALSE) %>%
+        e_x_axis(
+          name = "",
+          type = "time",
+          axisLabel = list(
+            fontSize = '0.9rem',
+            color = "#212529",
+            fontFamily = "Arial",
+            fontWeight = 400
+          )
+          ) %>%
+        e_y_axis(
+          name = "",
+          type = "category",
+          #margin = 10,
+          offset = 16,
+          inverse = TRUE,
+          axisLabel = list(
+            #width = 200,
+            #padding = 16,
+            overflow = "truncate",
+            hideOverlap = FALSE,
+            align = "right",
+            fontSize = '0.9rem',
+            color = "#212529",
+            fontFamily = "Arial",
+            fontWeight = 400
+          ),
+          axisTick = list(alignWithLabel = TRUE),
+          axisLIne = list(
+            onZero = FALSE
+          )
+        ) %>%
+        # e_tooltip(triggerOn = "click") %>%
+        e_grid(containLabel = TRUE, left = '3%', top = '0%') %>%
+        e_toolbox(show = FALSE) %>%
+        e_datazoom(type = "slider", xAxisIndex = 0, start = 100, end = 0, brushSelect = FALSE) %>%
+        #e_datazoom(type = "inside", yAxisIndex = 0, start = 1, end = 15, zoomLock = TRUE, moveOnMouseWheel = TRUE) %>%
+        e_datazoom(type = "slider", yAxisIndex = 0, start = 1, end = 25, zoomLock = FALSE, brushSelect = FALSE)
+    })
   })
 }
 
