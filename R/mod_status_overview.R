@@ -8,29 +8,92 @@
 #'
 #' @importFrom shiny NS tagList
 #' @import leaflet
+#' @import echarts4r
 mod_status_overview_ui <- function(id) {
   ns <- NS(id)
   tagList(
     fluidRow(
-      column(6, uiOutput(ns("status_boxes"))),
-      column(
-        6,
-        box(
-          width = NULL,
-          collapsible = FALSE,
-          headerBorder = FALSE,
-          elevation = 1,
-          leafletOutput(ns("map")))
+      div(
+        class = "indented-heading",
+        h4("Status of recorders")
       )
     ),
     fluidRow(
-      column(6, box(
-        width = NULL,
-        collapsible = FALSE,
-        headerBorder = FALSE,
-        elevation = 1,
-        reactableOutput(ns("table_n_max_species"))
-      ))
+        column(
+          6,
+          # div(
+          #   class = "headless-box",
+          #   box(
+          #     width = NULL,
+          #     collapsible = FALSE,
+          #     headerBorder = FALSE,
+          #     elevation = 1,
+          #     div(
+          #       style = "height: 25vh",
+                uiOutput(ns("status_boxes"))
+          #     )
+          #   )
+          # )
+        ),
+      column(
+        6,
+        div(
+          class = "headless-box",
+          box(
+            width = NULL,
+            collapsible = FALSE,
+            headerBorder = FALSE,
+            elevation = 1,
+            div(
+              style = "height: 25vh",
+              leafletOutput(ns("map"), width = "100%", height = "100%")
+            )
+          )
+        )
+      )
+    ),
+    fluidRow(
+      h4(" "),
+      div(
+        class = "indented-heading",
+        h4("Activity")
+      )
+    ),
+    fluidRow(
+      column(
+        6,
+        div(
+          class = "headless-box",
+          box(
+            footer = "Detections per recorder and species in selected time range.",
+            width = NULL,
+            collapsible = FALSE,
+            headerBorder = FALSE,
+            elevation = 1,
+            div(
+              style = "height:45vh; overflow: auto;",
+              reactableOutput(ns("table_n_max_species"), width = "100%", height = "100%")
+            )
+          )
+        )
+      ),
+      column(
+        6,
+        div(
+          class = "headless-box",
+          box(
+            footer = "Detections per hour.\nCircle sizes are scaled within species and are not comparable between species.",
+            width = NULL,
+            collapsible = FALSE,
+            headerBorder = FALSE,
+            elevation = 1,
+            div(
+              style = "height:45vh",
+              echarts4rOutput(ns("bubble_timeline"), width = "100%", height = "100%")
+            )
+          )
+        )
+      )
     )
   )
 }
@@ -41,6 +104,9 @@ mod_status_overview_ui <- function(id) {
 mod_status_overview_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+
+
+    # Functions -------------------------------------------------------------------------------------------------------
 
     new_job_freq <- function(datetime_vec, task_vec, task, unit, now = FALSE) {
       dt_vec <- datetime_vec[task_vec == task]
@@ -60,7 +126,8 @@ mod_status_overview_server <- function(id, data) {
         value = recorder_id,
         subtitle = p(
           "Last event",
-          round(time_since_last_job, 0), "minutes ago",
+          round(time_since_last_job, 0),
+          "minutes ago",
           br(),
           strftime(last_event, "%a %b %e, %H:%M ", usetz = TRUE, tz = lubridate::tz(last_event)),
         ),
@@ -70,6 +137,8 @@ mod_status_overview_server <- function(id, data) {
         iconElevation = 1
       )
     }
+
+    # Data ------------------------------------------------------------------------------------------------------------
 
     log_summary <- reactive({
       req(data$logs)
@@ -121,35 +190,34 @@ mod_status_overview_server <- function(id, data) {
         select(lat, lon, recorder_id, status_color)
     })
 
+    table_dats <- reactive({
+      data$detections %>%
+        dplyr::count(recorder_id, common) %>%
+        #dplyr::slice_max(n, n = 10, by = recorder_id) %>%
+        tidyr::pivot_wider(names_from = recorder_id, values_from = n, values_fill = 0) %>%
+        tibble::column_to_rownames("common")
+    })
+
+    bubble_timeline_dats <- reactive({
+      data$detections %>%
+        mutate(agg_timeunit = lubridate::floor_date(datetime, unit = "1 hour")) %>%
+        count(common, agg_timeunit) %>%
+        mutate(common = stringr::str_replace(common, " ", "\n"))
+      # %>%
+      # group_by(commonn) %>%
+      # mutate(total = sum(n)) %>%
+      # ungroup() %>%
+      # mutate(prop = signif((n / total), 1))
+    })
+
+
+    # Render Functions ------------------------------------------------------------------------------------------------
+
     output$status_boxes <- renderUI({
       bs4Dash::boxLayout(
         type = "deck",
         purrr::pmap(log_summary(), my_infobox)
       )
-    })
-
-    output$table_n_max_species <- renderReactable({
-      data$detections %>%
-        dplyr::count(recorder_id, common) %>%
-        dplyr::slice_max(n, n = 10, by = recorder_id) %>%
-        tidyr::pivot_wider(names_from = recorder_id, values_from = n, values_fill = 0) %>%
-        reactable::reactable(
-          defaultSortOrder = "desc",
-          compact = TRUE,
-          borderless = TRUE,
-          defaultColDef = colDef(
-            cell = reactablefmtr::data_bars(
-              data = .,
-              fill_color = viridis::mako(1000),
-              background = "#ffffff",
-              # round_edges = TRUE,
-              # min_value = 0,
-              # max_value = 10000,
-              text_position = "outside-end",
-              number_fmt = scales::comma
-            )
-          )
-        )
     })
 
     output$map <- renderLeaflet({
@@ -173,6 +241,84 @@ mod_status_overview_server <- function(id, data) {
             offset = c(0, 10)
           )
         )
+    })
+
+    output$table_n_max_species <- renderReactable({
+      table_dats() %>%
+      reactable::reactable(
+          compact = TRUE,
+          borderless = TRUE,
+          pagination = FALSE,
+          sortable = TRUE,
+          showSortable = TRUE,
+          defaultColDef = colDef(
+            defaultSortOrder = "desc",
+            align = "left",
+            cell = reactablefmtr::data_bars(
+              data = .,
+              fill_color = viridis::mako(1000),
+              background = "#ffffff",
+              # round_edges = TRUE,
+              # min_value = 0,
+              # max_value = 10000,
+              text_position = "outside-end",
+              number_fmt = scales::comma
+            )
+          ),
+          columns = list(
+            .rownames = colDef(name = "Species", sortable  = TRUE)
+          )
+        )
+    })
+
+    output$bubble_timeline <- renderEcharts4r({
+      bubble_timeline_dats() %>%
+        group_by(common) %>%
+        e_charts(
+          agg_timeunit,
+          height = "100%",
+          width = "100%"
+          ) %>%
+        e_line(common, legend = FALSE, symbol = "none", lineStyle = list(width = 0.5, color = "lightgrey", opacity = 0.4)) %>%
+        e_scatter(common, size = n, legend = FALSE) %>%
+        e_x_axis(
+          name = "",
+          type = "time",
+          axisLabel = list(
+            fontSize = '0.9rem',
+            color = "#212529",
+            fontFamily = "Arial",
+            fontWeight = 400
+          )
+          ) %>%
+        e_y_axis(
+          name = "",
+          type = "category",
+          #margin = 10,
+          offset = 16,
+          inverse = TRUE,
+          axisLabel = list(
+            #width = 200,
+            #padding = 16,
+            overflow = "truncate",
+            hideOverlap = FALSE,
+            align = "right",
+            fontSize = '0.9rem',
+            color = "#212529",
+            fontFamily = "Arial",
+            fontWeight = 400
+          ),
+          axisTick = list(alignWithLabel = TRUE),
+          axisLIne = list(
+            onZero = FALSE
+          )
+        ) %>%
+        # e_tooltip(triggerOn = "click") %>%
+        e_grid(containLabel = TRUE, left = '3%', top = '0%') %>%
+        e_toolbox(show = FALSE) %>%
+        e_datazoom(type = "slider", xAxisIndex = 0, start = 100, end = 0, brushSelect = FALSE) %>%
+        #e_datazoom(type = "inside", yAxisIndex = 0, start = 1, end = 15, zoomLock = TRUE, moveOnMouseWheel = TRUE) %>%
+        e_datazoom(type = "slider", yAxisIndex = 0, start = 1, end = 25, zoomLock = FALSE, brushSelect = FALSE)
     })
   })
 }
