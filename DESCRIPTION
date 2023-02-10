@@ -15,6 +15,7 @@ Imports:
     config (>= 0.3.1),
     data.table,
     dplyr,
+    echarts4r,
     golem (>= 0.3.5),
     httr2,
     leaflet,
@@ -27,6 +28,7 @@ Imports:
     shiny (>= 1.7.4),
     shinyjs,
     shinyWidgets,
+    stringr,
     tibble,
     tidyr,
     viridis
