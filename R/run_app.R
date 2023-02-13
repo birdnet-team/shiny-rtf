@@ -19,8 +19,8 @@ run_app <- function(
     api_key = "1AjI1zHTrL6k2C4qoTQg2aoN9DqcJRmTdc",
     cookie_expires = NULL
   )
-  my_custom_sign_in_page <- sign_in_ui_default(
-    sign_in_module = sign_in_module_ui("sign_in", register_link = NULL),
+  my_custom_sign_in_page <- polished::sign_in_ui_default(
+    sign_in_module = polished::sign_in_module_ui("sign_in", register_link = NULL),
     color = "#999999",
     company_name = "BirdNET Monitoring",
     logo_top = tags$img(
