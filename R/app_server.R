@@ -19,15 +19,16 @@ app_server <- function(input, output, session) {
   # Get Detections and logs
   data <- mod_get_data_daterange_server("get_data_daterange_1", url, tz_server = "HST", tz_out = tz)
 
+  data_filtered <- mod_global_filter_server("global_filter_1", data)
 
   # Overview --------------------------------------------------------------------------------------------------------
-  mod_status_overview_server("status_overview_1", data)
+  mod_status_overview_server("status_overview_1", data_filtered)
   # detections_filtered <- mod_filter_detections_server("filter_detections_1", detections)
   #
-  mod_detections_table_server("detections_table_1", data)
+  mod_detections_table_server("detections_table_1", data_filtered)
 
 
   # Health ----------------------------------------------------------------------------------------------------------
-  mod_health_server("health_1", data)
+  mod_health_server("health_1", data_filtered)
 
 }

@@ -11,11 +11,16 @@ mod_set_timezone_ui <- function(id) {
   ns <- NS(id)
   tagList(
     shinyjs::useShinyjs(),
-    selectizeInput(
+    shinyWidgets::pickerInput(
       ns("timezone"),
       NULL,
       choices = c(
         OlsonNames()
+      ),
+      options = pickerOptions(
+        liveSearch = TRUE,
+        liveSearchPlaceholder = "search timezones",
+        style = "btn-default"
       )
     )
   )

@@ -17,12 +17,16 @@ app_ui <- function(request) {
         compact = TRUE,
         rightUi =  mod_sign_out_ui("sign_out_1"),
         div(
+          mod_global_filter_ui("global_filter_1"),
+          style = "margin-right: 12px"
+        ),
+        div(
           mod_get_data_daterange_ui("get_data_daterange_1"),
-          style = "margin-bottom: -20px;"
+          style = "margin-bottom: -17px; margin-right: 12px"
         ),
         div(
           mod_set_timezone_ui("set_timezone_1"),
-          style = "margin-bottom: -20px; margin-left: 12px"
+          style = "margin-bottom: -17px; margin-right: 12px"
         )
       ),
       dashboardSidebar(
@@ -77,3 +81,4 @@ golem_add_external_resources <- function() {
     # for example, you can add shinyalert::useShinyalert()
   )
 }
+

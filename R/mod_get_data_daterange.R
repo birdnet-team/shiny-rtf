@@ -9,22 +9,25 @@
 #' @importFrom shiny NS tagList
 mod_get_data_daterange_ui <- function(id) {
   ns <- NS(id)
-  tagList(selectizeInput(
-    ns("timerange"),
-    NULL,
-    choices = c(
-      "Last 1 hour" = 1,
-      "Last 2 hours" = 2,
-      "Last 6 hours" = 6,
-      "Last 12 hours" = 12,
-      "Last 24 hours" = 24,
-      "Last 3 days" = 72,
-      "Last 7 days" = 168,
-      "Last 14 days" = 336,
-      "All" = NULL
-    ),
-    selected = 12
-  ))
+  tagList(
+    shinyWidgets::pickerInput(
+      ns("timerange"),
+      NULL,
+      choices = c(
+        "Last 1 hour" = 1,
+        "Last 2 hours" = 2,
+        "Last 6 hours" = 6,
+        "Last 12 hours" = 12,
+        "Last 24 hours" = 24,
+        "Last 3 days" = 72,
+        "Last 7 days" = 168,
+        "Last 14 days" = 336,
+        "All" = NULL
+      ),
+      selected = 12,
+      options = list(`style`="btn-default")
+    )
+  )
 }
 
 #' get_data_daterange Server Functions
