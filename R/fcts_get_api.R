@@ -114,3 +114,16 @@ get_log <- function(url, params = NULL) {
 
   return(api_data)
 }
+
+
+#get_audio <- function(url, params = NULL) {
+#  api_response %>%
+#  response(status_code = 200, url = "", method = GET, headers = list(), body = raw())
+
+#return (FileResponse(open(filepath, 'rb'), filename=filename))
+#}
+
+
+
+
+

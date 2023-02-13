@@ -5,6 +5,15 @@
 #' @import shiny
 #' @import bs4Dash
 #' @noRd
+
+library(rjson)
+library(RCurl)
+library(htmltools)
+
+# install.packages("remotes")
+remotes::install_github("Athospd/wavesurfer")
+library(wavesurfer)
+
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
@@ -33,12 +42,19 @@ app_ui <- function(request) {
             tabName = "overview",
             h4("Logs"),
             mod_status_overview_ui("status_overview_1"),
-            h2(""),
+            #box(
+              #title = "Spectogram",
+              h5("Spectogram"),
+              wavesurferOutput("my_ws"),#
+              tags$p("Press spacebar to toggle play/pause."),#
+              actionButton("mute", "Mute", icon = icon("volume-off")),#
+             # ),
             h4("Detections"),
             mod_detections_table_ui("detections_table_1")
           )
         )
       )
+      #wavesurfer::runExample("plugins")
     )
   )
 }

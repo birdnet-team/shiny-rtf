@@ -4,7 +4,27 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
+
+# install.packages("remotes")
+remotes::install_github("Athospd/wavesurfer")
+library(wavesurfer)
+
 app_server <- function(input, output, session) {
+
+  output$my_ws <- renderWavesurfer({
+    #wavesurfer(audio = "http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3") %>%
+    #playAudio <- filepath = "Recording.objects.get(pk=pk).snippet_path"
+    #wavesurfer(filepath = Recording.objects.get(pk=pk)) %>%
+    wavesurfer(audio = "https://wavesurfer-js.org/example/media/demo.wav") %>%
+      ws_set_wave_color('#5511aa') %>%
+      ws_spectrogram() %>%
+      ws_cursor()
+  })
+
+  observeEvent(input$mute, {
+    ws_toggle_mute("my_ws")
+  })
+
   # Your application server logic
   url <- "https://reco.birdnet.tucmi.de/reco"
 
@@ -15,6 +35,8 @@ app_server <- function(input, output, session) {
 
   # Get Detections and logs
   data <- mod_get_data_daterange_server("get_data_daterange_1", url)
+
+
 
   observe({
     golem::message_dev("DATA")
