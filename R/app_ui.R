@@ -11,6 +11,8 @@ library(RCurl)
 library(htmltools)
 
 # install.packages("remotes")
+#usethis::create_github_token("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")
+#usethis::edit_r_environ() #and add the token as `GITHUB_PAT`.
 remotes::install_github("Athospd/wavesurfer")
 library(wavesurfer)
 
@@ -49,6 +51,13 @@ app_ui <- function(request) {
               tags$p("Press spacebar to toggle play/pause."),#
               actionButton("mute", "Mute", icon = icon("volume-off")),#
              # ),
+                box(#new
+                 width = 7,#new
+                 #background = "lightblue",#new
+                 p("Can you hear a bird?"),#new
+                 actionButton("yes", "Yes", icon = icon("Yes")),#new
+                 actionButton("maybe", "Maybe", icon = icon("Maybe")),#new
+                   ),
             h4("Detections"),
             mod_detections_table_ui("detections_table_1")
           )

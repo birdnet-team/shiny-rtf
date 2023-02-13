@@ -21,9 +21,18 @@ app_server <- function(input, output, session) {
       ws_cursor()
   })
 
-  observeEvent(input$mute, {
+  observeEvent(input$mute, {#new
+    ws_toggle_mute("my_ws")#new
+  })#new
+
+  observeEvent(input$yes, {#new
+    ws_toggle_mute("my_ws")#new
+  })#new
+
+  observeEvent(input$maybe, {
     ws_toggle_mute("my_ws")
   })
+
 
   # Your application server logic
   url <- "https://reco.birdnet.tucmi.de/reco"
