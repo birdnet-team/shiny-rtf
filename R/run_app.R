@@ -39,8 +39,8 @@ run_app <- function(
 
   with_golem_options(
     app = shinyApp(
-      ui = polished::secure_ui(app_ui,sign_in_page_ui = my_custom_sign_in_page), #app_ui,
-      server = polished::secure_server(app_server), #app_server,
+      ui = polished::secure_ui(app_ui,sign_in_page_ui = my_custom_sign_in_page),
+      server = polished::secure_server(app_server),
       onStart = onStart,
       options = options,
       enableBookmarking = enableBookmarking,
