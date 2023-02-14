@@ -66,31 +66,53 @@ mod_global_filter_server <- function(id, data) {
       )
     })
 
-    # filter detections
+    #filter
     observe({
       req(data$detections)
+      req(data$logs)
+      req(data$recorders)
+      req(input$recorder_id)
+
       data_filtered$detections <-
         data$detections %>%
-        filter(
+        dplyr::filter(
           recorder_id %in% input$recorder_id,
-          between(confidence, min(input$confidence), max(input$confidence))
+          dplyr::between(confidence, min(input$confidence), max(input$confidence))
         )
-    })
-
-    # filter log
-    observe({
-      req(data$logs)
       data_filtered$logs <-
         data$logs %>%
-        filter(
+        dplyr::filter(
           recorder_id %in% input$recorder_id,
         )
+      data_filtered$recorders <- data$recorders
+
     })
 
-    observe({
-      req(data$recorders)
-      data_filtered$recorders <- data$recorders
-    })
+    # # filter detections
+    # observe({
+    #   req(data$detections)
+    #   data_filtered$detections <-
+    #     data$detections %>%
+    #     filter(
+    #       recorder_id %in% input$recorder_id,
+    #       between(confidence, min(input$confidence), max(input$confidence))
+    #     )
+    # })
+    #
+    # # filter log
+    # observe({
+    #   req(data$logs)
+    #   data_filtered$logs <-
+    #     data$logs %>%
+    #     filter(
+    #       recorder_id %in% input$recorder_id,
+    #     )
+    # })
+    #
+    # observe({
+    #   req(data$recorders)
+    #   data_filtered$recorders <- data$recorders
+    # })
 
     return(data_filtered)
   })
