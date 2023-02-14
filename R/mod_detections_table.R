@@ -63,6 +63,7 @@ mod_detections_table_server <- function(id, data) {
           scientific = colDef(show = FALSE),
           species_code = colDef(show = FALSE),
           snippet_path = colDef(
+            name = "audio",
             html = TRUE,
             cell = function(value) {
               if (value == "None") {
