@@ -34,14 +34,6 @@ mod_detections_table_server <- function(id, data) {
         dplyr::relocate(common, .after = recorder_id)
     })
 
-    observe({
-      golem::message_dev("DETECTIONS TABLE")
-      golem::print_dev(glimpse(
-        table_dats() %>%
-          arrange(desc(datetime))
-      ))
-    })
-
     output$table <- renderReactable({
       reactable(
         table_dats(),
