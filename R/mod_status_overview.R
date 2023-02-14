@@ -37,19 +37,12 @@ mod_status_overview_ui <- function(id) {
         ),
       column(
         6,
-        div(
-          class = "headless-box",
-          box(
-            width = NULL,
-            collapsible = FALSE,
-            headerBorder = FALSE,
-            elevation = 1,
+          shinyWidgets::panel(
             div(
               style = "height: 25vh",
               leafletOutput(ns("map"), width = "100%", height = "100%")
             )
           )
-        )
       )
     ),
     fluidRow(
@@ -62,37 +55,51 @@ mod_status_overview_ui <- function(id) {
     fluidRow(
       column(
         6,
-        div(
-          class = "headless-box",
-          box(
-            footer = "Detections per recorder and species in selected time range.",
-            width = NULL,
-            collapsible = FALSE,
-            headerBorder = FALSE,
-            elevation = 1,
-            div(
-              style = "height:45vh; overflow: auto;",
-              reactableOutput(ns("table_n_max_species"), width = "100%", height = "100%")
-            )
-          )
+        shinyWidgets::panel(
+          div(
+            style = "height:45vh; overflow: auto;",
+            reactableOutput(ns("table_n_max_species"), width = "100%", height = "100%")
+          ),
+          footer = "Detections per recorder and species in selected time range.",
         )
+        # div(
+        #   class = "headless-box",
+        #   box(
+        #     footer = "Detections per recorder and species in selected time range.",
+        #     width = NULL,
+        #     collapsible = FALSE,
+        #     headerBorder = FALSE,
+        #     elevation = 1,
+        #     div(
+        #       style = "height:45vh; overflow: auto;",
+        #       reactableOutput(ns("table_n_max_species"), width = "100%", height = "100%")
+        #     )
+        #   )
+        # )
       ),
       column(
         6,
-        div(
-          class = "headless-box",
-          box(
-            footer = "Detections per hour.\nCircle sizes are scaled within species and are not comparable between species.",
-            width = NULL,
-            collapsible = FALSE,
-            headerBorder = FALSE,
-            elevation = 1,
-            div(
-              style = "height:45vh",
-              echarts4rOutput(ns("bubble_timeline"), width = "100%", height = "100%")
-            )
-          )
+        shinyWidgets::panel(
+              div(
+                style = "height:45vh",
+                echarts4rOutput(ns("bubble_timeline"), width = "100%", height = "100%")
+              ),
+          footer = "Detections per hour.\nCircle sizes are scaled within species and are not comparable between species."
         )
+        # div(
+        #   class = "headless-box",
+        #   box(
+        #     footer = "Detections per hour.\nCircle sizes are scaled within species and are not comparable between species.",
+        #     width = NULL,
+        #     collapsible = FALSE,
+        #     headerBorder = FALSE,
+        #     elevation = 1,
+        #     div(
+        #       style = "height:45vh",
+        #       echarts4rOutput(ns("bubble_timeline"), width = "100%", height = "100%")
+        #     )
+        #   )
+        # )
       )
     )
   )
@@ -141,7 +148,7 @@ mod_status_overview_server <- function(id, data) {
     # Data ------------------------------------------------------------------------------------------------------------
 
     log_summary <- reactive({
-      req(data$logs)
+      req(nrow(data$logs) > 0)
       data$logs %>%
         group_by(recorder_id) %>%
         arrange(desc(datetime_pi)) %>%
@@ -184,13 +191,14 @@ mod_status_overview_server <- function(id, data) {
 
     recorders <- reactive({
       req(data$recorders)
-      req(log_summary)
+      req(log_summary())
       data$recorders %>%
         left_join(log_summary()) %>%
         select(lat, lon, recorder_id, status_color)
     })
 
     table_dats <- reactive({
+      req(data$detections)
       data$detections %>%
         dplyr::count(recorder_id, common) %>%
         #dplyr::slice_max(n, n = 10, by = recorder_id) %>%
@@ -199,6 +207,7 @@ mod_status_overview_server <- function(id, data) {
     })
 
     bubble_timeline_dats <- reactive({
+      req(data$detections)
       data$detections %>%
         mutate(agg_timeunit = lubridate::floor_date(datetime, unit = "1 hour")) %>%
         count(common, agg_timeunit) %>%
@@ -221,6 +230,7 @@ mod_status_overview_server <- function(id, data) {
     })
 
     output$map <- renderLeaflet({
+      req(recorders())
       leaflet(
         recorders()
       ) %>%
@@ -244,6 +254,7 @@ mod_status_overview_server <- function(id, data) {
     })
 
     output$table_n_max_species <- renderReactable({
+      req(ncol(table_dats()) > 0)
       table_dats() %>%
       reactable::reactable(
           compact = TRUE,
@@ -272,6 +283,8 @@ mod_status_overview_server <- function(id, data) {
     })
 
     output$bubble_timeline <- renderEcharts4r({
+      req(nrow(bubble_timeline_dats()) > 0)
+
       bubble_timeline_dats() %>%
         group_by(common) %>%
         e_charts(
@@ -302,10 +315,12 @@ mod_status_overview_server <- function(id, data) {
             #padding = 16,
             overflow = "truncate",
             hideOverlap = FALSE,
+            showMinLabel = TRUE,
+            showMaxLabel = TRUE,
             align = "right",
             fontSize = '0.9rem',
             color = "#212529",
-            fontFamily = "Arial",
+            #fontFamily = "Arial",
             fontWeight = 400
           ),
           axisTick = list(alignWithLabel = TRUE),
@@ -314,11 +329,12 @@ mod_status_overview_server <- function(id, data) {
           )
         ) %>%
         # e_tooltip(triggerOn = "click") %>%
-        e_grid(containLabel = TRUE, left = '3%', top = '0%') %>%
+        e_grid(containLabel = TRUE, left = '2%', top = '10%', right = "1%") %>%
         e_toolbox(show = FALSE) %>%
-        e_datazoom(type = "slider", xAxisIndex = 0, start = 100, end = 0, brushSelect = FALSE) %>%
+        e_datazoom(type = "slider", xAxisIndex = 0, start = 100, end = 0, brushSelect = FALSE, height = 20) %>%
         #e_datazoom(type = "inside", yAxisIndex = 0, start = 1, end = 15, zoomLock = TRUE, moveOnMouseWheel = TRUE) %>%
-        e_datazoom(type = "slider", yAxisIndex = 0, start = 1, end = 25, zoomLock = FALSE, brushSelect = FALSE)
+        e_datazoom(type = "slider", yAxisIndex = 0, start = 0, end = 25, zoomLock = FALSE, brushSelect = FALSE, width = 20)
+
     })
   })
 }

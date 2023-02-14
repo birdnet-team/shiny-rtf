@@ -9,22 +9,25 @@
 #' @importFrom shiny NS tagList
 mod_get_data_daterange_ui <- function(id) {
   ns <- NS(id)
-  tagList(selectizeInput(
-    ns("timerange"),
-    NULL,
-    choices = c(
-      "Last 1 hour" = 1,
-      "Last 2 hours" = 2,
-      "Last 6 hours" = 6,
-      "Last 12 hours" = 12,
-      "Last 24 hours" = 24,
-      "Last 3 days" = 72,
-      "Last 7 days" = 168,
-      "Last 14 days" = 336,
-      "All" = NULL
-    ),
-    selected = 12
-  ))
+  tagList(
+    shinyWidgets::pickerInput(
+      ns("timerange"),
+      NULL,
+      choices = c(
+        "Last 1 hour" = 1,
+        "Last 2 hours" = 2,
+        "Last 6 hours" = 6,
+        "Last 12 hours" = 12,
+        "Last 24 hours" = 24,
+        "Last 3 days" = 72,
+        "Last 7 days" = 168,
+        "Last 14 days" = 336,
+        "All" = NULL
+      ),
+      selected = 12,
+      options = list(`style`="btn-default")
+    )
+  )
 }
 
 #' get_data_daterange Server Functions
@@ -36,11 +39,11 @@ mod_get_data_daterange_ui <- function(id) {
 #' @param tz_out timezone of the returned date-time vector. (`lubridate::with_tz()`)
 #'
 #' @noRd
-mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "HST") {
+mod_get_data_daterange_server <- function(id, url, tz_server = NULL, tz_out = NULL) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    # rV that holds all data on detections and logs
+    # rV that holds all downloaded data, detections and logs
     data <-
       reactiveValues(
         detections = NULL,
@@ -48,12 +51,14 @@ mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "
         recorders = NULL
       )
 
-    # rV filtered on input timerange
-    # one might start with 'last 24h' but then wants filter to 'last 6h'
-    data_timerange <-
+    # rV
+    # - filtered on input timerange (one might start with 'last 24h' but then wants filter to 'last 6h')
+    # - new timezone applied
+    data_return <-
       reactiveValues(
         detections = NULL,
-        logs = NULL
+        logs = NULL,
+        recorders = NULL
       )
 
     # rV that stores start and end
@@ -70,6 +75,7 @@ mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "
     # RECORDERS
     # get recorder data onl once
     observe({
+      golem::message_dev("GET Recorders")
       data$recorders <-
         get_recorders(url) %>%
         filter(recorder_id != "BirdNET-HI004")
@@ -113,18 +119,19 @@ mod_get_data_daterange_server <- function(id, url, tz_server = "HST", tz_out = "
     # change timezone
     observe({
       req(tz_out())
-      data$detections <-
+      data_return$detections <-
         data$detections %>%
         dplyr::mutate(datetime = lubridate::with_tz(datetime, tz_out()))
 
-      data$logs <-
+      data_return$logs <-
         data$logs %>%
         dplyr::mutate(datetime_pi = lubridate::with_tz(datetime_pi, tz_out()))
 
+      data_return$recorders <- data$recorders
     }) %>% bindEvent(tz_out(), data$detections)
 
 
-    return(data)
+    return(data_return)
   })
 }
 

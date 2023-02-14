@@ -34,14 +34,6 @@ mod_detections_table_server <- function(id, data) {
         dplyr::relocate(common, .after = recorder_id)
     })
 
-    observe({
-      golem::message_dev("DETECTIONS TABLE")
-      golem::print_dev(glimpse(
-        table_dats() %>%
-          arrange(desc(datetime))
-      ))
-    })
-
     output$table <- renderReactable({
       reactable(
         table_dats(),
@@ -71,6 +63,7 @@ mod_detections_table_server <- function(id, data) {
           scientific = colDef(show = FALSE),
           species_code = colDef(show = FALSE),
           snippet_path = colDef(
+            name = "audio",
             html = TRUE,
             cell = function(value) {
               if (value == "None") {

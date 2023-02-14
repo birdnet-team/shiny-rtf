@@ -32,9 +32,6 @@ mod_health_server <- function(id, data){
 
     output$overview_table <- renderReactable({
       req(data$logs)
-      golem::message_dev("datetime in overview")
-      golem::print_dev(data$logs$datetime_pi[1])
-      golem::print_dev(class(data$logs$datetime_pi[1]))
 
       reactable(
         table_dats(),
