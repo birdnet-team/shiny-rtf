@@ -15,11 +15,21 @@ app_server <- function(input, output, session) {
 
   # Header ----------------------------------------------------------------------------------------------------------
   tz <- mod_set_timezone_server("set_timezone_1")
+  observe({
+    golem::message_dev("TZ")
+    golem::print_dev(tz())
+  })
 
   # Get Detections and logs
   data <- mod_get_data_daterange_server("get_data_daterange_1", url, tz_server = "HST", tz_out = tz)
 
   data_filtered <- mod_global_filter_server("global_filter_1", data)
+
+  # remove waiter
+  observe({
+    req(data_filtered$detections)
+    waiter::waiter_hide()
+  }) %>% bindEvent(data_filtered$detections)
 
   # Overview --------------------------------------------------------------------------------------------------------
   mod_status_overview_server("status_overview_1", data_filtered)

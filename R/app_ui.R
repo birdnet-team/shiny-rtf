@@ -9,6 +9,8 @@ app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
+    waiter::useWaiter(),
+    waiter::waiterShowOnLoad(html = waiter::spin_inner_circles(), color = '#999999'),
     dashboardPage(
       title = "Hawaii Monitoring",
       dark = NULL,
