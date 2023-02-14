@@ -148,7 +148,7 @@ mod_status_overview_server <- function(id, data) {
     # Data ------------------------------------------------------------------------------------------------------------
 
     log_summary <- reactive({
-      req(data$logs)
+      req(nrow(data$logs) > 0)
       data$logs %>%
         group_by(recorder_id) %>%
         arrange(desc(datetime_pi)) %>%
@@ -191,13 +191,14 @@ mod_status_overview_server <- function(id, data) {
 
     recorders <- reactive({
       req(data$recorders)
-      req(log_summary)
+      req(log_summary())
       data$recorders %>%
         left_join(log_summary()) %>%
         select(lat, lon, recorder_id, status_color)
     })
 
     table_dats <- reactive({
+      req(data$detections)
       data$detections %>%
         dplyr::count(recorder_id, common) %>%
         #dplyr::slice_max(n, n = 10, by = recorder_id) %>%
@@ -206,6 +207,7 @@ mod_status_overview_server <- function(id, data) {
     })
 
     bubble_timeline_dats <- reactive({
+      req(data$detections)
       data$detections %>%
         mutate(agg_timeunit = lubridate::floor_date(datetime, unit = "1 hour")) %>%
         count(common, agg_timeunit) %>%
@@ -228,6 +230,7 @@ mod_status_overview_server <- function(id, data) {
     })
 
     output$map <- renderLeaflet({
+      req(recorders())
       leaflet(
         recorders()
       ) %>%
@@ -251,6 +254,7 @@ mod_status_overview_server <- function(id, data) {
     })
 
     output$table_n_max_species <- renderReactable({
+      req(ncol(table_dats()) > 0)
       table_dats() %>%
       reactable::reactable(
           compact = TRUE,
@@ -279,6 +283,8 @@ mod_status_overview_server <- function(id, data) {
     })
 
     output$bubble_timeline <- renderEcharts4r({
+      req(nrow(bubble_timeline_dats()) > 0)
+
       bubble_timeline_dats() %>%
         group_by(common) %>%
         e_charts(
@@ -323,11 +329,12 @@ mod_status_overview_server <- function(id, data) {
           )
         ) %>%
         # e_tooltip(triggerOn = "click") %>%
-        e_grid(containLabel = TRUE, left = '3%', top = '10%') %>%
+        e_grid(containLabel = TRUE, left = '3%', top = '10%', right = "5%") %>%
         e_toolbox(show = FALSE) %>%
         e_datazoom(type = "slider", xAxisIndex = 0, start = 100, end = 0, brushSelect = FALSE, height = 15) %>%
         #e_datazoom(type = "inside", yAxisIndex = 0, start = 1, end = 15, zoomLock = TRUE, moveOnMouseWheel = TRUE) %>%
         e_datazoom(type = "slider", yAxisIndex = 0, start = 0, end = 25, zoomLock = FALSE, brushSelect = FALSE, width = 15)
+
     })
   })
 }
