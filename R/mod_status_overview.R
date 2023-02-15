@@ -329,7 +329,7 @@ mod_status_overview_server <- function(id, data) {
           )
         ) %>%
         # e_tooltip(triggerOn = "click") %>%
-        e_grid(containLabel = TRUE, left = '2%', top = '10%', right = "1%") %>%
+        e_grid(containLabel = TRUE, left = '2%', top = '10%', right = "5%") %>%
         e_toolbox(show = FALSE) %>%
         e_datazoom(type = "slider", xAxisIndex = 0, start = 100, end = 0, brushSelect = FALSE, height = 20) %>%
         #e_datazoom(type = "inside", yAxisIndex = 0, start = 1, end = 15, zoomLock = TRUE, moveOnMouseWheel = TRUE) %>%
