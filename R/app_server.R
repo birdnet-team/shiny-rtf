@@ -4,7 +4,52 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
+
+# install.packages("remotes")
+remotes::install_github("Athospd/wavesurfer")
+library(wavesurfer)
+
 app_server <- function(input, output, session) {
+
+  #Spectrogram
+   output$my_ws <- renderWavesurfer({
+     PlaySnippet <- ("'https://reco.birdnet.tucmi.de/reco/det/002395f6-52be-44e0-ba76-a0f7c5dcfa1c/audio'")%>%
+
+    #wavesurfer(audio = "http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3") %>%
+    #playAudio <- filepath = "Recording.objects.get(pk=pk).snippet_path"
+    #wavesurfer(filepath = Recording.objects.get(pk=pk)) %>%
+    #wavesurfer(audio = "https://wavesurfer-js.org/example/media/demo.wav") %>%
+    #wavesurfer(audio = "'https://reco.birdnet.tucmi.de/reco/det/' + rowInfo.values.uid + '/audio'") %>%
+    #wavesurfer(audio = "snippet_path") %>%
+
+    #wavesurfer(audio = "https://reco.birdnet.tucmi.de/reco/det/002395f6-52be-44e0-ba76-a0f7c5dcfa1c/audio") %>%
+    wavesurfer(audio = "PlaySnippet")%>%
+
+     #wavesurfer.load('audio.wav');
+      #if (audioPlay == TRUE)#wenn audioButton gedrückt und Musik gespielt wird: wie heißt das AudioSymbol?
+      #{
+      #  wavesurfer(audio = "url")#das was für die audio.url deklariert ist
+      #}
+
+      ws_set_wave_color('#5511aa') %>%
+      ws_spectrogram() %>%
+      ws_cursor()
+  })
+
+  observeEvent(input$mute, {#new
+    ws_toggle_mute("my_ws")#new
+  })#new
+
+  observeEvent(input$yes, {#new
+    ws_toggle_mute("my_ws")#new
+  })#new
+
+  observeEvent(input$maybe, {
+    ws_toggle_mute("my_ws")
+  })
+
+
+
   # Your application server logic
   url <- "https://reco.birdnet.tucmi.de/reco"
 
