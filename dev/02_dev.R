@@ -12,6 +12,8 @@
 ###################################
 
 # Engineering
+usethis::use_dev_package("wavesurfer", remote = "https://github.com/Athospd")
+
 
 ## Dependencies ----
 ## Amend DESCRIPTION with dependencies read from package code parsing

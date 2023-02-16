@@ -59,34 +59,9 @@ app_ui <- function(request) {
             mod_status_overview_ui("status_overview_1"),
           ),
 
-          #var für audio definieren
+
 
           tabItem(
-            #box(
-            #title = "Spectrogram",
-            h5("Spectrogram"),
-            wavesurferOutput("my_ws"),#
-            tags$div(id = "AUDIO_MY"),
-            #audioFile <- PYTHON_GET_PIP_SHA256(),
-            #selectInput("STH", "Select Audiofile", data(detections(input$uid)), 1),#select audio-File #define the audio-input
-            #browser(audioFile),
-
-            #selectInput("STH", "Select Audiofile", Play, 1),#select audio-File #define the audio-input
-
-            tags$p("Press spacebar to toggle play/pause."),#
-            actionButton("mute", "Mute", icon = icon("volume-off")),#
-            # ),
-            #box(#new
-            #width = 7,#new
-            #background = "lightblue",#new
-            p("Can you hear a bird?"),#new
-            actionButton("yes", "Yes", icon = icon("Yes")),#new
-            actionButton("maybe", "Maybe", icon = icon("Maybe")),#new
-
-            tags$p("If NO, what do you think, that you heared?"),#new
-            #TextField.shinyInput(ns("text")),
-            #textOutput(ns("textValue")),
-
             tabName = "detections",
             mod_detections_table_ui("detections_table_1")
 

@@ -12,7 +12,18 @@
 #' @import dplyr
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
-  tagList(reactableOutput(ns("table")))
+  tagList(
+    h5("Spectrogram"),
+    wavesurferOutput(ns("my_ws")),
+    tags$div(id = "AUDIO_MY"),
+    tags$p("Press spacebar to toggle play/pause."),
+    actionButton(ns("mute"), "Mute", icon = icon("volume-off")),
+    p("Can you hear a bird?"),
+    actionButton(ns("yes"), "Yes", icon = icon("Yes")),
+    actionButton(ns("maybe"), "Maybe", icon = icon("Maybe")),
+    tags$p("If NO, what do you think, that you heared?"),
+    reactableOutput(ns("table"))
+    )
 }
 
 #' detections_table Server Functions
@@ -25,24 +36,31 @@ mod_detections_table_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    table_dats <- reactive({
+    dats <- reactive({
       req(data$detections)
       data$detections %>%
-        mutate(
-          datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime))
+        dplyr::mutate(
+          datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime)),
+          audio_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio')
         ) %>%
         dplyr::relocate(common, .after = recorder_id)
     })
 
+    observe({
+      golem::message_dev("DATA DETECTIONS")
+      golem::print_dev(dplyr::glimpse(dats()))
+    })
+
     output$table <- renderReactable({
       reactable(
-        table_dats(),
+        dats(),
         defaultSorted = list(datetime = "desc"),
         filterable = TRUE,
         resizable = TRUE,
         highlight = TRUE,
         outlined = TRUE,
         compact = TRUE,
+        selection = "single",
         elementId = "detections-list",
         columns = list(
           uid = colDef(show = FALSE),
@@ -85,26 +103,76 @@ mod_detections_table_server <- function(id, data) {
               }"),
           )
         ),
-        onClick = JS("function(rowInfo, column) {
-            // Only handle click events on the 'details' column
-            //if (column.id !== 'audio') {
-            //  return
-            //}
-
-            // Display an alert dialog with details for the row
-            //window.alert('Details for row ' + rowInfo.index + ':\\n' + rowInfo.values.audio_url)
-            var audio_url = 'https://reco.birdnet.tucmi.de/reco/det/' + rowInfo.values.uid + '/audio'
-            var audio = new Audio(audio_url);
-            audio.play();
-
-            // Send the click event to Shiny, which will be available in input$show_details
-            // Note that the row index starts at 0 in JavaScript, so we add 1
-            //if (window.Shiny) {
-            //  Shiny.setInputValue('show_details', { index: rowInfo.index + 1 }, { priority: 'event' })
-            //}
-          }")
+        onClick = "select"
+          # JS("function(rowInfo, column) {
+          #   // Only handle click events on the 'details' column
+          #   //if (column.id !== 'audio') {
+          #   //  return
+          #   //}
+          #
+          #   // Display an alert dialog with details for the row
+          #   //window.alert('Details for row ' + rowInfo.index + ':\\n' + rowInfo.values.audio_url)
+          #   //var audio_url = 'https://reco.birdnet.tucmi.de/reco/det/' + rowInfo.values.uid + '/audio'
+          #
+          #   var audio_url =  rowInfo.values.audio_url
+          #   var audio = new Audio(audio_url);
+          #   audio.play();
+          #
+          #   // Send the click event to Shiny, which will be available in input$show_details
+          #   // Note that the row index starts at 0 in JavaScript, so we add 1
+          #   //if (window.Shiny) {
+          #   //  Shiny.setInputValue('show_details', { index: rowInfo.index + 1 }, { priority: 'event' })
+          #   //}
+          # }")
       )
     })
+
+    observe({
+      # row <- GET SELECTED ROW FROM TABLE
+      # selected_audio_url(row)
+      golem::message_dev("SELECTED")
+      golem::print_dev(selected())
+      golem::print_dev(selected_audio_url())
+
+    })
+
+    selected <- reactive(getReactableState("table", "selected", session = session))
+    selected_audio_url <- reactive({
+      dats() %>%
+        dplyr::slice(selected()) %>%
+        dplyr::pull(audio_url)
+    })
+
+
+    #wavesurfer
+    ##Spectrogram
+    output$my_ws <- renderWavesurfer({
+
+      req(selected_audio_url() != "None")
+
+      # var audio deklarieren
+      # Play == paste0('https://reco.birdnet.tucmi.de/reco/det/', data$detections$uid[ROWINDEX], '/audio')
+      #Play <- paste0('https://reco.birdnet.tucmi.de/reco/det/', data$detections$uid, '/audio')
+
+      wavesurfer(audio = selected_audio_url()) %>%
+      # wavesurfer(audio = "https://reco.birdnet.tucmi.de/reco/det/d955e52d-5b3f-462a-b885-1b281a850f07/audio") %>%
+        ws_set_wave_color('#5511aa') %>%
+        ws_spectrogram() %>%
+        ws_cursor()
+    })
+
+    observeEvent(input$mute, {#new
+      ws_toggle_mute("my_ws")#new
+    })#new
+
+    # observeEvent(input$yes, {#new
+    #   ws_toggle_mute("my_ws")#new
+    # })#new
+    #
+    # observeEvent(input$maybe, {
+    #   ws_toggle_mute("my_ws")
+    # })
+
   })
 }
 

@@ -6,40 +6,9 @@
 #' @noRd
 
 # install.packages("remotes")
-remotes::install_github("Athospd/wavesurfer")
 library(wavesurfer)
 
 app_server <- function(input, output, session) {
-
-  #wavesurfer
-  ##Spectrogram
-  output$my_ws <- renderWavesurfer({
-
-    # var audio deklarieren
-   # Play == paste0('https://reco.birdnet.tucmi.de/reco/det/', data$detections$uid[ROWINDEX], '/audio')
-    #Play <- paste0('https://reco.birdnet.tucmi.de/reco/det/', data$detections$uid, '/audio')
-
-    url
-    wavesurfer(audio = "https://reco/det/002395f6-52be-44e0-ba76-a0f7c5dcfa1c/audio") %>%
-    #browser(data$detections$uid)
-
-
-    ws_set_wave_color('#5511aa') %>%
-      ws_spectrogram() %>%
-      ws_cursor()
-  })
-
-  observeEvent(input$mute, {#new
-    ws_toggle_mute("my_ws")#new
-  })#new
-
-  observeEvent(input$yes, {#new
-    ws_toggle_mute("my_ws")#new
-  })#new
-
-  observeEvent(input$maybe, {
-    ws_toggle_mute("my_ws")
-  })
 
   # Your application server logic
   url <- "https://reco.birdnet.tucmi.de/reco"
