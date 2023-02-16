@@ -118,7 +118,7 @@ mod_status_overview_server <- function(id, data) {
     new_job_freq <- function(datetime_vec, task_vec, task, unit, now = FALSE) {
       dt_vec <- datetime_vec[task_vec == task]
       if (now) {
-        end <- lubridate::now(tz = lubridate::tz(dt_vec[1]))
+        end <- lubridate::now(tzone = lubridate::tz(dt_vec[1]))
       } else {
         end <- max(dt_vec)
       }
@@ -161,7 +161,7 @@ mod_status_overview_server <- function(id, data) {
         mutate(
           time_since_last_job = lubridate::interval(
             last_event,
-            lubridate::now(tz = lubridate::tz(last_event))
+            lubridate::now(tzone = lubridate::tz(last_event))
           ) %>%
             as.numeric("minutes")
         ) %>%
