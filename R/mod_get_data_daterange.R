@@ -7,25 +7,31 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @import waiter
 mod_get_data_daterange_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    shinyWidgets::pickerInput(
-      ns("timerange"),
-      NULL,
-      choices = c(
-        "Last 1 hour" = 1,
-        "Last 2 hours" = 2,
-        "Last 6 hours" = 6,
-        "Last 12 hours" = 12,
-        "Last 24 hours" = 24,
-        "Last 3 days" = 72,
-        "Last 7 days" = 168,
-        "Last 14 days" = 336,
-        "All" = NULL
-      ),
-      selected = 12,
-      options = list(`style`="btn-default")
+    waiter::useWaitress(),
+    tags$div(
+      # for waitress to work, pickerInput needs to be wrapped in a div with an ID
+      id = "tr-btn",
+      shinyWidgets::pickerInput(
+        ns("timerange"),
+        NULL,
+        choices = c(
+          "Last 1 hour" = 1,
+          "Last 2 hours" = 2,
+          "Last 6 hours" = 6,
+          "Last 12 hours" = 12,
+          "Last 24 hours" = 24,
+          "Last 3 days" = 72,
+          "Last 7 days" = 168,
+          "Last 14 days" = 336,
+          "All" = NULL
+        ),
+        selected = 12,
+        options = list(`style` = "btn-default")
+      )
     )
   )
 }
@@ -42,6 +48,8 @@ mod_get_data_daterange_ui <- function(id) {
 mod_get_data_daterange_server <- function(id, url, tz_server = NULL, tz_out = NULL) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+
+    waitress <- waiter::Waitress$new("#tr-btn", theme = "overlay-opacity", min = 0, max = 100, infinit = TRUE)
 
     # rV that holds all downloaded data, detections and logs
     data <-
@@ -76,14 +84,17 @@ mod_get_data_daterange_server <- function(id, url, tz_server = NULL, tz_out = NU
     # get recorder data onl once
     observe({
       golem::message_dev("GET Recorders")
+      waitress$start()
       data$recorders <-
         get_recorders(url) %>%
         filter(recorder_id != "BirdNET-HI004")
+      waitress$close()
     }) %>% bindEvent(datetime_range$start, once = TRUE)
 
 
     # DETECTIONS
     observe({
+      waitress$start()
       params <- list("datetime__gte" = datetime_range$start)
       golem::message_dev("GET DETECIONS")
       golem::print_dev(params)
@@ -91,16 +102,19 @@ mod_get_data_daterange_server <- function(id, url, tz_server = NULL, tz_out = NU
         get_detections(url, params) %>%
         dplyr::mutate(datetime = lubridate::force_tz(datetime, tz_server)) %>%
         dplyr::left_join(birdnames, by = c("species_code" = "code"))
+      waitress$close()
     }) %>% bindEvent(datetime_range$start)
 
     # LOGS
     observe({
+      waitress$start()
       params <- list("datetime_pi__gte" = datetime_range$start)
       golem::message_dev("LOG")
       golem::print_dev(params)
       data$logs <-
         get_log(url, params) %>%
         dplyr::mutate(datetime_pi = lubridate::force_tz(datetime_pi, tz_server))
+      waitress$close()
     }) %>% bindEvent(datetime_range$start)
 
     # DATETIME RANGE; updated via input
