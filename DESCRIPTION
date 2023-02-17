@@ -17,13 +17,17 @@ Imports:
     dplyr,
     echarts4r,
     golem (>= 0.3.5),
+    htmltools,
     httr2,
     leaflet,
     lubridate,
     polished,
     purrr,
+    RCurl,
     reactable,
     reactablefmtr,
+    remotes,
+    rjson,
     scales,
     shiny (>= 1.7.4),
     shinyjs,
@@ -33,9 +37,17 @@ Imports:
     tidyr,
     viridis,
     waiter,
-    wavesurfer
+    wavesurfer (>= 0.1.0)
+Suggests: 
+    covr,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: 
+    knitr
+Remotes: 
+    https://github.com/Athospd/wavesurfer
+Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
-Remotes:  
-    https://github.com/Athospd/wavesurfer

@@ -12,7 +12,7 @@
 ###################################
 
 # Engineering
-usethis::use_dev_package("wavesurfer", remote = "https://github.com/Athospd")
+usethis::use_dev_package("wavesurfer", remote = "https://github.com/Athospd/wavesurfer")
 
 
 ## Dependencies ----

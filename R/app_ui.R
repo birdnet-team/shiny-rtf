@@ -10,7 +10,7 @@ library(rjson)
 library(RCurl)
 library(htmltools)
 
-# install.packages("remotes")
+#install.packages("remotes")
 #usethis::create_github_token("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")
 #usethis::edit_r_environ() #and add the token as `GITHUB_PAT`.
 remotes::install_github("Athospd/wavesurfer")
@@ -63,6 +63,7 @@ app_ui <- function(request) {
 
           tabItem(
             tabName = "detections",
+            #wavesurferOutput("my_ws"),
             mod_detections_table_ui("detections_table_1")
 
           ),

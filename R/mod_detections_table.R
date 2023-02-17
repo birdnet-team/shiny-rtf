@@ -11,6 +11,11 @@
 #' @import httr2
 #' @import dplyr
 
+library(rjson)
+library(RCurl)
+library(htmltools)
+
+remotes::install_github("Athospd/wavesurfer")
 library(wavesurfer)
 
 
@@ -18,7 +23,7 @@ mod_detections_table_ui <- function(id) {
   ns <- NS(id)
   tagList(
     h5("Spectrogram"),
-    wavesurferOutput(ns("my_ws")),
+    wavesurferOutput(("my_ws")),
     tags$div(id = "AUDIO_MY"),
     tags$p("Press spacebar to toggle play/pause."),
     actionButton(ns("mute"), "Mute", icon = icon("volume-off")),
@@ -174,18 +179,16 @@ mod_detections_table_server <- function(id, data) {
 
     observeEvent(input$mute, {
       ws_toggle_mute("my_ws")
-      #tags$p("Press spacebar to toggle play/pause.")
-      #actionButton("mute", "Mute", icon = icon("volume-off"))
     })
 
     observeEvent(input$yes, {
-      ws_toggle_mute("my_ws")#change ()
+      #ws_toggle_mute("my_ws")#change ()
 
     })
-    #
-    # observeEvent(input$maybe, {
-    #   ws_toggle_mute("my_ws")
-    # })
+
+    observeEvent(input$maybe, {
+    #ws_toggle_mute("my_ws")#change ()
+    })
 
   })
 }
