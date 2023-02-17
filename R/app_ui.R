@@ -10,11 +10,7 @@ library(rjson)
 library(RCurl)
 library(htmltools)
 
-#install.packages("remotes")
-#usethis::create_github_token("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")
-#usethis::edit_r_environ() #and add the token as `GITHUB_PAT`.
-remotes::install_github("Athospd/wavesurfer")
-library(wavesurfer)
+
 
 
 #Play <- paste0('https://reco.birdnet.tucmi.de/reco/det/', data$detections$uid(ROWINDEX), '/audio')

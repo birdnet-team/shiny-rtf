@@ -12,8 +12,8 @@
 ###################################
 
 # Engineering
-usethis::use_dev_package("wavesurfer", remote = "https://github.com/Athospd/wavesurfer")
-
+usethis::use_dev_package("wavesurfer", remote = "https://github.com/Athospd")
+#just use if you have remaining rate for using wavesurfer
 
 ## Dependencies ----
 ## Amend DESCRIPTION with dependencies read from package code parsing

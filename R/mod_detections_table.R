@@ -15,6 +15,9 @@ library(rjson)
 library(RCurl)
 library(htmltools)
 
+#install.packages("remotes")
+#usethis::create_github_token("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")
+#usethis::edit_r_environ() #and add the token as `GITHUB_PAT`.
 remotes::install_github("Athospd/wavesurfer")
 library(wavesurfer)
 
