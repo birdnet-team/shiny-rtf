@@ -10,6 +10,10 @@
 #' @import reactable
 #' @import httr2
 #' @import dplyr
+
+library(wavesurfer)
+
+
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -18,10 +22,11 @@ mod_detections_table_ui <- function(id) {
     tags$div(id = "AUDIO_MY"),
     tags$p("Press spacebar to toggle play/pause."),
     actionButton(ns("mute"), "Mute", icon = icon("volume-off")),
-    p("Can you hear a bird?"),
-    actionButton(ns("yes"), "Yes", icon = icon("Yes")),
-    actionButton(ns("maybe"), "Maybe", icon = icon("Maybe")),
-    tags$p("If NO, what do you think, that you heared?"),
+    tags$p("Did you hear a bird?"),
+    actionButton("yes", "Yes", icon = icon("XXX")),
+    actionButton(ns("maybe"), "Maybe", icon = icon("XXX")),
+    tags$p("You couldn't hear a bird? What do you think you heard?"),
+    ##XXX Textfeld für Labeling-Input
     reactableOutput(ns("table"))
     )
 }
@@ -144,30 +149,39 @@ mod_detections_table_server <- function(id, data) {
     })
 
 
-    #wavesurfer
-    ##Spectrogram
+    #wavesurfer ##Spectrogram
     output$my_ws <- renderWavesurfer({
 
-      req(selected_audio_url() != "None")
+      #req(selected_audio_url() != "None")
 
-      # var audio deklarieren
-      # Play == paste0('https://reco.birdnet.tucmi.de/reco/det/', data$detections$uid[ROWINDEX], '/audio')
-      #Play <- paste0('https://reco.birdnet.tucmi.de/reco/det/', data$detections$uid, '/audio')
+      #1) download & convert selected audio
+      #webserver kit for web audio needed!!!
+      #Play <- self.wavesurfer.load(selected_audio_url(), peaks);
+      #wavesurfer.load(selected_audio_url())
+      # solution: import WebAudio from 'wavesurfer.js/src/webaudio.js'
 
-      wavesurfer(audio = selected_audio_url()) %>%
-      # wavesurfer(audio = "https://reco.birdnet.tucmi.de/reco/det/d955e52d-5b3f-462a-b885-1b281a850f07/audio") %>%
+      #2) play audio as .wav via wavesurfer(audio = selected_audio_url()) %>%
+      #wavesurfer(audio = wavesurfer.load('selected_audio_url()'))%>%
+      wavesurfer(audio = "http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3")%>%
+
+      #3: wavesurfer(audio = selected_audio_url()) %>%
+      #wavesurfer(audio = "https://reco.birdnet.tucmi.de/reco/det/160cb181-0ce2-4508-8a56-bf45b6205ae6/audio")%>%
+      #wavesurfer(audio = "audio_url") %>%
         ws_set_wave_color('#5511aa') %>%
         ws_spectrogram() %>%
         ws_cursor()
     })
 
-    observeEvent(input$mute, {#new
-      ws_toggle_mute("my_ws")#new
-    })#new
+    observeEvent(input$mute, {
+      ws_toggle_mute("my_ws")
+      #tags$p("Press spacebar to toggle play/pause.")
+      #actionButton("mute", "Mute", icon = icon("volume-off"))
+    })
 
-    # observeEvent(input$yes, {#new
-    #   ws_toggle_mute("my_ws")#new
-    # })#new
+    observeEvent(input$yes, {
+      ws_toggle_mute("my_ws")#change ()
+
+    })
     #
     # observeEvent(input$maybe, {
     #   ws_toggle_mute("my_ws")
