@@ -21,6 +21,9 @@ library(htmltools)
 remotes::install_github("Athospd/wavesurfer")
 library(wavesurfer)
 
+#Setting up: wavesurfer
+
+
 
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
