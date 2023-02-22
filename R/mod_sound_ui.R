@@ -36,6 +36,12 @@ mod_sound_server <- function(id, data) {
         dplyr::relocate(common, .after = recorder_id)
     })
 
+    #create an observe
+    observe({
+      golem::message_dev("DATA DETECTIONS")
+      golem::print_dev(dplyr::glimpse(dats()))
+    })
+
     output$table <- renderReactable({
       reactable(
         table_dats(),
@@ -45,6 +51,8 @@ mod_sound_server <- function(id, data) {
         highlight = TRUE,
         outlined = TRUE,
         compact = TRUE,
+        ###
+        selection = "multiple",
         elementId = "detections-list",
         columns = list(
           uid = colDef(show = FALSE),
@@ -87,28 +95,28 @@ mod_sound_server <- function(id, data) {
               }"),
           )
         ),
-        onClick = JS("function(rowInfo, column) {
-            // Only handle click events on the 'details' column
-            //if (column.id !== 'audio') {
-            //  return
-            //}
-
-            // Display an alert dialog with details for the row
-            //window.alert('Details for row ' + rowInfo.index + ':\\n' + rowInfo.values.audio_url)
-            var audio_url = 'https://reco.birdnet.tucmi.de/reco/det/' + rowInfo.values.uid + '/audio'
-            var audio = new Audio(audio_url);
-            audio.play();
-
-            // Send the click event to Shiny, which will be available in input$show_details
-            // Note that the row index starts at 0 in JavaScript, so we add 1
-            //if (window.Shiny) {
-            //  Shiny.setInputValue('show_details', { index: rowInfo.index + 1 }, { priority: 'event' })
-            //}
-          }")
+        #definieren, was selectiert werden soll
+        onClick = "select"
       )
     })
   })
 }
+
+observe({
+  # row <- GET SELECTED ROW FROM TABLE
+  # selected_audio_url(row)
+  golem::message_dev("SELECTED")
+  golem::print_dev(selected())
+  golem::print_dev(selected_sound_url())
+
+})
+
+selected <- reactive(getReactableState("table", "selected", session = session))
+selected_sound_url <- reactive({
+  dats() %>%
+    dplyr::slice(selected()) %>%
+    dplyr::pull(sound_url)
+})
 
 ## To be copied in the UI
 # mod_detections_table_ui("detections_table_1")
