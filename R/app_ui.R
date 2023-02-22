@@ -35,7 +35,8 @@ app_ui <- function(request) {
         sidebarMenu(
           menuItem("Overview", tabName = "overview", icon = icon("home")),
           menuItem("Detections", tabName = "detections", icon = icon("music")),
-          menuItem("Health", tabName = "health", icon = icon("wave-square"))
+          menuItem("Health", tabName = "health", icon = icon("wave-square")),
+          menuItem("Annotation Tooling", tabName = "sound", icon = icon("wave-square"))
         )
       ),
       dashboardBody(
@@ -52,6 +53,11 @@ app_ui <- function(request) {
           tabItem(
             tabName = "health",
             mod_health_ui("health_1")
+          ),
+
+          tabItem(
+            tabName = "sound",
+            mod_sound_ui("detections_table_1")
           )
         )
       )

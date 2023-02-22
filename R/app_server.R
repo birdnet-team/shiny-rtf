@@ -41,4 +41,7 @@ app_server <- function(input, output, session) {
   # Health ----------------------------------------------------------------------------------------------------------
   mod_health_server("health_1", data_filtered)
 
+  # Sound
+  mod_sound_table_server("detections_table_1", data_filtered)
+
 }

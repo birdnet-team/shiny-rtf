@@ -25,7 +25,7 @@ library(wavesurfer)
 
 
 
-mod_detections_table_ui <- function(id) {
+mod_sound_ui <- function(id) {
   ns <- NS(id)
   tagList(
     h5("Spectrogram"),
@@ -48,7 +48,7 @@ mod_detections_table_ui <- function(id) {
 #' @param detections reactive
 #'
 #' @noRd
-mod_detections_table_server <- function(id, data) {
+mod_sound_table_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -164,24 +164,24 @@ mod_detections_table_server <- function(id, data) {
     #wavesurfer ##Spectrogram
     #output$my_ws <- renderWavesurfer({
 
-      #req(selected_audio_url() != "None")
+    #req(selected_audio_url() != "None")
 
-      #1) download & convert selected audio
-      #webserver kit for web audio needed!!!
-      #Play <- self.wavesurfer.load(selected_audio_url(), peaks);
-      #wavesurfer.load(selected_audio_url())
-      # solution: import WebAudio from 'wavesurfer.js/src/webaudio.js'
+    #1) download & convert selected audio
+    #webserver kit for web audio needed!!!
+    #Play <- self.wavesurfer.load(selected_audio_url(), peaks);
+    #wavesurfer.load(selected_audio_url())
+    # solution: import WebAudio from 'wavesurfer.js/src/webaudio.js'
 
-      #2) play audio as .wav via wavesurfer(audio = selected_audio_url()) %>%
-      #wavesurfer(audio = wavesurfer.load('selected_audio_url()'))%>%
-      #wavesurfer(audio = "http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3")%>%
+    #2) play audio as .wav via wavesurfer(audio = selected_audio_url()) %>%
+    #wavesurfer(audio = wavesurfer.load('selected_audio_url()'))%>%
+    #wavesurfer(audio = "http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3")%>%
 
-        #3: wavesurfer(audio = selected_audio_url()) %>%
-        #wavesurfer(audio = "https://reco.birdnet.tucmi.de/reco/det/160cb181-0ce2-4508-8a56-bf45b6205ae6/audio")%>%
-        #wavesurfer(audio = "audio_url") %>%
-        #ws_set_wave_color('#5511aa') %>%
-        #ws_spectrogram() %>%
-        #ws_cursor()
+    #3: wavesurfer(audio = selected_audio_url()) %>%
+    #wavesurfer(audio = "https://reco.birdnet.tucmi.de/reco/det/160cb181-0ce2-4508-8a56-bf45b6205ae6/audio")%>%
+    #wavesurfer(audio = "audio_url") %>%
+    #ws_set_wave_color('#5511aa') %>%
+    #ws_spectrogram() %>%
+    #ws_cursor()
     #})
 
     #observeEvent(input$mute, {
@@ -189,12 +189,12 @@ mod_detections_table_server <- function(id, data) {
     #})
 
     #observeEvent(input$yes, {
-      #ws_toggle_mute("my_ws")#change ()
+    #ws_toggle_mute("my_ws")#change ()
 
     #})
 
     #observeEvent(input$maybe, {
-      #ws_toggle_mute("my_ws")#change ()
+    #ws_toggle_mute("my_ws")#change ()
     #})
 
   })
