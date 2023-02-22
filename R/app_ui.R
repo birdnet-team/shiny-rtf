@@ -51,13 +51,13 @@ app_ui <- function(request) {
               tags$p("Press spacebar to toggle play/pause."),#
               actionButton("mute", "Mute", icon = icon("volume-off")),#
              # ),
-                box(#new
+                #box(#new
                  width = 7,#new
                  #background = "lightblue",#new
                  p("Can you hear a bird?"),#new
                  actionButton("yes", "Yes", icon = icon("Yes")),#new
                  actionButton("maybe", "Maybe", icon = icon("Maybe")),#new
-                   ),
+                 #  ),
             h4("Detections"),
             mod_detections_table_ui("detections_table_1")
           )
