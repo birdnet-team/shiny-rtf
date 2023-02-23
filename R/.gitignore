@@ -1,0 +1,11 @@
+profiling/*
+shp_data/*
+saved_configs/*
+www/*/*.wav
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+www/tmp.wav
+www/tmp_clean.wav
+tmp_spec.csv
