@@ -24,6 +24,8 @@ mod_sound_ui <- function(id) {
 mod_sound_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+#plotting data for download
+
 
     table_dats <- reactive({
       req(data$detections)
@@ -99,6 +101,34 @@ mod_sound_server <- function(id, data) {
         onClick = "select"
       )
     })
+
+    # Reactive value for selected dataset ----
+    datasetInput <- reactive({
+      switch(input$selected, #dataset
+             "species" = Sound
+             # "audio" = Audiofile,
+             # "Species" = Vogelarten
+      )
+    })
+
+    # Table of selected dataset ----
+    output$selected <- renderTable({###chage to data what i want to download
+      datasetInput(detections$species)
+    })
+
+    # Downloadable csv of selected dataset ----
+    output$downloadData <- downloadHandler(
+      filename="Species_Download.pdf",
+      content=function(file){
+        ggsave(file, device = pdf, width = 7,height = 5,units = "in",dpi = 200)
+      })
+
+    content = function(file) {
+      write.csv(datasetInput(), file, row.names = FALSE)
+    }
+    ######
+
+
   })
 }
 
@@ -117,6 +147,11 @@ selected_sound_url <- reactive({
     dplyr::slice(selected()) %>%
     dplyr::pull(sound_url)
 })
+
+
+
+
+
 
 ## To be copied in the UI
 # mod_detections_table_ui("detections_table_1")
