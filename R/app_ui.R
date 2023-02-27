@@ -26,9 +26,9 @@ library(stringr)
 library(janitor)
 library(DT)
 
-source("plot_helpers.R")
-source("audio_meta.R")
-source("server_helpers.R")
+source("C:\Users\ElementXX\Desktop\RSTudioNshinYXX888\FrontEnd999XX\MRWFrontE999XX\BirdNETmonitor\R\plot_helpers.R")
+source("C:\Users\ElementXX\Desktop\RSTudioNshinYXX888\FrontEnd999XX\MRWFrontE999XX\BirdNETmonitor\R\audio_meta.R")
+source("C:\Users\ElementXX\Desktop\RSTudioNshinYXX888\FrontEnd999XX\MRWFrontE999XX\BirdNETmonitor\R\server_helpers.R")
 
 #change max supported audio file size to 30MB
 options(shiny.maxRequestSize = 30 * 1024 ^ 2)
