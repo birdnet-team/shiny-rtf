@@ -7,11 +7,6 @@
 #' @noRd
 app_ui <- function(request) {
 
-#  dashboardPage(
-#    header,
-#    sidebar,
-#    body
- # )
 
   tagList(
     # Leave this function for adding external resources
@@ -19,11 +14,7 @@ app_ui <- function(request) {
     waiter::useWaiter(),
     waiter::waiterShowOnLoad(html = waiter::spin_inner_circles(), color = '#999999'),
     dashboardPage(
-      ###
-      header,
-      sidebar,
-      body,
-      ####
+
       title = "Hawaii Monitoring",
       dark = NULL,
       dashboardHeader(
@@ -72,7 +63,12 @@ app_ui <- function(request) {
             #selectInput("selected", "Download Audio:", choices = c("species")), #audio", "sound_url", "Species"
             ### Button
             downloadButton("downloadData", "Download selected Audio"), #downloadData: ref zu function
+            #header,
+            #sidebar,
+            #body,
             mod_sound_ui("sound_1")
+
+
           )
         )#end tabItem
       )#end DashboardPage
