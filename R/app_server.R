@@ -41,4 +41,7 @@ app_server <- function(input, output, session) {
   # Health ----------------------------------------------------------------------------------------------------------
   mod_health_server("health_1", data_filtered)
 
+  # Annotation Tool
+  mod_sound_server("sound_1", data_filtered)
+
 }

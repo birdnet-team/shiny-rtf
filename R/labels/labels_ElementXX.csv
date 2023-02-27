@@ -1,0 +1,4 @@
+"date_time","file_name","start_time","end_time","start_freq","end_freq","class_label","call_type","confidence","notes","labeler","id"
+"2023-02-23 13:14:22","Blue-headed-Vireo-BirdNET-Test.wav",3.1800671817143,8.2793799983453,5.407972296506,18.168943898268,"Kestrel","",1,"","ElementXX",1
+"2023-02-23 19:23:53","Blue-headed-Vireo-BirdNET-Test.wav",9.2643328406774,10.473705317971,3.5718612746697,22.759221452859,"Buzzard","",1,"","ElementXX",1
+"2023-02-23 19:24:06","Blue-headed-Vireo-BirdNET-Test.wav",9.2643328406774,10.473705317971,3.5718612746697,22.759221452859,"Buzzard","",1,"","ElementXX",1

@@ -35,7 +35,8 @@ app_ui <- function(request) {
         sidebarMenu(
           menuItem("Overview", tabName = "overview", icon = icon("home")),
           menuItem("Detections", tabName = "detections", icon = icon("music")),
-          menuItem("Health", tabName = "health", icon = icon("wave-square"))
+          menuItem("Health", tabName = "health", icon = icon("wave-square")),
+          menuItem("Annotation Tool", tabName = "anno", icon = icon("music"))
         )
       ),
       dashboardBody(
@@ -52,10 +53,22 @@ app_ui <- function(request) {
           tabItem(
             tabName = "health",
             mod_health_ui("health_1")
+          ),
+
+          tabItem(
+            tabName = "anno",
+            ###DOWNLOAD SELECTED DATA
+            selectInput("selected", "Download Audio:",
+                        choices = c("species")), #audio", "sound_url", "Species"
+
+            # Button
+            downloadButton("downloadData", "Download"),
+            mainPanel(tableOutput("sound_1")),####CHANGE from table
+            mod_sound_ui("sound_1")
           )
-        )
-      )
-    )
+        )#end tabItem
+      )#end DashboardPage
+    )#endTagList
   )
 }
 
