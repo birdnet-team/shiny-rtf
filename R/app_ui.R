@@ -35,11 +35,11 @@ options(shiny.maxRequestSize = 30 * 1024 ^ 2)
 
 bto_df <- read.csv("C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor\\R\\bto_codes.csv", fileEncoding = "UTF-8-BOM")
 
-ldir   <- "labels" #label directory
+ldir   <- "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor\\R\\labels\\" #label directory
+#################################maybe needed
+empty_lab_df <- read.csv(paste0(ldir, "labels_tmp.csv"))[FALSE, ]
 
-empty_lab_df <- read.csv(paste0(ldir, "/labels_tmp.csv"))[FALSE, ]
-
-species_list <- read.csv("species_list.csv", fileEncoding = "UTF-8-BOM", check.names = FALSE)
+species_list <- read.csv("C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor\\R\\species_list.csv", fileEncoding = "UTF-8-BOM", check.names = FALSE)
 #Some taken from https://www.audubon.org/news/a-beginners-guide-common-bird-sounds-and-what-they-mean
 call_types <- c("song", "call", "subsong", "alarm call", "begging call", "contact call", "flight call",
                 "flock", "juvenile call", "mimicry", "nocturnal call", "whisper song")
