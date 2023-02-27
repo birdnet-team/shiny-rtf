@@ -33,7 +33,7 @@ mod_sound_server <- function(id, data) {
         mutate(
           datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime)),
           #sound url zusammensetzen
-          sound_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio')
+          sound_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio'),
         ) %>%
         dplyr::relocate(common, .after = recorder_id)
     })
@@ -102,39 +102,17 @@ mod_sound_server <- function(id, data) {
       )
     })
 
-    # Reactive value for selected dataset ----
-    datasetInput <- reactive({
-      switch(input$selected, #dataset
-             "species" = Sound
-             # "audio" = Audiofile,
-             # "Species" = Vogelarten
-      )
-    })
-
-    # Table of selected dataset ----
-    output$selected <- renderTable({###chage to data what i want to download
-      datasetInput(detections$species)
-    })
-
-    # Downloadable csv of selected dataset ----
+    #soundDownload <- selected_sound_url()
     output$downloadData <- downloadHandler(
-      filename="Species_Download.pdf",
-      content=function(file){
-        ggsave(file, device = pdf, width = 7,height = 5,units = "in",dpi = 200)
-      })
-
-    content = function(file) {
-      write.csv(datasetInput(), file, row.names = FALSE)
-    }
-    ######
-
+      download.file("selected_sound_url", tf <- tempfile(fileext = ".mp3"), mode="wb")
+    )
 
   })
 }
 
 observe({
   # row <- GET SELECTED ROW FROM TABLE
-  # selected_audio_url(row)
+  #golem::selected_audio_url(row)
   golem::message_dev("SELECTED")
   golem::print_dev(selected())
   golem::print_dev(selected_sound_url())
@@ -147,6 +125,11 @@ selected_sound_url <- reactive({
     dplyr::slice(selected()) %>%
     dplyr::pull(sound_url)
 })
+
+
+
+
+
 
 
 
