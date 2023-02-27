@@ -1,24 +1,3 @@
-#' The application User-Interface
-#'
-#' @param request Internal parameter for `{shiny}`.
-#'     DO NOT REMOVE.
-#' @import shiny
-#' @import bs4Dash
-#' @noRd
-#' detections_table UI Function
-#'
-#' @description A shiny Module.
-#'
-#' @param id,input,output,session Internal parameters for {shiny}.
-#'
-#' @noRd
-#'
-#' @importFrom shiny NS tagList
-#' @import reactable
-#' @import httr2
-#' @import dplyr
-
-
 library(ggplot2)
 library(shiny)
 library(shinyjs)
@@ -116,6 +95,28 @@ jsCode <- "shinyjs.audiotoggle = function() {
     audio.pause();
   }
 }"
+
+
+#' The application User-Interface
+#'
+#' @param request Internal parameter for `{shiny}`.
+#'     DO NOT REMOVE.
+#' @import shiny
+#' @import bs4Dash
+#' @noRd
+#' detections_table UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd
+#'
+#' @importFrom shiny NS tagList
+#' @import reactable
+#' @import httr2
+#' @import dplyr
+
 
 
 mod_sound_ui <- function(id) {
