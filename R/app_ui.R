@@ -69,14 +69,9 @@ app_ui <- function(request) {
 
           tabItem(
             tabName = "anno",
-            ###DOWNLOAD SELECTED DATA
-            #selectInput("selected", "Download Audio:",
-
-            #           choices = c("species")), #audio", "sound_url", "Species"
-
-            # Button
-            #downloadButton("downloadData", "Download selected Audio"), #downloadData: ref zu function
-            #mainPanel(tableOutput("sound_1")),####CHANGE from table
+            #selectInput("selected", "Download Audio:", choices = c("species")), #audio", "sound_url", "Species"
+            ### Button
+            downloadButton("downloadData", "Download selected Audio"), #downloadData: ref zu function
             mod_sound_ui("sound_1")
           )
         )#end tabItem
