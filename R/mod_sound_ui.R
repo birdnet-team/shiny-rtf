@@ -102,10 +102,14 @@ mod_sound_server <- function(id, data) {
       )
     })
 
-    #soundDownload <- selected_sound_url()
-    output$downloadData <- downloadHandler(
-      download.file("selected_sound_url", tf <- tempfile(fileext = ".mp3"), mode="wb")
-    )
+    soundDownload <- selected_sound_url()
+    output$downloadData = downloadHandler(
+      #download.file("soundDownload", tf <- tempfile(fileext = ".mp3"), mode="wb")
+      download.file(soundDownload, destfile, method, quiet = FALSE, mode = "wb",
+                    cacheOK = TRUE,
+                    extra = getOption("download.file.extra"),
+                    headers = NULL))
+    #)
 
   })
 }
@@ -121,9 +125,10 @@ observe({
 
 selected <- reactive(getReactableState("table", "selected", session = session))
 selected_sound_url <- reactive({
-  dats() %>%
-    dplyr::slice(selected()) %>%
-    dplyr::pull(sound_url)
+#  dats() %>%
+#    dplyr::slice(selected()) %>%
+#    dplyr::pull(sound_url)
+#    download.file(sound_url)
 })
 
 
