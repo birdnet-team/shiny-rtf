@@ -24,7 +24,7 @@ mod_sound_ui <- function(id) {
 mod_sound_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-#plotting data for download
+
 
 
     table_dats <- reactive({
@@ -103,38 +103,55 @@ mod_sound_server <- function(id, data) {
     })
 
     # Reactive value for selected dataset ----
-    datasetInput <- reactive({
-      switch(input$selected, #dataset
-             "species" = Sound
-             # "audio" = Audiofile,
-             # "Species" = Vogelarten
-      )
-    })
+    # datasetInput <- reactive({
+    #   switch(input$selected, #dataset
+    #          "species" = Sound
+    #          # "audio" = Audiofile,
+    #          # "Species" = Vogelarten
+    #
+    #   )
+    # })
 
-    # Table of selected dataset ----
-    output$selected <- renderTable({###chage to data what i want to download
-      datasetInput(detections$species)
-    })
+  })
 
-    # Downloadable csv of selected dataset ----
-    output$downloadData <- downloadHandler(
-      filename="Species_Download.pdf",
-      content=function(file){
-        ggsave(file, device = pdf, width = 7,height = 5,units = "in",dpi = 200)
-      })
 
-    content = function(file) {
-      write.csv(datasetInput(), file, row.names = FALSE)
+####download
+  output$downloadData <- renderTable({
+
+    # input$file1 will be NULL initially. After the user selects
+    # and uploads a file, head of that data file by default,
+    # or all rows if selected, will be shown.
+
+    req(input$data)
+
+    # when reading semicolon separated files,
+    # having a comma separator causes `read.csv` to error
+    tryCatch(
+      {
+        df <- read.csv(input$data$datapath,
+                       header = input$header,
+                       sep = input$sep,
+                       quote = input$quote)
+      },
+      error = function(e) {
+        # return a safeError if a parsing error occurs
+        stop(safeError(e))
+      }
+    )
+
+    if(input$disp == "head") {
+      return(head(df))
     }
-    ######
-
-
+    else {
+      return(df)
+    }
+###Ende
   })
 }
 
 observe({
   # row <- GET SELECTED ROW FROM TABLE
-  # selected_audio_url(row)
+  #golem::selected_audio_url(row)
   golem::message_dev("SELECTED")
   golem::print_dev(selected())
   golem::print_dev(selected_sound_url())
@@ -147,14 +164,3 @@ selected_sound_url <- reactive({
     dplyr::slice(selected()) %>%
     dplyr::pull(sound_url)
 })
-
-
-
-
-
-
-## To be copied in the UI
-# mod_detections_table_ui("detections_table_1")
-
-## To be copied in the server
-# mod_detections_table_server("detections_table_1")

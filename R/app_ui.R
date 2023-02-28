@@ -63,9 +63,20 @@ app_ui <- function(request) {
 
             # Button
             downloadButton("downloadData", "Download"),
+            textInput('my_url','URL:',value="http://www.wavlist.com/humor/001/911d.wav"),
+            uiOutput('downloadData'),
             mainPanel(tableOutput("sound_1")),####CHANGE from table
-            mod_sound_ui("sound_1")
-          )
+            mod_sound_ui("sound_1"),
+
+            # Input: Select a file ----
+            fileInput("file1", "Choose CSV File",
+                      multiple = FALSE,
+                      accept = c("text/csv",
+                                 "text/comma-separated-values,text/plain",
+                                 ".csv")),
+
+            tableOutput("downloadData")
+          )##
         )#end tabItem
       )#end DashboardPage
     )#endTagList
