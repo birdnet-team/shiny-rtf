@@ -58,8 +58,8 @@ app_ui <- function(request) {
           tabItem(
             tabName = "anno",
             ###DOWNLOAD SELECTED DATA
-            selectInput("selected", "Download Audio:",
-                        choices = c("species")), #audio", "sound_url", "Species"
+            #selectInput("selected", "Download Audio:",
+            #            choices = c("species")), #audio", "sound_url", "Species"
 
             # Button
             downloadButton("downloadData", "Download"),

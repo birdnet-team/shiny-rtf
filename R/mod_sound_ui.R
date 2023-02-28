@@ -32,7 +32,7 @@ mod_sound_server <- function(id, data) {
       data$detections %>%
         mutate(
           datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime)),
-          #sound url zusammensetzen
+          #ADD .wav
           sound_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio')
         ) %>%
         dplyr::relocate(common, .after = recorder_id)
