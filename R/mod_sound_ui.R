@@ -24,7 +24,7 @@ mod_sound_ui <- function(id) {
 mod_sound_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-
+    #plotting data for download
 
 
     table_dats <- reactive({
@@ -32,7 +32,7 @@ mod_sound_server <- function(id, data) {
       data$detections %>%
         mutate(
           datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime)),
-          #ADD .wav
+          #sound url zusammensetzen
           sound_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio')
         ) %>%
         dplyr::relocate(common, .after = recorder_id)
@@ -102,56 +102,25 @@ mod_sound_server <- function(id, data) {
       )
     })
 
-    # Reactive value for selected dataset ----
-    # datasetInput <- reactive({
-    #   switch(input$selected, #dataset
-    #          "species" = Sound
-    #          # "audio" = Audiofile,
-    #          # "Species" = Vogelarten
-    #
-    #   )
-    # })
-
-  })
-
-
-####download
-  output$downloadData <- renderTable({
-
-    # input$file1 will be NULL initially. After the user selects
-    # and uploads a file, head of that data file by default,
-    # or all rows if selected, will be shown.
-
-    req(input$data)
-
-    # when reading semicolon separated files,
-    # having a comma separator causes `read.csv` to error
-    tryCatch(
+    #Convert selected ogg url file into wave
+    output$downloadData <- renderTable({
+      req(input$selected)#use selected as input
       {
-        df <- read.csv(input$data$datapath,
-                       header = input$header,
-                       sep = input$sep,
-                       quote = input$quote)
-      },
-      error = function(e) {
-        # return a safeError if a parsing error occurs
-        stop(safeError(e))
+        audioaswave <- system("ffmpeg -i inputfile.ogg outputfile.wav")
       }
-    )
 
-    if(input$disp == "head") {
-      return(head(df))
-    }
-    else {
-      return(df)
-    }
-###Ende
+      #wavesurfer
+      #use wavesurfer function:
+      audio = ("audioaswave")
+    })
+
+
   })
 }
 
 observe({
   # row <- GET SELECTED ROW FROM TABLE
-  #golem::selected_audio_url(row)
+  # selected_audio_url(row)
   golem::message_dev("SELECTED")
   golem::print_dev(selected())
   golem::print_dev(selected_sound_url())
@@ -164,3 +133,14 @@ selected_sound_url <- reactive({
     dplyr::slice(selected()) %>%
     dplyr::pull(sound_url)
 })
+
+
+
+
+
+
+## To be copied in the UI
+# mod_detections_table_ui("detections_table_1")
+
+## To be copied in the server
+# mod_detections_table_server("detections_table_1")
