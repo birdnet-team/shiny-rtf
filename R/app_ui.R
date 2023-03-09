@@ -5,6 +5,11 @@
 #' @import shiny
 #' @import bs4Dash
 #' @noRd
+
+
+library(wavesurfer)
+
+
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
@@ -57,23 +62,16 @@ app_ui <- function(request) {
 
           tabItem(
             tabName = "anno",
-            ###DOWNLOAD SELECTED DATA
-            #selectInput("selected", "Download Audio:",
-            #            choices = c("species")), #audio", "sound_url", "Species"
-
-            # Button
-            downloadButton("downloadData", "Download"),
-            #textInput('my_url','URL:',value="http://www.wavlist.com/humor/001/911d.wav"),
-            #uiOutput('downloadData'),
-            mainPanel(tableOutput("sound_1")),####CHANGE from table
+            h5("Spectrogram"),
+            wavesurferOutput("my_ws"),#
+            tags$div(id = "AUDIO_MY"),
+            tags$p("Press spacebar to toggle play/pause."),#
+            actionButton("mute", "Mute", icon = icon("volume-off")),#
+            p("Can you hear a bird?"),#new
+            actionButton("yes", "Yes", icon = icon("Yes")),#new
+            actionButton("maybe", "Maybe", icon = icon("Maybe")),#new
+            tags$p("If NO, what do you think, that you heared?"),#new
             mod_sound_ui("sound_1")
-#
-#             # Input: Select a file ----
-#             fileInput("data", "Choose CSV File",
-#                       multiple = FALSE,
-#                       accept = c("text/csv",
-#                                  "text/comma-separated-values,text/plain",
-#                                  ".csv"))
 
             #tableOutput("downloadData")
           )##

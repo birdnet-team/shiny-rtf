@@ -10,6 +10,10 @@
 #' @import reactable
 #' @import httr2
 #' @import dplyr
+
+remotes::install_github("Athospd/wavesurfer")
+library(wavesurfer)
+
 mod_sound_ui <- function(id) {
   ns <- NS(id)
   tagList(reactableOutput(ns("table")))
@@ -23,6 +27,7 @@ mod_sound_ui <- function(id) {
 #' @noRd
 mod_sound_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
+
     ns <- session$ns
     #plotting data for download
 
@@ -33,7 +38,7 @@ mod_sound_server <- function(id, data) {
         mutate(
           datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime)),
           #sound url zusammensetzen
-          sound_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio')
+          sound_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio'),
         ) %>%
         dplyr::relocate(common, .after = recorder_id)
     })
@@ -54,10 +59,10 @@ mod_sound_server <- function(id, data) {
         outlined = TRUE,
         compact = TRUE,
         ###
-        selection = "multiple",
+        selection = "single",
         elementId = "detections-list",
         columns = list(
-          uid = colDef(show = FALSE),
+          uid = colDef(show = TRUE),
           recorder_id = colDef(
             name = "Recorder ID",
             filterInput = dataListFilter("detections-list")
@@ -102,25 +107,44 @@ mod_sound_server <- function(id, data) {
       )
     })
 
-    #Convert selected ogg url file into wave
-    output$downloadData <- renderTable({
-      req(input$selected)#use selected as input
-      {
-        audioaswave <- system("ffmpeg -i inputfile.ogg outputfile.wav")
-      }
 
-      #wavesurfer
-      #use wavesurfer function:
-      audio = ("audioaswave")
+    output$my_ws <- renderWavesurfer({
+
+      #sound <- input$paste0('https://reco.birdnet.tucmi.de/reco/det/', selected_sound_url, '/audio')
+
+      #wavesurfer(audio = "http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3") %>%
+      wavesurfer("sound_url") %>%
+
+        ws_set_wave_color('#5511aa') %>%
+        ws_spectrogram()
+        ws_cursor()
     })
 
+    # #soundDownload <- selected_sound_url()
+    # output$downloadData <- downloadHandler(
+    #   download.file("selected_sound_url", tf <- tempfile(fileext = ".mp3"), mode="wb")
+    # )
 
   })
-}
+
+}#end
+
+observeEvent(input$mute, {
+   ws_toggle_mute("my_ws")
+ })
+
+observeEvent(input$yes, {
+  ws_toggle_yes("my_ws")
+})
+
+observeEvent(input$no, {
+  ws_toggle_no("my_ws")
+})
+
 
 observe({
   # row <- GET SELECTED ROW FROM TABLE
-  # selected_audio_url(row)
+  #golem::selected_audio_url(row)
   golem::message_dev("SELECTED")
   golem::print_dev(selected())
   golem::print_dev(selected_sound_url())
@@ -139,8 +163,14 @@ selected_sound_url <- reactive({
 
 
 
+
+
+
+
+
 ## To be copied in the UI
 # mod_detections_table_ui("detections_table_1")
 
 ## To be copied in the server
 # mod_detections_table_server("detections_table_1")
+
