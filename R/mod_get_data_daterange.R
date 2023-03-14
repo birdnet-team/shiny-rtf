@@ -24,7 +24,7 @@ mod_get_data_daterange_ui <- function(id) {
         "Last 14 days" = 336,
         "All" = NULL
       ),
-      selected = 12,
+      selected = 72,
       options = list(`style`="btn-default")
     )
   )

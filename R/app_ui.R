@@ -33,7 +33,7 @@ app_ui <- function(request) {
       ),
       dashboardSidebar(
         sidebarMenu(
-          menuItem("Overview", tabName = "overview", icon = icon("home")),
+          menuItem("Overview", tabName = "overview", icon = icon("home"), selected = TRUE),
           menuItem("Detections", tabName = "detections", icon = icon("music")),
           menuItem("Health", tabName = "health", icon = icon("wave-square"))
         )
