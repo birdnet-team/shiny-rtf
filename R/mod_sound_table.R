@@ -119,7 +119,7 @@ mod_sound_table_server <- function(id, data) {
               }"),
           )
         ),
-        onClick = "select"
+        onClick = JS(function())
         # JS("function(rowInfo, column) {
         #   // Only handle click events on the 'details' column
         #   //if (column.id !== 'audio') {
