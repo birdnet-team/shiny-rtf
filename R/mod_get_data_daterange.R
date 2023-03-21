@@ -77,8 +77,7 @@ mod_get_data_daterange_server <- function(id, url, tz_server = NULL, tz_out = NU
     observe({
       golem::message_dev("GET Recorders")
       data$recorders <-
-        get_recorders(url) %>%
-        filter(recorder_id != "BirdNET-HI004")
+        get_recorders(url) #%>%        filter(recorder_id != "BirdNET-HI004")
     }) %>% bindEvent(datetime_range$start, once = TRUE)
 
 
