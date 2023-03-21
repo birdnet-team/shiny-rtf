@@ -59,6 +59,7 @@ mod_sound_server <- function(id, data) {
         outlined = TRUE,
         compact = TRUE,
         ###
+        #selection=list(mode="single", target="row"),
         selection = "single",
         elementId = "detections-list",
         columns = list(
@@ -108,6 +109,7 @@ mod_sound_server <- function(id, data) {
     })
 
 
+
     output$my_ws <- renderWavesurfer({
 
       #sound <- input$paste0('https://reco.birdnet.tucmi.de/reco/det/', selected_sound_url, '/audio')
@@ -128,6 +130,13 @@ mod_sound_server <- function(id, data) {
   })
 
 }#end
+
+
+observeEvent(input$"cell", {
+  url <- ("https://reco.birdnet.tucmi.de/reco/det/733d3d2e-abbd-47ad-9d9c-efd70c177ce2/audio")
+  destfile <- "C:/Users/ElementXX/Desktop/download_sounds/soundXX.wav"
+  download.file(url, destfile, mode = "wb")
+})
 
 observeEvent(input$mute, {
    ws_toggle_mute("my_ws")
@@ -157,10 +166,6 @@ selected_sound_url <- reactive({
     dplyr::slice(selected()) %>%
     dplyr::pull(sound_url)
 })
-
-
-
-
 
 
 
