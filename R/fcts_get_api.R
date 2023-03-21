@@ -125,6 +125,10 @@ get_log <- function(url, params = NULL) {
 #' @export
 #'
 #' @examples
+#' #' params <- list(
+#'   "recorder_id" = "BirdNET-HI001"
+#' )
+#' get_recorders("https://reco.birdnet.tucmi.de/reco", params)
 get_recorders <- function(url, params = NULL) {
   api_response <-
     perform_get_request(url, "rec", params)
