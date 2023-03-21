@@ -34,6 +34,7 @@ golem::add_module(name = "global_filter", with_test = FALSE)
 ## Creates fct_* and utils_*
 golem::add_fct("dataListFilter", with_test = FALSE)
 golem::add_fct("get_browser_timezone", with_test = FALSE)
+golem::add_fct("get_data_landingpage", with_test = FALSE)
 
 golem::add_utils("helpers", with_test = TRUE)
 
