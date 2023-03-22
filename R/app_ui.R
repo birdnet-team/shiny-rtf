@@ -5,6 +5,19 @@
 #' @import shiny
 #' @import bs4Dash
 #' @noRd
+
+library(rjson)
+library(RCurl)
+library(htmltools)
+
+# install.packages("remotes")
+#usethis::create_github_token("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")
+#usethis::edit_r_environ() #and add the token as `GITHUB_PAT`.
+remotes::install_github("Athospd/wavesurfer")
+library(wavesurfer)
+
+
+
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
@@ -44,7 +57,34 @@ app_ui <- function(request) {
             tabName = "overview",
             mod_status_overview_ui("status_overview_1"),
           ),
+
+          #var für audio definieren
+
           tabItem(
+            #box(
+            #title = "Spectrogram",
+            h5("Spectrogram"),
+            wavesurferOutput("my_ws"),#
+            tags$div(id = "AUDIO_MY"),
+            #audioFile <- PYTHON_GET_PIP_SHA256(),
+            #selectInput("STH", "Select Audiofile", data(detections(input$uid)), 1),#select audio-File #define the audio-input
+            #browser(audioFile),
+            #selectInput("STH", "Select Audiofile", audioFile, 1),#select audio-File #define the audio-input
+
+            tags$p("Press spacebar to toggle play/pause."),#
+            actionButton("mute", "Mute", icon = icon("volume-off")),#
+            # ),
+            #box(#new
+            #width = 7,#new
+            #background = "lightblue",#new
+            p("Can you hear a bird?"),#new
+            actionButton("yes", "Yes", icon = icon("Yes")),#new
+            actionButton("maybe", "Maybe", icon = icon("Maybe")),#new
+
+            tags$p("If NO, what do you think, that you heared?"),#new
+            #TextField.shinyInput(ns("text")),
+            #textOutput(ns("textValue")),
+
             tabName = "detections",
             mod_detections_table_ui("detections_table_1")
 

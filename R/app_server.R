@@ -4,7 +4,46 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
+
+
+# install.packages("remotes")
+remotes::install_github("Athospd/wavesurfer")
+library(wavesurfer)
+library(htmltools)
+
 app_server <- function(input, output, session) {
+  output$my_ws <- renderWavesurfer({
+
+    sound <- 'https://reco.birdnet.tucmi.de/reco/det/002395f6-52be-44e0-ba76-a0f7c5dcfa1c/audio'
+    wavesurfer(audio = "sound") %>%
+
+      #wavesurfer(audio = "https://wavesurfer-js.org/example/media/demo.wav") %>%
+      #wavesurfer(audio = "'https://reco.birdnet.tucmi.de/reco/det/' + rowInfo.values.uid + '/audio'") %>%
+      #wavesurfer(audio = "snippet_path") %>%
+
+      #wavesurfer(audio = "https://reco.birdnet.tucmi.de/reco/det/002395f6-52be-44e0-ba76-a0f7c5dcfa1c/audio") %>%
+      #wavesurfer(audio = "audio.play")%>%
+
+
+    ws_set_wave_color('#5511aa') %>%
+      ws_spectrogram() %>%
+      ws_cursor()
+  })
+
+  observeEvent(input$mute, {#new
+    ws_toggle_mute("my_ws")#new
+  })#new
+
+  observeEvent(input$yes, {#new
+    ws_toggle_mute("my_ws")#new
+  })#new
+
+  observeEvent(input$maybe, {
+    ws_toggle_mute("my_ws")
+  })
+
+
+
   # Your application server logic
   url <- "https://reco.birdnet.tucmi.de/reco"
 
