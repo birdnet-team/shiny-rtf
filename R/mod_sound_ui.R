@@ -37,8 +37,8 @@ mod_sound_server <- function(id, data) {
       data$detections %>%
         mutate(
           datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime)),
-          #sound url zusammensetzen
           sound_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio'),
+          #onClick
         ) %>%
         dplyr::relocate(common, .after = recorder_id)
     })
@@ -59,8 +59,9 @@ mod_sound_server <- function(id, data) {
         outlined = TRUE,
         compact = TRUE,
         ###
-        #selection=list(mode="single", target="row"),
-        selection = "single",
+
+        #selection = "single",
+        selection=list(mode="single", target="cell"),
         elementId = "detections-list",
         columns = list(
           uid = colDef(show = TRUE),
@@ -80,17 +81,30 @@ mod_sound_server <- function(id, data) {
           ),
           scientific = colDef(show = FALSE),
           species_code = colDef(show = FALSE),
-          snippet_path = colDef(
-            name = "audio",
-            html = TRUE,
-            cell = function(value) {
-              if (value == "None") {
-                '<i class="fa-solid fa-music", style = "color:#eaecee "></i>'
-              } else {
-                '<i class="fa-solid fa-music", style = "color:#008080"></i>'
-              }
-            }
+          sound_url = colDef(
+
+            name = "url",
+            # html = TRUE,
+            # cell = function(value) {
+            #   if (value == "None")
+            #   {
+            #     '<i class="fa-solid fa-download", style = "color:#eaecee "></i>'
+            #   } else {
+            #     '<i class="fa-solid fa-download", style = "color:#008080"></i>'
+            #   }
+            # }
           ),
+          # snippet_path = colDef(
+          #   name = "audio",
+          #   html = TRUE,
+          #   cell = function(value) {
+          #     if (value == "None") {
+          #       '<i class="fa-solid fa-music", style = "color:#eaecee "></i>'
+          #     } else {
+          #       '<i class="fa-solid fa-music", style = "color:#008080"></i>'
+          #     }
+          #   }
+          # ),
           lat = colDef(show = FALSE),
           lon = colDef(show = FALSE),
           confirmed = colDef(show = FALSE),
@@ -103,44 +117,81 @@ mod_sound_server <- function(id, data) {
               }"),
           )
         ),
-        #definieren, was selectiert werden soll
-        onClick = "select"
+        #onClick = "select"
+        onClick = JS("function(rowInfo, column) {
+            // Only handle click events on the 'details' column
+            //if (column.id !== 'audio') {
+            //  return
+            //}
+
+            // Display an alert dialog with details for the row
+            //window.alert('Details for row ' + rowInfo.index + ':\\n' + rowInfo.values.audio_url)
+            var audio_url = 'https://reco.birdnet.tucmi.de/reco/det/' + rowInfo.values.uid + '/audio'
+            var audio = new Audio(audio_url);
+            audio.play();
+
+            // Send the click event to Shiny, which will be available in input$show_details
+            // Note that the row index starts at 0 in JavaScript, so we add 1
+            //if (window.Shiny) {
+            //  Shiny.setInputValue('show_details', { index: rowInfo.index + 1 }, { priority: 'event' })
+            //}
+          }")
       )
     })
 
 
 
     output$my_ws <- renderWavesurfer({
-
       #sound <- input$paste0('https://reco.birdnet.tucmi.de/reco/det/', selected_sound_url, '/audio')
-
       #wavesurfer(audio = "http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3") %>%
       wavesurfer("sound_url") %>%
-
         ws_set_wave_color('#5511aa') %>%
         ws_spectrogram()
-        ws_cursor()
+      ws_cursor()
     })
 
-    # #soundDownload <- selected_sound_url()
-    # output$downloadData <- downloadHandler(
-    #   download.file("selected_sound_url", tf <- tempfile(fileext = ".mp3"), mode="wb")
-    # )
+    #downloadHandler
+    #output
+
+
+
 
   })
+
+
 
 }#end
 
 
-observeEvent(input$"cell", {
-  url <- ("https://reco.birdnet.tucmi.de/reco/det/733d3d2e-abbd-47ad-9d9c-efd70c177ce2/audio")
+
+observeEvent(input$sound_url, {
+  print(input$downloadData)  # JavaScript object has been converted to R List
+
+  # Elements from within returned list can be accessed easily: input$btn_open$name
+
+  # showNotification(
+  #   tagList(
+  #     "Table button was clicked",
+  #     br(),
+  #     paste0("Input value: ", input$downloadData$dom_id),
+  #     br(),
+  #     paste0("ID: ", input$downloadData$row_id),
+  #     br(),
+  #     paste0("Name: ", input$downloadData$name)
+  #   )  # Tag List
+  # )  # Notification
+  url <- "selected_sound_url"
   destfile <- "C:/Users/ElementXX/Desktop/download_sounds/soundXX.wav"
   download.file(url, destfile, mode = "wb")
 })
 
+
+
+#observe, wenn button spec geklickt worden ist, dann führe wavesurfer aus:
+
 observeEvent(input$mute, {
-   ws_toggle_mute("my_ws")
- })
+  ws_toggle_mute("my_ws")
+})
 
 observeEvent(input$yes, {
   ws_toggle_yes("my_ws")
@@ -178,4 +229,3 @@ selected_sound_url <- reactive({
 
 ## To be copied in the server
 # mod_detections_table_server("detections_table_1")
-

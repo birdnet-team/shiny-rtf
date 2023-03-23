@@ -71,6 +71,9 @@ app_ui <- function(request) {
             actionButton("yes", "Yes", icon = icon("Yes")),#new
             actionButton("maybe", "Maybe", icon = icon("Maybe")),#new
             tags$p("If NO, what do you think, that you heared?"),#new
+            downloadButton('downloadData', 'Download'),
+            #shiny::actionButton("btn", "Download"),
+            actionButton("btn", "Download"),
             mod_sound_ui("sound_1")
 
             #tableOutput("downloadData")
