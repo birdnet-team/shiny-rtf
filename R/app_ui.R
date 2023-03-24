@@ -62,18 +62,7 @@ app_ui <- function(request) {
 
           tabItem(
             tabName = "anno",
-            h5("Spectrogram"),
-            wavesurferOutput("my_ws"),#
-            tags$div(id = "AUDIO_MY"),
-            tags$p("Press spacebar to toggle play/pause."),#
-            actionButton("mute", "Mute", icon = icon("volume-off")),#
-            p("Can you hear a bird?"),#new
-            actionButton("yes", "Yes", icon = icon("Yes")),#new
-            actionButton("maybe", "Maybe", icon = icon("Maybe")),#new
-            tags$p("If NO, what do you think, that you heared?"),#new
-            downloadButton('downloadData', 'Download'),
-            #shiny::actionButton("btn", "Download"),
-            actionButton("btn", "Download"),
+
             mod_sound_ui("sound_1")
 
             #tableOutput("downloadData")
