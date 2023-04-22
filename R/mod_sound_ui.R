@@ -11,10 +11,18 @@
 #' @import httr2
 #' @import dplyr
 
+library(shiny)
+library(tuneR)
+library(signal)
+library(seewave)
+library(ggplot2)
 
 mod_sound_ui <- function(id) {
   ns <- NS(id)
-  tagList(reactableOutput(ns("table")))
+  tagList(
+    reactableOutput(ns("table")),
+    plotOutput(ns("spectrogram"))
+  )
 }
 
 #' detections_table Server Functions
@@ -25,9 +33,7 @@ mod_sound_ui <- function(id) {
 #' @noRd
 mod_sound_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
-
 
     table_dats <- reactive({
       req(data$detections)
@@ -39,10 +45,18 @@ mod_sound_server <- function(id, data) {
         dplyr::relocate(common, .after = recorder_id)
     })
 
-
     observe({
       golem::message_dev("DATA DETECTIONS")
       golem::print_dev(dplyr::glimpse(dats()))
+    })
+
+
+
+    output$table <- renderReactable({
+      if (!is.null(input$file)) {
+        audio <- readWave(input$file$datapath)
+        spectro(audio, f = 16000, wl = 1024, wn = "hanning", ovlp = 50, collevels = seq(-80, 0,1), palette= temp.colors, grid=FALSE, colbg = "black", collab="white", colaxis = "white", fftw = TRUE, flog = TRUE, noisereduction = 2)
+      }
     })
 
     output$table <- renderReactable({
@@ -76,8 +90,7 @@ mod_sound_server <- function(id, data) {
             name = "Download",
             html = TRUE,
             cell = function(value) {
-              if (value == "None")
-              {
+              if (value == "None") {
                 '<button class="btn btn-primary" disabled>Not available</button>'
               } else {
                 paste0('<a href="', value, '" class="btn btn-primary" download>Download</a>')
@@ -99,8 +112,11 @@ mod_sound_server <- function(id, data) {
         onClick = NULL # Remove the previous onClick function
       )
     })
-  })
 
+
+
+
+})
 
 
 }#end
