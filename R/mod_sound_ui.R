@@ -20,8 +20,7 @@ library(ggplot2)
 mod_sound_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    reactableOutput(ns("table")),
-    plotOutput(ns("spectrogram"))
+    reactableOutput(ns("table"))
   )
 }
 
@@ -48,15 +47,6 @@ mod_sound_server <- function(id, data) {
     observe({
       golem::message_dev("DATA DETECTIONS")
       golem::print_dev(dplyr::glimpse(dats()))
-    })
-
-
-
-    output$table <- renderReactable({
-      if (!is.null(input$file)) {
-        audio <- readWave(input$file$datapath)
-        spectro(audio, f = 16000, wl = 1024, wn = "hanning", ovlp = 50, collevels = seq(-80, 0,1), palette= temp.colors, grid=FALSE, colbg = "black", collab="white", colaxis = "white", fftw = TRUE, flog = TRUE, noisereduction = 2)
-      }
     })
 
     output$table <- renderReactable({
