@@ -1,16 +1,3 @@
-#' detections_table UI Function
-#'
-#' @description A shiny Module.
-#'
-#' @param id,input,output,session Internal parameters for {shiny}.
-#'
-#' @noRd
-#'
-#' @importFrom shiny NS tagList
-#' @import reactable
-#' @import httr2
-#' @import dplyr
-
 library(shiny)
 library(tuneR)
 library(signal)
@@ -24,12 +11,6 @@ mod_sound_ui <- function(id) {
   )
 }
 
-#' detections_table Server Functions
-#'
-#' @param id Internal parameter for {shiny}
-#' @param detections reactive
-#'
-#' @noRd
 mod_sound_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -42,11 +23,6 @@ mod_sound_server <- function(id, data) {
           sound_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio'),
         ) %>%
         dplyr::relocate(common, .after = recorder_id)
-    })
-
-    observe({
-      golem::message_dev("DATA DETECTIONS")
-      golem::print_dev(dplyr::glimpse(dats()))
     })
 
     output$table <- renderReactable({
@@ -97,16 +73,21 @@ mod_sound_server <- function(id, data) {
                   return row.values[columnId] >= filterValue
                 })
               }"),
+          ),
+          uid = colDef(
+            name = "Validation",
+            cell = function(value, index, row) {
+              actionButton(ns(paste0("btn_", index)), "TRUE",
+                           onclick = {
+                             write("true", "file.txt", append = TRUE)
+                           })
+            }
           )
         ),
         onClick = NULL # Remove the previous onClick function
+
       )
     })
 
-
-
-
-})
-
-
-}#end
+  })
+}
