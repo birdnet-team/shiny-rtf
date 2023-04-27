@@ -29,7 +29,9 @@ mod_detections_table_server <- function(id, data) {
       req(data$detections)
       data$detections %>%
         mutate(
-          datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime))
+          datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime)),
+          sound_play = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio')
+
         ) %>%
         dplyr::relocate(common, .after = recorder_id)
     })
@@ -62,14 +64,15 @@ mod_detections_table_server <- function(id, data) {
           ),
           scientific = colDef(show = FALSE),
           species_code = colDef(show = FALSE),
-          snippet_path = colDef(
-            name = "audio",
+          sound_play = colDef(
+            name = "Audio",
             html = TRUE,
             cell = function(value) {
               if (value == "None") {
                 '<i class="fa-solid fa-music", style = "color:#eaecee "></i>'
               } else {
-                '<i class="fa-solid fa-music", style = "color:#008080"></i>'
+                paste0('<button onclick="downloadAudio(\'', value, '\')">Download</button> ')
+                paste0('<audio controls><source src="', value, '" type="audio/wav"></audio>')
               }
             }
           ),
@@ -79,29 +82,25 @@ mod_detections_table_server <- function(id, data) {
           confidence = colDef(
             filterable = TRUE,
             filterMethod = JS("function(rows, columnId, filterValue) {
-                return rows.filter(function(row) {
-                  return row.values[columnId] >= filterValue
-                })
-              }"),
+            return rows.filter(function(row) {
+              return row.values[columnId] >= filterValue
+            })
+          }"),
           )
         ),
         onClick = JS("function(rowInfo, column) {
-            // Only handle click events on the 'details' column
-            //if (column.id !== 'audio') {
-            //  return
-            //}
+        // Only handle click events on the 'details' column
+        //if (column.id !== 'audio') {
+        //  return
+        //}
 
-            // Display an alert dialog with details for the row
-            //window.alert('Details for row ' + rowInfo.index + ':\\n' + rowInfo.values.audio_url)
-            var audio_url = 'https://reco.birdnet.tucmi.de/reco/det/' + rowInfo.values.uid + '/audio'
-            var audio = new Audio(audio_url);
-            audio.play();
+        // Display an alert dialog with details for the row
+        //window.alert('Details for row ' + rowInfo.index + ':\\n' + rowInfo.values.audio_url)
+        var audio_url = 'https://reco.birdnet.tucmi.de/reco/det/' + rowInfo.values.uid + '/audio'
+        var audio = new Audio(audio_url);
+        audio.play();
 
-            // Send the click event to Shiny, which will be available in input$show_details
-            // Note that the row index starts at 0 in JavaScript, so we add 1
-            //if (window.Shiny) {
-            //  Shiny.setInputValue('show_details', { index: rowInfo.index + 1 }, { priority: 'event' })
-            //}
+        Shiny.setInputValue('audio_url', audio_url);
           }")
       )
     })
