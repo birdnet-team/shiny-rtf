@@ -41,7 +41,9 @@ mod_sound_server <- function(id, data) {
         mutate(
           datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime)),
           sound_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio'),
-        ) %>%
+          sound_play = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio'),
+
+           ) %>%
         dplyr::relocate(common, .after = recorder_id)
     })
 
@@ -97,6 +99,17 @@ mod_sound_server <- function(id, data) {
               }
             }
           ),
+          snippet_path = colDef(
+            name = "Play Audio",
+            html = TRUE,
+            cell = function(value) {
+              if (value == "None") {
+                '<i class="fa-solid fa-music", style = "color:#eaecee "></i>'
+              } else {
+                '<i class="fa-solid fa-music", style = "color:#008080"></i>'
+              }
+            }
+          ),
           lat = colDef(show = FALSE),
           lon = colDef(show = FALSE),
           confirmed = colDef(show = FALSE),
@@ -109,7 +122,24 @@ mod_sound_server <- function(id, data) {
               }"),
           )
         ),
-        onClick = NULL # Remove the previous onClick function
+        onClick = JS("function(rowInfo, column) {
+            // Only handle click events on the 'details' column
+            //if (column.id !== 'audio') {
+            //  return
+            //}
+
+            // Display an alert dialog with details for the row
+            //window.alert('Details for row ' + rowInfo.index + ':\\n' + rowInfo.values.audio_url)
+            var audio_url = 'https://reco.birdnet.tucmi.de/reco/det/' + rowInfo.values.uid + '/audio'
+            var audio = new Audio(audio_url);
+            audio.play();
+
+            // Send the click event to Shiny, which will be available in input$show_details
+            // Note that the row index starts at 0 in JavaScript, so we add 1
+            //if (window.Shiny) {
+            //  Shiny.setInputValue('show_details', { index: rowInfo.index + 1 }, { priority: 'event' })
+            //}
+          }")
       )
     })
 

@@ -67,10 +67,10 @@ app_ui <- function(request) {
           tabItem(
             tabName = "anno",
             # Input: Select a file ----
-            fileInput("file", "Choose an audio file in WAV format:"),
-            plotOutput("spectrogram"),
+            #fileInput("file", "Choose an audio file in WAV format:"),
+            #plotOutput("spectrogram"),
             #including a download function
-            downloadButton('downloadImage', 'Download Spectrogram as image'),
+            #downloadButton('downloadImage', 'Download Spectrogram as image'),
             mod_sound_ui("sound_1")
 
             #tableOutput("downloadData")
