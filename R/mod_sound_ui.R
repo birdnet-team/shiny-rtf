@@ -20,20 +20,41 @@ library(ggplot2)
 mod_sound_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    reactableOutput(ns("table")),
-    plotOutput(ns("spectrogram"))
+    fileInput(ns("file"), label = "Upload audio file"),
+    plotOutput(ns("spectrogram")),
+    downloadButton(ns("downloadImage"), label = "Download Spectrogram as image")
   )
 }
 
 #' detections_table Server Functions
 #'
 #' @param id Internal parameter for {shiny}
-#' @param detections reactive
+#' @param data Reactive data containing detections
 #'
 #' @noRd
 mod_sound_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+
+    output$spectrogram <- renderPlot({
+      if (!is.null(input$file)) {
+        audio <- readWave(input$file$datapath)
+        spectro(audio, f = 16000, wl = 1024, wn = "hanning", ovlp = 50, collevels = seq(-80, 0,1), palette= temp.colors, grid=FALSE, colbg = "black", collab="white", colaxis = "white", fftw = TRUE, flog = TRUE, noisereduction = 2)
+      }
+    })
+
+    output$downloadImage <- downloadHandler(
+      filename = function() {
+        paste0("spectrogram_", Sys.Date(), ".png")
+      },
+      content = function(file) {
+        if(!is.null(input$file)) {
+          audio <- readWave(input$file$datapath)
+          img <- ggspectro(audio, ovlp = 50) + geom_tile(aes(fill = amplitude)) + stat_contour()
+          ggsave(file, img, dpi = 300, width = 8, height = 6, type = "cairo")
+        }
+      }
+    )
 
     table_dats <- reactive({
       req(data$detections)
@@ -54,12 +75,12 @@ mod_sound_server <- function(id, data) {
 
 
 
-    output$table <- renderReactable({
-      if (!is.null(input$file)) {
-        audio <- readWave(input$file$datapath)
-        spectro(audio, f = 16000, wl = 1024, wn = "hanning", ovlp = 50, collevels = seq(-80, 0,1), palette= temp.colors, grid=FALSE, colbg = "black", collab="white", colaxis = "white", fftw = TRUE, flog = TRUE, noisereduction = 2)
-      }
-    })
+    # output$spectrogram <- renderPlot({
+    #   if (!is.null(input$file)) {
+    #     audio <- readWave(input$file$datapath)
+    #     spectro(audio, f = 16000, wl = 1024, wn = "hanning", ovlp = 50, collevels = seq(-80, 0,1), palette= temp.colors, grid=FALSE, colbg = "black", collab="white", colaxis = "white", fftw = TRUE, flog = TRUE, noisereduction = 2)
+    #   }
+    # })
 
     output$table <- renderReactable({
       reactable(
@@ -142,9 +163,6 @@ mod_sound_server <- function(id, data) {
           }")
       )
     })
-
-
-
 
 })
 
