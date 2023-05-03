@@ -22,7 +22,8 @@ mod_sound_ui <- function(id) {
   tagList(
     fileInput(ns("file"), label = "Upload audio file"),
     plotOutput(ns("spectrogram")),
-    downloadButton(ns("downloadImage"), label = "Download Spectrogram as image")
+    downloadButton(ns("downloadImage"), label = "Download Spectrogram as image"),
+    reactableOutput(ns('table'))
   )
 }
 
@@ -36,25 +37,7 @@ mod_sound_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    output$spectrogram <- renderPlot({
-      if (!is.null(input$file)) {
-        audio <- readWave(input$file$datapath)
-        spectro(audio, f = 16000, wl = 1024, wn = "hanning", ovlp = 50, collevels = seq(-80, 0,1), palette= temp.colors, grid=FALSE, colbg = "black", collab="white", colaxis = "white", fftw = TRUE, flog = TRUE, noisereduction = 2)
-      }
-    })
 
-    output$downloadImage <- downloadHandler(
-      filename = function() {
-        paste0("spectrogram_", Sys.Date(), ".png")
-      },
-      content = function(file) {
-        if(!is.null(input$file)) {
-          audio <- readWave(input$file$datapath)
-          img <- ggspectro(audio, ovlp = 50) + geom_tile(aes(fill = amplitude)) + stat_contour()
-          ggsave(file, img, dpi = 300, width = 8, height = 6, type = "cairo")
-        }
-      }
-    )
 
     table_dats <- reactive({
       req(data$detections)
@@ -163,6 +146,26 @@ mod_sound_server <- function(id, data) {
           }")
       )
     })
+
+    output$spectrogram <- renderPlot({
+      if (!is.null(input$file)) {
+        audio <- readWave(input$file$datapath)
+        spectro(audio, f = 16000, wl = 1024, wn = "hanning", ovlp = 50, collevels = seq(-80, 0,1), palette= temp.colors, grid=FALSE, colbg = "black", collab="white", colaxis = "white", fftw = TRUE, flog = TRUE, noisereduction = 2)
+      }
+    })
+
+    output$downloadImage <- downloadHandler(
+      filename = function() {
+        paste0("spectrogram_", Sys.Date(), ".png")
+      },
+      content = function(file) {
+        if(!is.null(input$file)) {
+          audio <- readWave(input$file$datapath)
+          img <- ggspectro(audio, ovlp = 50) + geom_tile(aes(fill = amplitude)) + stat_contour()
+          ggsave(file, img, dpi = 300, width = 8, height = 6, type = "cairo")
+        }
+      }
+    )
 
 })
 

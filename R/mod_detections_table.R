@@ -62,6 +62,7 @@ mod_detections_table_server <- function(id, data) {
             name = "Species",
             filterInput = dataListFilter("detections-list")
           ),
+          snippet_path = colDef(show = FALSE),
           scientific = colDef(show = FALSE),
           species_code = colDef(show = FALSE),
           sound_play = colDef(
