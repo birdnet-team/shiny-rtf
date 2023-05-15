@@ -72,7 +72,6 @@ mod_detections_table_server <- function(id, data) {
               if (value == "None") {
                 '<i class="fa-solid fa-music", style = "color:#eaecee "></i>'
               } else {
-                paste0('<button onclick="downloadAudio(\'', value, '\')">Download</button> ')
                 paste0('<audio controls><source src="', value, '" type="audio/wav"></audio>')
               }
             }
