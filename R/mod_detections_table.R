@@ -86,23 +86,9 @@ mod_detections_table_server <- function(id, data) {
             return rows.filter(function(row) {
               return row.values[columnId] >= filterValue
             })
-          }"),
-          )
-        ),
-        onClick = JS("function(rowInfo, column) {
-        // Only handle click events on the 'details' column
-        //if (column.id !== 'audio') {
-        //  return
-        //}
-
-        // Display an alert dialog with details for the row
-        //window.alert('Details for row ' + rowInfo.index + ':\\n' + rowInfo.values.audio_url)
-        var audio_url = 'https://reco.birdnet.tucmi.de/reco/det/' + rowInfo.values.uid + '/audio'
-        var audio = new Audio(audio_url);
-        audio.play();
-
-        Shiny.setInputValue('audio_url', audio_url);
           }")
+          )
+        )
       )
     })
   })
