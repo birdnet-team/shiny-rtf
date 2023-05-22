@@ -17,6 +17,7 @@ library(signal)
 library(seewave)
 library(ggplot2)
 library(av)
+require(rgl)
 #library(monitoR)
 #install.packages("warbleR")
 #library(warbleR)
@@ -24,10 +25,10 @@ library(av)
 mod_sound_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    fileInput(ns("file"), label = "Wähle eine OGG-Datei aus"),
+    fileInput(ns("file"), label = "Choose an ogg or wav file"),
     plotOutput(ns("spectrogram")),
     downloadButton(ns("download"), label = "Download WAV-Datei"),
-    downloadButton(ns("downloadImage"), label = "Download Spectrogram as image"),
+    #downloadButton(ns("downloadImage"), label = "Download Spectrogram as image"),
     reactableOutput(ns('table'))
   )
 }
@@ -50,7 +51,7 @@ mod_sound_server <- function(id, data) {
           sound_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio'),
           sound_play = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio'),
 
-           ) %>%
+        ) %>%
         dplyr::relocate(common, .after = recorder_id)
     })
 
@@ -74,25 +75,23 @@ mod_sound_server <- function(id, data) {
         )
 
         output$spectrogram <- renderPlot({
-          wav <- readWave(wav_file)
-          # fft_data <- read_audio_fft(wav, end_time = 5.0)
-          # dim(fft_data)
-          # plot(fft_data)
-          # spectro <- specprop(wav)
-          # image(spectro, col = grey.colors(256))
-          # spectrogram <- spec(wav, f = 256, wl = 256, ovlp = 128)
-          # plot <- spectrogram.plot(spectrogram, output = "plotly")
-          # plotly::ggplotly(plot)
-          #tt=readWave("wav_file")
-          spectro(wav, f=36000, wl=1024, wn="hanning", ovlp=50, collevels=seq(-80,0,1), palette= spectro.colors, grid=FALSE)
-          # sound_object <- readWave(wav_file)
-          # spectrogram <- spectro(sound_object, wl = 1024, ovlp = 75)
-          # viewSpec(spectrogram, interactive = TRUE)
-          # spectrogram <- spectro(sound_object)
-          # spectro(spectrogram, f = 44100)
-          #spectro(wav, f = 44100, wl = 1024, wn = "hanning", ovlp = 0, collevels = seq(-80, 0,1), palette= temp.colors, grid=FALSE, colbg = "black", collab="white", colaxis = "white", fftw = TRUE, flog = TRUE, noisereduction = 2)
-          #spectro(wav, f = 44100, wl = 1024, wn = "hanning", ovlp = 75, collevels = seq(-60, 0, 1), palette = "jet", grid = TRUE, colbg = "white", collab = "black", colaxis = "black", fftw = FALSE, flog = FALSE, noisereduction = 0)
-          #viewSpec(wav, interactive = TRUE, annotate = FALSE, start.time = 0)
+          #original
+          #wav <- readWave(wav_file)
+          # spectro(wav, f = 16000, wl = 512, wn = "hanning", ovlp = 50, collevels = seq(-80, 0, 1),
+          #         palette = temp.colors, grid = FALSE, colbg = "black", collab = "white", colaxis = "white",
+          #         fftw = TRUE, flog = TRUE, noisereduction = 2)
+          #3D-Darstellung Spectrogram:
+          #spectro3D(wav,f=22050,wl=512,ovlp=75,zp=16,maga=4,palette=reverse.terrain.colors)
+          audio <- readWave(wav_file)
+          sample_rate <- 16000
+          duration <- 5
+          num_samples <- sample_rate * duration
+          extracted_audio <- audio[1:num_samples]
+          spectro(extracted_audio, f = sample_rate, wl = 512, wn = "hanning", ovlp = 50,
+                  collevels = seq(-80, 0, 1), palette = temp.colors, grid = FALSE,
+                  colbg = "black", collab = "white", colaxis = "white", fftw = TRUE,
+                  flog = TRUE, noisereduction = 2)
+
           })
 
         output$download <- downloadHandler(
@@ -105,7 +104,7 @@ mod_sound_server <- function(id, data) {
         )
       }
     })
-#end1
+    #end1
 
     output$table <- renderReactable({
       reactable(
@@ -204,7 +203,7 @@ mod_sound_server <- function(id, data) {
     #   }
     # )
 
-})
+  })
 
 
 }#end
