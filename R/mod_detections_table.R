@@ -12,20 +12,7 @@
 #' @import dplyr
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-    reactableOutput(ns("table")),
-    tags$script(
-      HTML(
-        'function downloadWav(uid) {
-           var url = "https://reco.birdnet.tucmi.de/reco/det/" + uid + "/audio.wav"
-           var link = document.createElement("a");
-           link.download = uid + ".wav";
-           link.href = url;
-           link.click();
-        }'
-      )
-    )
-  )
+  tagList(reactableOutput(ns("table")))
 }
 
 #' detections_table Server Functions
@@ -60,35 +47,47 @@ mod_detections_table_server <- function(id, data) {
         compact = TRUE,
         elementId = "detections-list",
         columns = list(
-          # existing columns...
+          uid = colDef(show = FALSE),
+          recorder_id = colDef(
+            name = "Recorder ID",
+            filterInput = dataListFilter("detections-list")
+          ),
+          datetime = colDef(
+            name = "Datetime"
+            #format = colFormat(datetime = TRUE)
+          ),
+          start = colDef(show = FALSE),
+          end = colDef(show = FALSE),
+          common = colDef(
+            name = "Species",
+            filterInput = dataListFilter("detections-list")
+          ),
+          snippet_path = colDef(show = FALSE),
+          scientific = colDef(show = FALSE),
+          species_code = colDef(show = FALSE),
           sound_play = colDef(
             name = "Audio",
             html = TRUE,
-            cell = function(value, index) {
+            cell = function(value) {
               if (value == "None") {
                 '<i class="fa-solid fa-music", style = "color:#eaecee "></i>'
               } else {
-                paste0(
-                  '<button id="download-', index, '" onclick="downloadAudio(\'', value, '\')">Download</button> ',
-                  '<audio controls><source src="', value, '" type="audio/wav"></audio>'
-                )
+                paste0('<audio controls><source src="', value, '" type="audio/wav"></audio>')
               }
             }
           ),
-          # new column
-          snippet_path = colDef(
-            name = "",
-            html = TRUE,
-            cell = function(value, index) {
-              paste0(
-                '<button onclick="downloadWav(\'', table_dats()$uid[index], '\')">Download WAV</button>'
-              )
-            }
+          lat = colDef(show = FALSE),
+          lon = colDef(show = FALSE),
+          confirmed = colDef(show = FALSE),
+          confidence = colDef(
+            filterable = TRUE,
+            filterMethod = JS("function(rows, columnId, filterValue) {
+            return rows.filter(function(row) {
+              return row.values[columnId] >= filterValue
+            })
+          }")
           )
-        ),
-        onClick = JS("function(rowInfo, column) {
-      // existing onClick function...
-    }")
+        )
       )
     })
   })
