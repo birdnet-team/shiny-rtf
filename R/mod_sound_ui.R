@@ -48,7 +48,7 @@ mod_sound_server <- function(id, data) {
       data$detections %>%
         mutate(
           datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime)),
-          sound_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio'),
+          #sound_url = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio'),
           sound_play = paste0('https://reco.birdnet.tucmi.de/reco/det/', uid, '/audio'),
 
         ) %>%
@@ -133,26 +133,29 @@ mod_sound_server <- function(id, data) {
           ),
           scientific = colDef(show = FALSE),
           species_code = colDef(show = FALSE),
-          sound_url = colDef(
-            name = "Download",
-            html = TRUE,
-            cell = function(value) {
-              if (value == "None") {
-                '<button class="btn btn-primary" disabled>Not available</button>'
-              } else {
-                #paste0('<a href="', value, '" class="btn btn-primary" download>Download</a>')
-                paste0('<a href="', value, '" class="btn btn-primary" download onclick="blank">Download</a>')
-              }
-            }
-          ),
-          snippet_path = colDef(
-            name = "Play Audio",
+          uid = colDef(show = FALSE),
+          #sound_play(show = FALSE),
+          # sound_url = colDef(
+          #   show = FALSE,
+          #   name = "Download",
+          #   html = TRUE,
+          #   cell = function(value) {
+          #     if (value == "None") {
+          #       '<button class="btn btn-primary" disabled>Not available</button>'
+          #     } else {
+          #       #paste0('<a href="', value, '" class="btn btn-primary" download>Download</a>')
+          #       #paste0('<a href="', value, '" class="btn btn-primary" download onclick="blank">Download</a>')
+          #     }
+          #   }
+          # ),
+          sound_play = colDef(
+            name = "Audio",
             html = TRUE,
             cell = function(value) {
               if (value == "None") {
                 '<i class="fa-solid fa-music", style = "color:#eaecee "></i>'
               } else {
-                '<i class="fa-solid fa-music", style = "color:#008080"></i>'
+                paste0('<audio controls><source src="', value, '" type="audio/wav"></audio>')
               }
             }
           ),
