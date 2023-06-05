@@ -101,15 +101,18 @@ mod_detections_table_server <- function(id, data) {
         elementId = "detections-list",
         columns = list(
           recorder_id = colDef(
+            width = 150,
             name = "Recorder ID",
             filterInput = dataListFilter("detections-list")
           ),
           datetime = colDef(
+            width = 150,
             name = "Datetime"
           ),
           start = colDef(show = FALSE),
           end = colDef(show = FALSE),
           common = colDef(
+            width = 150,
             name = "Species",
             filterInput = dataListFilter("detections-list")
           ),
@@ -132,6 +135,7 @@ mod_detections_table_server <- function(id, data) {
           lon = colDef(show = FALSE),
           confirmed = colDef(show = FALSE),
           confidence = colDef(
+            width = 150,
             filterable = TRUE,
             filterMethod = JS("function(rows, columnId, filterValue) {
                 return rows.filter(function(row) {
