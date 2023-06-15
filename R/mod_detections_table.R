@@ -9,8 +9,9 @@
 #' @importFrom shiny NS tagList
 #' @import reactable
 #' @import httr2
-#' @import dplyr
+#' @import dplyr lubridate
 #' @import av
+#' @import shinyWidgets reactable
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
   tagList(fluidRow(
