@@ -10,6 +10,7 @@
 #' @import reactable
 #' @import httr2
 #' @import dplyr
+#' @import av
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
   tagList(fluidRow(
@@ -153,7 +154,7 @@ mod_detections_table_server <- function(id, data) {
       req(audio_file_path())
       av::read_audio_fft(
         audio_file_path(),
-        window = hanning(input$fft_window_length),
+        window = av::hanning(input$fft_window_length),
         overlap = input_fft_overlap()
       )
     })
