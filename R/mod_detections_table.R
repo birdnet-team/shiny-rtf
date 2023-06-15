@@ -15,6 +15,7 @@ library(shiny)
 library(tuneR)
 library(seewave)
 library(av)
+library(signal)
 
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
@@ -65,16 +66,22 @@ mod_detections_table_server <- function(id, data) {
         )
 
         output$spectrogram <- renderPlot({
-          audio <- readWave(wav_file)
-          sample_rate <- 16000
-          duration <- 5
-          num_samples <- sample_rate * duration
-          extracted_audio <- audio[1:num_samples]
-          spectro(extracted_audio, f = sample_rate, wl = 512, wn = "hanning", ovlp = 50,
-                  collevels = seq(-80, 0, 1), palette = temp.colors, grid = FALSE,
-                  colbg = "black", collab = "white", colaxis = "white", fftw = TRUE,
-                  flog = TRUE, noisereduction = 2)
+          output$spectrogram <- renderPlot({
+            audio <- readWave(wav_file)
 
+            audio <- signal::specgram(x = audio@left, n = 1024, Fs = audio@samp.rate, overlap = 1024 * 0.75)
+
+            # normalize and rescale to dB
+            P <- abs(audio$S)
+            P <- P / max(P)
+
+            out <- pmax(1e-6, P)
+            dim(out) <- dim(P)
+            out <- log10(out) / log10(1e-6)
+
+            # plot spectrogram
+            image(x = audio$t, y = audio$f, z = t(out), ylab = 'Freq [Hz]', xlab = 'Time [s]', useRaster = TRUE)
+          })
         })
 
         output$download <- downloadHandler(
