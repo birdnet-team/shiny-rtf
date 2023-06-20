@@ -17,9 +17,12 @@ mod_detections_table_ui <- function(id) {
   tagList(fluidRow(
     column(
       7,
-      shinyWidgets::panel(reactableOutput(ns(
-        "table"
-      )))
+      shinyWidgets::panel(
+        extra = reactableOutput(ns(
+          "table"
+        )),
+        heading = "Detections"
+      )
     ),
     column(
       5,
@@ -27,6 +30,7 @@ mod_detections_table_ui <- function(id) {
         ns = ns,
         condition = "!output.show_spec_panel",
         shinyWidgets::panel(
+          heading = "Spectrogram",
           div(
             p("No detection selected or available"),
             style = "margin-top: 5rem; margin-bottom: 5rem; text-align: center; font-size: larger;color: #b1b1b1;"
@@ -37,6 +41,7 @@ mod_detections_table_ui <- function(id) {
         ns = ns,
         condition = "output.show_spec_panel",
         shinyWidgets::panel(
+          heading = "Spectrogram",
           fluidRow(plotOutput(ns("spectrogram"))),
           fluidRow(uiOutput(ns("audio_controls"))),
           fluidRow(
@@ -200,7 +205,8 @@ mod_detections_table_server <- function(id, data) {
         filterable = TRUE,
         resizable = TRUE,
         highlight = TRUE,
-        outlined = TRUE,
+        #outlined = TRUE,
+        borderless = TRUE,
         selection = "single",
         onClick = "select",
         elementId = "detections-list",
