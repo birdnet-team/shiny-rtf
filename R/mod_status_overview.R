@@ -209,8 +209,9 @@ mod_status_overview_server <- function(id, data) {
     bubble_timeline_dats <- reactive({
       req(data$detections)
       data$detections %>%
-        mutate(agg_timeunit = lubridate::floor_date(datetime, unit = "1 hour")) %>%
+        mutate(agg_timeunit = lubridate::floor_date(datetime, unit = "10 min")) %>%
         count(common, agg_timeunit) %>%
+        tidyr::complete(common, agg_timeunit = seq(min(agg_timeunit), max(agg_timeunit), by = "10 min"), fill = list(n = 0L)) %>%
         mutate(common = stringr::str_replace(common, " ", "\n"))
       # %>%
       # group_by(commonn) %>%
@@ -292,8 +293,8 @@ mod_status_overview_server <- function(id, data) {
           height = "100%",
           width = "100%"
           ) %>%
-        e_line(common, legend = FALSE, symbol = "none", lineStyle = list(width = 0.5, color = "lightgrey", opacity = 0.4)) %>%
-        e_scatter(common, size = n, legend = FALSE) %>%
+        #e_line(common, legend = FALSE, symbol = "none", lineStyle = list(width = 0.5, color = "lightgrey", opacity = 0.4)) %>%
+        e_scatter(common, size = n, legend = FALSE, scale = \(x)scales::rescale(x, to = c(1,30))) %>%
         e_x_axis(
           name = "",
           type = "time",
@@ -328,7 +329,15 @@ mod_status_overview_server <- function(id, data) {
             onZero = FALSE
           )
         ) %>%
-        # e_tooltip(triggerOn = "click") %>%
+        e_tooltip(formatter = htmlwidgets::JS("
+              function(params){
+                return('<strong>' + params.name + '</strong>' +
+                        '<br />' + 'Detections: ' + params.value[2] +
+                        '<br />' + 'Datetime: ' + params.value[0]
+                )
+              }
+          ")
+        ) %>%
         e_grid(containLabel = TRUE, left = '2%', top = '10%', right = "5%") %>%
         e_toolbox(show = FALSE) %>%
         e_datazoom(type = "slider", xAxisIndex = 0, start = 100, end = 0, brushSelect = FALSE, height = 20) %>%
