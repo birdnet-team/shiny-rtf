@@ -61,15 +61,15 @@ e_scale_symbol_size <- function(e, width = 3, height = 3) {
   # Return the modified echarts4r object
   return(e)
 }
-
-iris |>
-  dplyr::group_by(Species) |>
-  dplyr::mutate(
-    symbol_width = e_scale(Sepal.Width),
-    symbol_height = e_scale(Sepal.Length)
-  ) |>
-  e_charts_("Sepal.Width") |>
-  e_scatter_("Sepal.Length", size = Sepal.Width, symbol = "rect") |>
-  #e_scale_symbol_size("symbol_width", "symbol_height") |>
-  e_x_axis(min = 1.5) |>
-  e_y_axis(min = 4)
+#
+# iris |>
+#   dplyr::group_by(Species) |>
+#   dplyr::mutate(
+#     symbol_width = e_scale(Sepal.Width),
+#     symbol_height = e_scale(Sepal.Length)
+#   ) |>
+#   e_charts_("Sepal.Width") |>
+#   e_scatter_("Sepal.Length", size = Sepal.Width, symbol = "rect") |>
+#   #e_scale_symbol_size("symbol_width", "symbol_height") |>
+#   e_x_axis(min = 1.5) |>
+#   e_y_axis(min = 4)

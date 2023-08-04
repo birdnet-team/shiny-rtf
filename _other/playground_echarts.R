@@ -36,6 +36,7 @@ dets <- get_detections(url, params = params)
 #   arrange(datetime) %>%
 #   View()
 
+dets |> count(species_code)
 
 # Bubble Plots -----------------------------------------------------------------------------------------------
 timeline_dats <-
@@ -227,3 +228,9 @@ dets |>
   e_tooltip() |>
   e_datazoom(type = "slider", xAxisIndex = 0, start = 100, end = 0, brushSelect = FALSE, height = 20) %>%
   identity()
+
+
+
+# Calendar --------------------------------------------------------------------------------------------------------
+
+
