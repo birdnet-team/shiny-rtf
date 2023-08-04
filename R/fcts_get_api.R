@@ -19,6 +19,7 @@ perform_get_request <- function(url, path, params = NULL) {
       if (is.null(params)) {
         .
       } else {
+        params <- lapply(params, paste, collapse = ",")
         req_url_query(., !!!params)
       }
     })() |>
