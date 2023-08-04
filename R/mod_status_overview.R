@@ -285,16 +285,21 @@ mod_status_overview_server <- function(id, data) {
 
     output$bubble_timeline <- renderEcharts4r({
       req(nrow(bubble_timeline_dats()) > 0)
+      golem::message_dev("NROW BUBBLE DATS")
+      golem::print_dev(nrow(bubble_timeline_dats()))
 
       bubble_timeline_dats() %>%
         group_by(common) %>%
-        e_charts(
-          agg_timeunit,
-          height = "100%",
-          width = "100%"
-          ) %>%
+        e_charts(agg_timeunit,
+                 height = "100%",
+                 width = "70%") %>%
         #e_line(common, legend = FALSE, symbol = "none", lineStyle = list(width = 0.5, color = "lightgrey", opacity = 0.4)) %>%
-        e_scatter(common, size = n, legend = FALSE, scale = \(x)scales::rescale(x, to = c(1,30))) %>%
+        e_scatter(
+          common,
+          size = n,
+          legend = FALSE,
+          scale = \(x)scales::rescale(x, to = c(1, 30))
+        ) %>%
         e_x_axis(
           name = "",
           type = "time",
@@ -302,9 +307,9 @@ mod_status_overview_server <- function(id, data) {
             fontSize = '0.9rem',
             color = "#212529",
             fontFamily = "Arial",
-            fontWeight = 400
+            fontWeight = 400#,            formatter = '{hh}:{mm}'
           )
-          ) %>%
+        ) %>%
         e_y_axis(
           name = "",
           type = "category",
@@ -325,25 +330,51 @@ mod_status_overview_server <- function(id, data) {
             fontWeight = 400
           ),
           axisTick = list(alignWithLabel = TRUE),
-          axisLIne = list(
-            onZero = FALSE
-          )
+          axisLIne = list(onZero = FALSE)
         ) %>%
-        e_tooltip(formatter = htmlwidgets::JS("
+        e_tooltip(
+          formatter = htmlwidgets::JS(
+            "
               function(params){
                 return('<strong>' + params.name + '</strong>' +
                         '<br />' + 'Detections: ' + params.value[2] +
                         '<br />' + 'Datetime: ' + params.value[0]
                 )
               }
-          ")
+          "
+          )
         ) %>%
-        e_grid(containLabel = TRUE, left = '2%', top = '10%', right = "5%") %>%
+        e_grid(
+          containLabel = TRUE,
+          left = '2%',
+          top = '10%',
+          right = "7%"
+        ) %>%
         e_toolbox(show = FALSE) %>%
-        e_datazoom(type = "slider", xAxisIndex = 0, start = 100, end = 0, brushSelect = FALSE, height = 20) %>%
-        #e_datazoom(type = "inside", yAxisIndex = 0, start = 1, end = 15, zoomLock = TRUE, moveOnMouseWheel = TRUE) %>%
-        e_datazoom(type = "slider", yAxisIndex = 0, start = 0, end = 25, zoomLock = FALSE, brushSelect = FALSE, width = 20)
-
+        e_datazoom(
+          type = "slider",
+          xAxisIndex = 0,
+          start = 100,
+          end = 0,
+          brushSelect = FALSE,
+          height = 20,
+          showDetail = FALSE,
+          realtime = ifelse(nrow(bubble_timeline_dats()) < 5000, TRUE, FALSE),
+          minValueSpan = 3600 * 1000
+        ) %>%
+        e_datazoom(
+          type = "slider",
+          yAxisIndex = 0,
+          start = 0,
+          end = 25,
+          minValueSpan = 5,
+          zoomLock = FALSE,
+          brushSelect = FALSE,
+          showDataShadow = FALSE,
+          textStyle = list(overflow = "truncate"),
+          width = 30,
+          realtime = ifelse(nrow(bubble_timeline_dats()) < 3000, TRUE, FALSE)
+        )
     })
   })
 }
