@@ -32,7 +32,7 @@ mod_detections_table_ui <- function(id) {
         shinyWidgets::panel(
           heading = "Spectrogram",
           div(
-            p("No detection selected or available"),
+            p("No media selected or available"),
             style = "margin-top: 5rem; margin-bottom: 5rem; text-align: center; font-size: larger;color: #b1b1b1;"
           )
         )
