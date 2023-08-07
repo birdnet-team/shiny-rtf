@@ -14,7 +14,11 @@
 #' @import shinyWidgets reactable
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
+
+
   tagList(fluidRow(
+     downloadButton(ns("download"), label = "Download CSV"),
+
     column(
       7,
       shinyWidgets::panel(
@@ -96,6 +100,8 @@ mod_detections_table_ui <- function(id) {
 mod_detections_table_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+
+
 
     # detection data to be displayed in table
     table_dats <- reactive({
@@ -197,6 +203,21 @@ mod_detections_table_server <- function(id, data) {
     }) |>
       bindCache(audio_file_path())
 
+#start download data
+    dataset <- reactive({
+      table_dats()
+    })
+
+    # Download data as CSV
+    output$download <- downloadHandler(
+      filename = function() {
+        "detections_data.csv"
+      },
+      content = function(file) {
+        write.csv(dataset(), file, row.names = FALSE)  # Call the reactive expression as a function to get the data frame
+      }
+    )
+#end download data
 
     output$table <- renderReactable({
       reactable(
@@ -235,10 +256,10 @@ mod_detections_table_server <- function(id, data) {
           species_code = colDef(show = FALSE),
           snippet_path = colDef(show = FALSE),
           uid = colDef(show = FALSE),
-          sound_play = colDef(show = FALSE),
+          sound_play = colDef(show = TRUE),
           lat = colDef(show = FALSE),
           lon = colDef(show = FALSE),
-          confirmed = colDef(show = FALSE),
+          confirmed = colDef(show = TRUE),
           confidence = colDef(
             format = colFormat(digits = 2, locales = "en-US"),
             maxWidth = 150,
@@ -254,6 +275,9 @@ mod_detections_table_server <- function(id, data) {
         )
       )
     })
+
+
+
   })
 }
 
