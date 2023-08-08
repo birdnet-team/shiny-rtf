@@ -1,101 +1,102 @@
-#' detections_table UI Function
-#'
-#' @description A shiny Module.
-#'
-#' @param id,input,output,session Internal parameters for {shiny}.
-#'
-#' @noRd
-#'
-#' @importFrom shiny NS tagList
-#' @import reactable
-#' @import httr2
-#' @import dplyr lubridate
-#' @import av
-#' @import shinyWidgets reactable
+library(shiny)
+library(shinyWidgets)
+library(leaflet)
+library(reactable)
+library(dplyr)
+library(lubridate)
+library(av)
+library(reactable)
+
+# detections_table UI-Funktion
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
-  tagList(fluidRow(
-    column(
-      7,
-      shinyWidgets::panel(
-        extra = reactableOutput(ns(
-          "table"
-        )),
-        heading = "Detections"
-      )
-    ),
-    column(
-      5,
-      conditionalPanel(
-        ns = ns,
-        condition = "!output.show_spec_panel",
+  tagList(
+    fluidRow(
+      column(
+        7,
         shinyWidgets::panel(
-          heading = "Spectrogram",
-          div(
-            p("No media selected or available"),
-            style = "margin-top: 5rem; margin-bottom: 5rem; text-align: center; font-size: larger;color: #b1b1b1;"
-          )
+          extra = reactableOutput(ns("table")),
+          heading = "Detections"
         )
       ),
-      conditionalPanel(
-        ns = ns,
-        condition = "output.show_spec_panel",
-        shinyWidgets::panel(
-          heading = "Spectrogram",
-          fluidRow(plotOutput(ns("spectrogram"))),
-          fluidRow(uiOutput(ns("audio_controls"))),
-          fluidRow(
-            column(
-              4,
-              sliderInput(
-                ns("max_freq"),
-                label = "max. frequency (kHz)",
-                ticks = FALSE,
-                value = 24,
-                max = 24,
-                min = 1,
-                step = 0.5
-              )
-            ),
-            column(
-              4,
-              selectInput(
-                inputId = ns("fft_window_length"),
-                label = "window length (FFT)",
-                choices = c("512", "1024", "2048"),
-                multiple = FALSE,
-                selectize = TRUE,
-                selected = "1024"
-              )
-            ),
-            column(
-              4,
-              sliderInput(
-                ns("fft_overlap"),
-                label = "overlap (FFT)",
-                ticks = FALSE,
-                value = 0.75,
-                min = 0.60,
-                max = 0.98,
-                step = 0.01
+      column(
+        5,
+        leafletOutput(ns("map")),
+        conditionalPanel(
+          ns = ns,
+          condition = "!output.show_spec_panel",
+          shinyWidgets::panel(
+            heading = "Spectrogram",
+            div(
+              p("No media selected or available"),
+              style = "margin-top: 5rem; margin-bottom: 5rem; text-align: center; font-size: larger;color: #b1b1b1;"
+            )
+          )
+        ),
+        conditionalPanel(
+          ns = ns,
+          condition = "output.show_spec_panel",
+          shinyWidgets::panel(
+            heading = "Spectrogram",
+            fluidRow(plotOutput(ns("spectrogram"))),
+            fluidRow(uiOutput(ns("audio_controls"))),
+            fluidRow(
+              column(
+                4,
+                sliderInput(
+                  ns("max_freq"),
+                  label = "max. frequency (kHz)",
+                  ticks = FALSE,
+                  value = 24,
+                  max = 24,
+                  min = 1,
+                  step = 0.5
+                )
+              ),
+              column(
+                4,
+                selectInput(
+                  inputId = ns("fft_window_length"),
+                  label = "window length (FFT)",
+                  choices = c("512", "1024", "2048"),
+                  multiple = FALSE,
+                  selectize = TRUE,
+                  selected = "1024"
+                )
+              ),
+              column(
+                4,
+                sliderInput(
+                  ns("fft_overlap"),
+                  label = "overlap (FFT)",
+                  ticks = FALSE,
+                  value = 0.75,
+                  min = 0.60,
+                  max = 0.98,
+                  step = 0.01
+                )
               )
             )
           )
         )
       )
     )
-  ))
+  )
 }
 
-#' detections_table Server Functions
-#'
-#' @param id Internal parameter for {shiny}
-#' @param detections reactive
-#'
-#' @noRd
+# detections_table Server-Funktionen
 mod_detections_table_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+
+    output$map <- renderLeaflet({
+      req(data$detections)
+      leaflet() %>%
+        addTiles(group = "OpenStreetMap") %>%
+        addProviderTiles("Esri.WorldImagery", group = "Satellit") %>%
+        addMarkers(data = data$detections, lat = ~lat, lng = ~lon,
+                   popup = ~paste("Species: ", common, "<br>Time: ", datetime))
+    })
 
     # detection data to be displayed in table
     table_dats <- reactive({
@@ -113,7 +114,6 @@ mod_detections_table_server <- function(id, data) {
         dplyr::relocate(common, .after = recorder_id)
     })
 
-
     # Debounce Input --------------------------------------------------------------------------------------------------
     input_fft_overlap <- reactive({
       input$fft_overlap
@@ -123,7 +123,6 @@ mod_detections_table_server <- function(id, data) {
       input$max_freq
     }) |> debounce(200)
 
-
     # URL and FFT data ------------------------------------------------------------------------------------------------
     audio_selected_detection <- reactiveValues(
       url = NULL,
@@ -132,8 +131,7 @@ mod_detections_table_server <- function(id, data) {
 
     # url pointing to the audio file of the detection that is selected in the table
     selected_audio_url <- reactive({
-      selected_row_index <-
-        reactable::getReactableState("table", "selected", session)
+      selected_row_index <- reactable::getReactableState("table", "selected", session)
       table_dats() |>
         slice(selected_row_index) |>
         pull("sound_play")
@@ -150,12 +148,11 @@ mod_detections_table_server <- function(id, data) {
       req(selected_audio_url())
       destfile <- tempfile(fileext = ".ogg")
       download.file(selected_audio_url(), destfile, mode = "wb")
-
       destfile
     }) |>
       bindCache(selected_audio_url())
 
-    # load fft data when new detecions gets selected
+    # load fft data when new detections gets selected
     fft_data <- reactive({
       req(audio_file_path())
       av::read_audio_fft(
@@ -175,6 +172,17 @@ mod_detections_table_server <- function(id, data) {
         max = spec_sr
       )
     }) |> bindEvent(fft_data(), once = TRUE)
+
+    observeEvent(input$table_select, {
+      selected_row_index <- input$table_select
+      if (!is.null(selected_row_index)) {
+        selected_lat <- table_dats()$lat[selected_row_index]
+        selected_lon <- table_dats()$lon[selected_row_index]
+        leafletProxy("map") %>%
+          clearMarkers() %>%
+          addMarkers(lat = selected_lat, lng = selected_lon, popup = "Selected Detection")
+      }
+    })
 
     # render spectrogram
     output$spectrogram <- renderPlot({
@@ -196,7 +204,6 @@ mod_detections_table_server <- function(id, data) {
       # HTML(paste0('<audio controls><source src="', selected_audio_url(), '" type="audio/wav"></audio>'))
     }) |>
       bindCache(audio_file_path())
-
 
     output$table <- renderReactable({
       reactable(
@@ -236,8 +243,8 @@ mod_detections_table_server <- function(id, data) {
           snippet_path = colDef(show = FALSE),
           uid = colDef(show = FALSE),
           sound_play = colDef(show = FALSE),
-          lat = colDef(show = FALSE),
-          lon = colDef(show = FALSE),
+          lat = colDef(show = TRUE),
+          lon = colDef(show = TRUE),
           confirmed = colDef(show = FALSE),
           confidence = colDef(
             format = colFormat(digits = 2, locales = "en-US"),
@@ -257,8 +264,27 @@ mod_detections_table_server <- function(id, data) {
   })
 }
 
-## To be copied in the UI
-# mod_detections_table_ui("detections_table_1")
+# Datenquelle für die Beispielanwendung
+table_dats <- list(detections = data.frame(
+  recorder_id = 1:10,
+  datetime = seq(from = as.POSIXct("2023-08-01"), by = "hours", length.out = 10),
+  start = 0:9,
+  lat = runif(10, 48, 52),
+  lon = runif(10, 8, 12),
+  common = sample(c("Sparrow", "Robin", "Finch"), 10, replace = TRUE),
+  #common = sample(c("Hawaiin Goose"), 10, replace = TRUE),
+  uid = sample(100:999, 10, replace = TRUE)
+))
+#
+# # Definieren Sie Shiny UI
+# ui <- fluidPage(
+#   mod_detections_table_ui("detections_table_1")
+# )
+#
+# # Definieren Sie Shiny Server
+# server <- function(input, output, session) {
+#   mod_detections_table_server("detections_table_1", data)
+# }
 
-## To be copied in the server
-# mod_detections_table_server("detections_table_1")
+# Starten Sie die Shiny-App
+# shinyApp(ui, server)
