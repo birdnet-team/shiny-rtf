@@ -11,6 +11,7 @@ library(reactable)
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
   tagList(
+    actionButton(inputId = ns("confirm_button"), label = "Confirm", icon = icon("check")),
     fluidRow(
       column(
         7,
@@ -137,6 +138,7 @@ mod_detections_table_server <- function(id, data) {
         pull("sound_play")
     })
 
+
     # set condition to show spectrogram panel
     output$show_spec_panel <- reactive({
       isTruthy(selected_audio_url())
@@ -184,7 +186,30 @@ mod_detections_table_server <- function(id, data) {
       }
     })
 
-    # render spectrogram
+
+#validation
+    observeEvent(input$confirm_button, {
+      selected_row_index <- reactable::getReactableState("detections-list", "selected", session)
+      if (!is.null(selected_row_index)) {
+        table_dats()$detections$confirmed[selected_row_index] <- TRUE
+
+        # Update the reactive value to trigger the table rendering
+        table_dats(table_dats())
+
+        showNotification("Confirmation updated", type = "message")
+      }
+    })
+
+
+
+    observe({
+      #browser("recorder_id")
+      cat("Confirm button clicked\n")
+      cat("confirm_button value: ", input$confirm_button, "\n")
+      cat("selected_row_index value: ", input$detections_list_select, "\n")
+    })
+
+# render spectrogram
     output$spectrogram <- renderPlot({
       req(fft_data())
       plot_av_fft(fft_data(), kHz = TRUE, max.freq = input_max_freq())
@@ -204,6 +229,7 @@ mod_detections_table_server <- function(id, data) {
       # HTML(paste0('<audio controls><source src="', selected_audio_url(), '" type="audio/wav"></audio>'))
     }) |>
       bindCache(audio_file_path())
+
 
     output$table <- renderReactable({
       reactable(
@@ -245,7 +271,7 @@ mod_detections_table_server <- function(id, data) {
           sound_play = colDef(show = FALSE),
           lat = colDef(show = TRUE),
           lon = colDef(show = TRUE),
-          confirmed = colDef(show = FALSE),
+          confirmed = colDef(show = TRUE),
           confidence = colDef(
             format = colFormat(digits = 2, locales = "en-US"),
             maxWidth = 150,
@@ -272,9 +298,10 @@ table_dats <- list(detections = data.frame(
   lat = runif(10, 48, 52),
   lon = runif(10, 8, 12),
   common = sample(c("Sparrow", "Robin", "Finch"), 10, replace = TRUE),
-  #common = sample(c("Hawaiin Goose"), 10, replace = TRUE),
-  uid = sample(100:999, 10, replace = TRUE)
+  uid = sample(100:999, 10, replace = TRUE),
+  confirmed = logical(10)
 ))
+
 #
 # # Definieren Sie Shiny UI
 # ui <- fluidPage(
