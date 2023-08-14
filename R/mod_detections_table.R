@@ -10,7 +10,14 @@ library(reactable)
 # detections_table UI-Funktion
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
+
+
+
+
   tagList(
+    uiOutput("ja"), HTML("<br/>"),
+    uiOutput("nein"), HTML("<br/>"),
+    uiOutput("vllt"),
     actionButton(inputId = ns("confirm_button"), label = "Confirm", icon = icon("check")),
     fluidRow(
       column(
@@ -85,11 +92,53 @@ mod_detections_table_ui <- function(id) {
   )
 }
 
-# detections_table Server-Funktionen
 mod_detections_table_server <- function(id, data) {
-  moduleServer(id, function(input, output, session) {
-    ns <- session$ns
+      moduleServer(id, function(input, output, session) {
+        ns <- session$ns
 
+        output$ja <- renderUI({
+          actionButton(
+            "ja",
+            label = "Ja"
+          )
+        })
+
+        table_selected <- reactive(getReactableState("detections-list", "selected"))
+
+        observeEvent(input$ja, {
+          df <- table_dats()
+          ind <- table_selected()
+          df[ind, "confirmed"] <- TRUE
+          updateReactable("detections-list", data = df)
+        })
+
+        output$nein <- renderUI({
+          actionButton(
+            "nein",
+            label = "Nein"
+          )
+        })
+
+        observeEvent(input$nein, {
+          df <- table_dats()
+          ind <- table_selected()
+          df[ind, "confirmed"] <- FALSE
+          updateReactable("detections-list", data = df)
+        })
+
+        output$vllt <- renderUI({
+          actionButton(
+            "vllt",
+            label = "Vielleicht"
+          )
+        })
+
+        observeEvent(input$vllt, {
+          df <- table_dats()
+          ind <- table_selected()
+          df[ind, "confirmed"] <- NA
+          updateReactable("detections-list", data = df)
+        })
     output$map <- renderLeaflet({
       req(data$detections)
       leaflet() %>%
@@ -187,27 +236,27 @@ mod_detections_table_server <- function(id, data) {
     })
 
 
-#validation
-    observeEvent(input$confirm_button, {
-      selected_row_index <- reactable::getReactableState("detections-list", "selected", session)
-      if (!is.null(selected_row_index)) {
-        table_dats()$detections$confirmed[selected_row_index] <- TRUE
-
-        # Update the reactive value to trigger the table rendering
-        table_dats(table_dats())
-
-        showNotification("Confirmation updated", type = "message")
-      }
-    })
-
-
-
-    observe({
-      #browser("recorder_id")
-      cat("Confirm button clicked\n")
-      cat("confirm_button value: ", input$confirm_button, "\n")
-      cat("selected_row_index value: ", input$detections_list_select, "\n")
-    })
+# #validation
+#     observeEvent(input$confirm_button, {
+#       selected_row_index <- reactable::getReactableState("detections-list", "selected", session)
+#       if (!is.null(selected_row_index)) {
+#         table_dats()$detections$confirmed[selected_row_index] <- TRUE
+#
+#         # Update the reactive value to trigger the table rendering
+#         table_dats(table_dats())
+#
+#         showNotification("Confirmation updated", type = "message")
+#       }
+#     })
+#
+#
+#
+#     observe({
+#       #browser("recorder_id")
+#       cat("Confirm button clicked\n")
+#       cat("confirm_button value: ", input$confirm_button, "\n")
+#       cat("selected_row_index value: ", input$detections_list_select, "\n")
+#     })
 
 # render spectrogram
     output$spectrogram <- renderPlot({
@@ -271,7 +320,18 @@ mod_detections_table_server <- function(id, data) {
           sound_play = colDef(show = FALSE),
           lat = colDef(show = TRUE),
           lon = colDef(show = TRUE),
-          confirmed = colDef(show = TRUE),
+          confirmed = colDef(
+            show = TRUE,
+            cell = function(value, metadata) {
+              if (isTRUE(value)) {
+                tagList(tags$span(style = "color: green;", "Ja"))
+              } else if (isFALSE(value)) {
+                tagList(tags$span(style = "color: red;", "Nein"))
+              } else {
+                tagList(tags$span(style = "color: orange;", "Vielleicht"))
+              }
+            }
+          ),
           confidence = colDef(
             format = colFormat(digits = 2, locales = "en-US"),
             maxWidth = 150,
