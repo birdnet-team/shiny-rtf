@@ -15,9 +15,11 @@ mod_detections_table_ui <- function(id) {
 
 
   tagList(
-    uiOutput("ja"), HTML("<br/>"),
-    uiOutput("nein"), HTML("<br/>"),
-    uiOutput("vllt"),
+    # uiOutput("ja"), HTML("<br/>"),
+    # uiOutput("nein"), HTML("<br/>"),
+    # uiOutput("vllt"),
+    actionButton(inputId = ns("ja"), label = "Ja", icon = icon("check")),
+    actionButton(inputId = ns("nein"), label = "Nein", icon = icon("check")),
     actionButton(inputId = ns("confirm_button"), label = "Confirm", icon = icon("check")),
     fluidRow(
       column(
@@ -93,52 +95,143 @@ mod_detections_table_ui <- function(id) {
 }
 
 mod_detections_table_server <- function(id, data) {
-      moduleServer(id, function(input, output, session) {
-        ns <- session$ns
+  moduleServer(id, function(input, output, session) {
+    ns <- session$ns
 
-        output$ja <- renderUI({
-          actionButton(
-            "ja",
-            label = "Ja"
-          )
-        })
+    output$ja <- renderUI({
+      actionButton(
+        "ja",
+        label = "Ja"
+      )
+    })
 
-        table_selected <- reactive(getReactableState("detections-list", "selected"))
+    table_selected <- reactive(getReactableState("detections-list", "selected"))
 
-        observeEvent(input$ja, {
-          df <- table_dats()
-          ind <- table_selected()
-          df[ind, "confirmed"] <- TRUE
-          updateReactable("detections-list", data = df)
-        })
+    # observeEvent(input$ja, {
+    #   df <- table_dats()
+    #   ind <- table_selected()
+    #   df[ind, "confirmed"] <- TRUE
+    #   updateReactable("detections-list", data = df)
+    #   print("tabelle aktualisiert")
+    # })
 
-        output$nein <- renderUI({
-          actionButton(
-            "nein",
-            label = "Nein"
-          )
-        })
+    # observeEvent(input$ja, {
+    #   df <- table_dats()
+    #   ind <- table_selected()
+    #   if (is.null(ind)) {
+    #     df[ind, "confirmed"] <- TRUE
+    #     updateReactable("detections-list", data = df)
+    #     print("Tabelle aktualisiert und validiert")
+    #   }
+    # })
 
-        observeEvent(input$nein, {
-          df <- table_dats()
-          ind <- table_selected()
-          df[ind, "confirmed"] <- FALSE
-          updateReactable("detections-list", data = df)
-        })
+    # observeEvent(input$ja, {
+    #   selected_row_index <- reactable::getReactableState("detections-list", "selected", session)
+    #   if (is.null(selected_row_index)) {
+    #     df <- table_dats()
+    #     df$confirmed[selected_row_index] <- "ja"
+    #     updateReactable("detections-list", data = df)
+    #     print(table_selected)
+    #     print("Wert von confirmed auf 'Ja' gesetzt")
+    #   }
 
-        output$vllt <- renderUI({
-          actionButton(
-            "vllt",
-            label = "Vielleicht"
-          )
-        })
+#XX#       observeEvent(input$ja, {
+#         selected_row_index <- reactable::getReactableState("detections-list", "selected", session)
+#         if (is.null(selected_row_index)) {
+#           df <- table_dats()
+#           df$confirmed[selected_row_index] <- TRUE
+#           updateReactable("detections-list", data = df)
+#           print("Wert von confirmed auf 'Ja' gesetzt")
+#         }
+# })
 
-        observeEvent(input$vllt, {
-          df <- table_dats()
-          ind <- table_selected()
-          df[ind, "confirmed"] <- NA
-          updateReactable("detections-list", data = df)
-        })
+    # observeEvent(input$ja, {
+    #   selected_row_index <- reactable::getReactableState("detections-list", "selected", session)
+    #   if (!is.null(selected_row_index)) {
+    #     df <- table_dats()
+    #     df$confirmed[selected_row_index] <- TRUE
+    #     updateReactable("detections-list", data = df)
+    #     print("Wert von confirmed auf 'Ja' gesetzt")
+    #   }
+    # })
+
+    # observeEvent(input$ja, {
+    #   selected_row_index <- reactable::getReactableState("detections-list", "selected", session)
+    #   if (!is.null(selected_row_index)) {
+    #     df <- table_dats()
+    #     df$confirmed[selected_row_index] <- TRUE
+    #     print("Vor dem Aktualisieren:")
+    #     print(df)  # Überprüfen Sie den Zustand des DataFrames
+    #     updateReactable("detections-list", data = df)
+    #     print("Nach dem Aktualisieren:")
+    #     print(table_dats())  # Überprüfen Sie den Zustand der reaktiven Daten
+    #     print("Wert von confirmed auf 'Ja' gesetzt")
+    #   }
+    # })
+
+
+      # if (is.null(selected_row_index)) { #which value backend????
+      #   df <- table_dats()
+      #   #df$confirmed[selected_row_index] == "Nein"
+      #   df$confirmed[selected_row_index] <- TRUE
+      #   print("kills it")
+      #   updateReactable("detections-list", data = df)
+      #   #table_dats(data.frame(detections = df))
+      #   print("Wert von confirmed auf 'Ja' gesetzt")
+      # }
+    #})
+
+    # observeEvent(input$ja, {
+    #   df <- table_dats()  # Holen Sie die Daten aus der reaktiven Liste
+    #   ind <- table_selected()
+    #   df[ind, "confirmed"] <- TRUE
+    #   table_dats() <- df  # Aktualisieren Sie die reaktive Liste
+    #   # updateReactable("detections-list", data = df)  # Diese Zeile ist nicht mehr notwendig
+    # })
+
+
+    # observeEvent(input$ja, {
+    #   selected_row_index <- reactable::getReactableState("detections-list", "selected", session)
+    #   if (!is.null(selected_row_index)) {
+    #     df <- table_dats()
+    #     print("why")
+    #     if (df$confirmed[selected_row_index] == "Nein" ) {
+    #       print("its no")
+    #       df$confirmed[selected_row_index] <- "Ja"
+    #       updateReactable("detections-list", data = df)
+    #       print("Wert von confirmed auf 'Ja' gesetzt")
+    #     }
+    #   }
+    # })
+
+    output$nein <- renderUI({
+      actionButton(
+        "nein",
+        label = "Nein"
+      )
+    })
+
+    observeEvent(input$nein, {
+      df <- table_dats()
+      ind <- table_selected()
+      df[ind, "confirmed"] <- FALSE
+      updateReactable("detections-list", data = df)
+    })
+
+    output$vllt <- renderUI({
+      actionButton(
+        "vllt",
+        label = "Vielleicht"
+      )
+    })
+
+    observeEvent(input$vllt, {
+      df <- table_dats()
+      ind <- table_selected()
+      df[ind, "confirmed"] <- NA
+      updateReactable("detections-list", data = df)
+    })
+
     output$map <- renderLeaflet({
       req(data$detections)
       leaflet() %>%
@@ -236,29 +329,29 @@ mod_detections_table_server <- function(id, data) {
     })
 
 
-# #validation
-#     observeEvent(input$confirm_button, {
-#       selected_row_index <- reactable::getReactableState("detections-list", "selected", session)
-#       if (!is.null(selected_row_index)) {
-#         table_dats()$detections$confirmed[selected_row_index] <- TRUE
-#
-#         # Update the reactive value to trigger the table rendering
-#         table_dats(table_dats())
-#
-#         showNotification("Confirmation updated", type = "message")
-#       }
-#     })
-#
-#
-#
-#     observe({
-#       #browser("recorder_id")
-#       cat("Confirm button clicked\n")
-#       cat("confirm_button value: ", input$confirm_button, "\n")
-#       cat("selected_row_index value: ", input$detections_list_select, "\n")
-#     })
+    # #validation
+    #     observeEvent(input$confirm_button, {
+    #       selected_row_index <- reactable::getReactableState("detections-list", "selected", session)
+    #       if (!is.null(selected_row_index)) {
+    #         table_dats()$detections$confirmed[selected_row_index] <- TRUE
+    #
+    #         # Update the reactive value to trigger the table rendering
+    #         table_dats(table_dats())
+    #
+    #         showNotification("Confirmation updated", type = "message")
+    #       }
+    #     })
+    #
+    #
+    #
+    #     observe({
+    #       #browser("recorder_id")
+    #       cat("Confirm button clicked\n")
+    #       cat("confirm_button value: ", input$confirm_button, "\n")
+    #       cat("selected_row_index value: ", input$detections_list_select, "\n")
+    #     })
 
-# render spectrogram
+    # render spectrogram
     output$spectrogram <- renderPlot({
       req(fft_data())
       plot_av_fft(fft_data(), kHz = TRUE, max.freq = input_max_freq())
@@ -279,6 +372,25 @@ mod_detections_table_server <- function(id, data) {
     }) |>
       bindCache(audio_file_path())
 
+
+    # observe(
+    #   table_selected <- function(row_index, selected_rows) {
+    #     # Überprüfen, ob die gegebene Zeilennummer in den ausgewählten Zeilen enthalten ist
+    #     return(row_index %in% selected_rows)
+    #
+   # }
+    # )
+
+# table_selected <- function(row_index, selected_rows) {
+#   return(row_index %in% selected_rows)
+# }
+   # table_selected <- reactive(getReactableState("detections-list", "selected"))
+
+
+    # table_selected <- reactive({
+    #   selected_row_index <- reactable::getReactableState("detections-list", "selected", session)
+    #   return(selected_row_index)
+    # })
 
     output$table <- renderReactable({
       reactable(
@@ -322,16 +434,41 @@ mod_detections_table_server <- function(id, data) {
           lon = colDef(show = TRUE),
           confirmed = colDef(
             show = TRUE,
-            cell = function(value, metadata) {
-              if (isTRUE(value)) {
-                tagList(tags$span(style = "color: green;", "Ja"))
-              } else if (isFALSE(value)) {
-                tagList(tags$span(style = "color: red;", "Nein"))
-              } else {
-                tagList(tags$span(style = "color: orange;", "Vielleicht"))
-              }
+            cell = JS(
+              "function(value, metadata, rowInfo, columnInfo) {
+            var row = metadata.row;
+            var col = metadata.col;
+            var rowSelected = table.getSelectedRows();
+
+            if (selectedRows.includes(row) && document.getElementById('ja').value > 0) {
+              return '<span style=\"color: green;\">Ja</span>';
+            } else if (value === false) {
+              return '<span style=\"color: red;\">Nein</span>';
+            } else {
+              return value;
             }
+          }"
+            )
           ),
+
+
+         #  confirmed = colDef(
+         #    #name = confirmed,
+         #    show = TRUE,
+         #    cell = function(value, metadata) {
+         #      ####PROB: Spalte "confirmed" kommt leer aus dem BackEnd an
+         #
+         #   #if (isTRUE(table_selected)){
+         #      if (input$ja) {
+         #        tagList(tags$span(style = "color: green;", "Ja"))
+         #
+         #      } else if (isFALSE(value)) {
+         #        tagList(tags$span(style = "color: red;", "Nein"))
+         #
+         #      }
+         #     #}
+         #  }
+         # ),
           confidence = colDef(
             format = colFormat(digits = 2, locales = "en-US"),
             maxWidth = 150,
@@ -349,29 +486,3 @@ mod_detections_table_server <- function(id, data) {
     })
   })
 }
-
-# Datenquelle für die Beispielanwendung
-table_dats <- list(detections = data.frame(
-  recorder_id = 1:10,
-  datetime = seq(from = as.POSIXct("2023-08-01"), by = "hours", length.out = 10),
-  start = 0:9,
-  lat = runif(10, 48, 52),
-  lon = runif(10, 8, 12),
-  common = sample(c("Sparrow", "Robin", "Finch"), 10, replace = TRUE),
-  uid = sample(100:999, 10, replace = TRUE),
-  confirmed = logical(10)
-))
-
-#
-# # Definieren Sie Shiny UI
-# ui <- fluidPage(
-#   mod_detections_table_ui("detections_table_1")
-# )
-#
-# # Definieren Sie Shiny Server
-# server <- function(input, output, session) {
-#   mod_detections_table_server("detections_table_1", data)
-# }
-
-# Starten Sie die Shiny-App
-# shinyApp(ui, server)
