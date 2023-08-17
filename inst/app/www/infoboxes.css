@@ -1,3 +1,32 @@
+.neutral-button {
+  background-color: #eaecee;
+  border: none;
+  color: black;
+}
+
+.correct-button {
+  background-color: turquoise;
+  border: none;
+  color: white;
+}
+
+.incorrect-button {
+  background-color: red;
+  border: none;
+  color: white;
+}
+
+.verified-button {
+  background-color: turquoise;
+  border: none;
+  color: white;
+}
+
+.verify-button {
+  background-color: #eaecee;
+  border: none;
+  color: black;
+}
 
 .info-box > div:nth-child(2) > p:nth-child(3) {
   margin-bottom: 4px;
