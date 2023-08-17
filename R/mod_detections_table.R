@@ -12,7 +12,12 @@
 #' @import dplyr
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
-  tagList(reactableOutput(ns("table")))
+  tagList(
+    reactableOutput(ns("table")),
+    actionButton(ns("Correct"), "correct"),
+    actionButton(ns("Incorrect"), "incorrect"),
+    actionButton(ns("SetToBanana"), "set_to_banana")
+  )
 }
 
 #' detections_table Server Functions
@@ -29,7 +34,8 @@ mod_detections_table_server <- function(id, data) {
       req(data$detections)
       data$detections %>%
         mutate(
-          datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime))
+          datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime)),
+          verification = row_number()  # Add a unique row ID
         ) %>%
         dplyr::relocate(common, .after = recorder_id)
     })
@@ -41,6 +47,7 @@ mod_detections_table_server <- function(id, data) {
         filterable = TRUE,
         resizable = TRUE,
         highlight = TRUE,
+        selection = "single",
         outlined = TRUE,
         compact = TRUE,
         elementId = "detections-list",
@@ -52,7 +59,6 @@ mod_detections_table_server <- function(id, data) {
           ),
           datetime = colDef(
             name = "Datetime"
-            #format = colFormat(datetime = TRUE)
           ),
           start = colDef(show = FALSE),
           end = colDef(show = FALSE),
@@ -82,28 +88,87 @@ mod_detections_table_server <- function(id, data) {
                 return rows.filter(function(row) {
                   return row.values[columnId] >= filterValue
                 })
-              }"),
+              }")
+          ),
+          verification = colDef(
+            name = "Verification",
+            html = TRUE,
+
           )
-        ),
-        onClick = JS("function(rowInfo, column) {
-            // Only handle click events on the 'details' column
-            //if (column.id !== 'audio') {
-            //  return
-            //}
-
-            // Display an alert dialog with details for the row
-            //window.alert('Details for row ' + rowInfo.index + ':\\n' + rowInfo.values.audio_url)
-            var audio_url = 'https://reco.birdnet.tucmi.de/reco/det/' + rowInfo.values.uid + '/audio'
-            var audio = new Audio(audio_url);
-            audio.play();
-
-            // Send the click event to Shiny, which will be available in input$show_details
-            // Note that the row index starts at 0 in JavaScript, so we add 1
-            //if (window.Shiny) {
-            //  Shiny.setInputValue('show_details', { index: rowInfo.index + 1 }, { priority: 'event' })
-            //}
-          }")
+        )
       )
+    })
+
+    observeEvent(input$Correct, {
+      verification_data <- table_dats()
+      selected_row <- input$table_rows_selected
+      if (!is.null(selected_row)) {
+        verification_data$verification[selected_row] <- selected_row + 1  # Set the value to row number
+        updateReactable(session, "detections-list", verification_data)
+      }
+    })
+
+    observeEvent(input$Incorrect, {
+      verification_data <- table_dats()
+      selected_row <- input$table_rows_selected
+      if (!is.null(selected_row)) {
+        verification_data$verification[selected_row] <- selected_row + 1  # Set the value to row number
+        updateReactable(session, "detections-list", verification_data)
+      }
+    })
+
+    observeEvent(input$SetToBanana, {
+      verification_data <- table_dats()
+      selected_row <- input$table_rows_selected
+      if (!is.null(selected_row)) {
+        verification_data$verification[selected_row] <- selected_row + 1  # Set the value to row number
+        updateReactable(session, "detections-list", verification_data)
+      }
+    })
+
+    # JavaScript functions...
+    session$onFlushed(function() {
+      session$sendCustomMessage("shinyjs-extend",
+                                list(
+                                  code = '
+        $(document).on("click", ".verify-button", function() {
+          var rowIndex = parseInt($(this).data("reactable-row"));
+          var isCorrect = confirm("Is this detection correct?");
+          verifyRow(rowIndex, isCorrect);
+        });
+
+        $(document).on("shiny:connected", function() {
+          // Set button styles on initial load
+          $(".verify-button").addClass("neutral-button");
+        });
+
+        function verifyRow(index, isCorrect) {
+          var table = document.getElementById("detections-list");
+          var rowData = table.reactable.sortedData[index];
+          var xxx = rowData.xxx;
+
+          // Send verification status to server using Shiny
+          Shiny.setInputValue("verify_detection", { xxx: xxx, isCorrect: isCorrect });
+        }
+
+        Shiny.addCustomMessageHandler("update_button_style", function(data) {
+          var rowIndex = data.index;
+          var isCorrect = data.isCorrect;
+          var button = $(".verify-button").filter(function() {
+            return $(this).data("reactable-row") == rowIndex.toString();
+          });
+          button.removeClass("neutral-button");
+          button.removeClass("correct-button");
+          button.removeClass("incorrect-button");
+          if (isCorrect) {
+            button.addClass("correct-button");
+          } else {
+            button.addClass("incorrect-button");
+          }
+        });
+      '
+                                )
+      );
     })
   })
 }
