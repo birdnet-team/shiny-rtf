@@ -1,26 +1,19 @@
-#' detections_table UI Function
-#'
-#' @description A shiny Module.
-#'
-#' @param id,input,output,session Internal parameters for {shiny}.
-#'
-#' @noRd
-#'
-#' @importFrom shiny NS tagList
-#' @import reactable
-#' @import httr2
-#' @import dplyr lubridate
-#' @import av
-#' @import shinyWidgets reactable
-
+library(shiny)
+library(shinyWidgets)
 library(dplyr)
-
-
+library(av)
+library(reactable)
+library(crosstalk)
 
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
   tagList(
     fluidRow(
+      titlePanel("Verification Option"),
+      reactableOutput("table"),
+      actionButton("correctButton", "Correct"),
+      actionButton("incorrectButton", "Incorrect"),
+      actionButton("setToNAButton", "Set to NA"),
       column(
         7,
         shinyWidgets::panel(
@@ -90,44 +83,26 @@ mod_detections_table_ui <- function(id) {
           )
         )
       )
-  ),
-  titlePanel("Verification Option"),
-  reactableOutput("table"),
-  actionButton("correctButton", "Correct"),
-  actionButton("incorrectButton", "Incorrect"),
-  actionButton("setToNAButton", "Set to NA")
+    )
 
   )
 }
 
-
-
-
-
-#' detections_table Server Functions
-#'
-#' @param id Internal parameter for {shiny}
-#' @param detections reactive
-#'
-#' @noRd
 mod_detections_table_server <- function(id, data = rv) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     rv <- reactiveValues(df = data)
 
-
-
     # detection data to be displayed in table
     table_dats <- reactive({
       req(data$detections)
       data$detections %>%
-        mutate(datetime_precise = datetime + seconds(start), ) %>%
+        mutate(datetime_precise = datetime + seconds(start)) %>%
         mutate(
           datetime_precise = strftime(datetime_precise, "%F %T", tz = lubridate::tz(datetime)),
-          verification = row_number(),  # Add a unique row ID
+          verification = "false",  # Initial value as string
           id = row_number(),
-          value = rep(c("A", "B", "C", "D", "E"), length.out = 1852),
-          #value
+          value = rep(c("A", "B", "C", "D", "E"), length.out = nrow(data$detections)),
           sound_play = paste0(
             "https://reco.birdnet.tucmi.de/reco/det/",
             uid,
@@ -137,7 +112,6 @@ mod_detections_table_server <- function(id, data = rv) {
         dplyr::relocate(common, .after = recorder_id)
     })
 
-
     # Debounce Input --------------------------------------------------------------------------------------------------
     input_fft_overlap <- reactive({
       input$fft_overlap
@@ -146,7 +120,6 @@ mod_detections_table_server <- function(id, data = rv) {
     input_max_freq <- reactive({
       input$max_freq
     }) |> debounce(200)
-
 
     # URL and FFT data ------------------------------------------------------------------------------------------------
     audio_selected_detection <- reactiveValues(
@@ -189,8 +162,6 @@ mod_detections_table_server <- function(id, data = rv) {
       )
     })
 
-
-
     # update input$max_freq to half the sample rate
     observe({
       spec_sr <- attr(fft_data(), "sample_rate") / 1000 / 2
@@ -223,126 +194,66 @@ mod_detections_table_server <- function(id, data = rv) {
     }) |>
       bindCache(audio_file_path())
 
-
-    output$table <- renderReactable({
-      reactable(
-        table_dats(),# &
-        #rv$df,
-        defaultSorted = list(datetime_precise = "desc"),
-        filterable = TRUE,
-        resizable = TRUE,
-        highlight = TRUE,
-        #outlined = TRUE,
-        borderless = TRUE,
-        #selection = "single",
-        #onClick = "select",
-        elementId = "detections-list",
-        showPageSizeOptions = TRUE,
-        pageSizeOptions = c(5, 10, 25),
-        defaultPageSize = 10,
-        theme = reactableTheme(
-          rowSelectedStyle = list(backgroundColor = "#eee", boxShadow = "inset 2px 0 0 0 #ffa62d")
-        ),
-        columns = list(
-          .selection = colDef(show = FALSE),
-          recorder_id = colDef(
-            name = "Recorder ID",
-            filterInput = dataListFilter("detections-list")
-          ),
-          id = colDef(show = TRUE,
-                        name = "ID"),
-          value = colDef(name = "Value"),
-          verification = colDef(show = TRUE,
-                                name = "Verification",
-                                html = TRUE),
-          datetime = colDef(show = FALSE),
-          datetime_precise = colDef(name = "Datetime"),
-          start = colDef(show = FALSE),
-          end = colDef(show = FALSE),
-          common = colDef(
-            name = "Species",
-            filterInput = dataListFilter("detections-list")
-          ),
-          snippet_path = colDef(show = FALSE),
-          scientific = colDef(show = FALSE),
-          species_code = colDef(show = FALSE),
-          snippet_path = colDef(show = FALSE),
-          uid = colDef(show = FALSE),
-          sound_play = colDef(show = FALSE),
-          lat = colDef(show = FALSE),
-          lon = colDef(show = FALSE),
-          confirmed = colDef(show = FALSE),
-          confidence = colDef(
-            format = colFormat(digits = 2, locales = "en-US"),
-            maxWidth = 150,
-            filterable = TRUE,
-            filterMethod = JS(
-              "function(rows, columnId, filterValue) {
-                return rows.filter(function(row) {
-                  return row.values[columnId] >= filterValue
-                })
-              }"
-            )
-          )
-        ),
-        selection = "single",
-        onClick = "select",
-      )
-    })
-
-    table_selected <- reactive({
-      getReactableState("table_dats", "selected")
-    })
-
-    observeEvent(input$correctButton, {
-      df <- table_dats
-      ind <- table_selected()
-      df[ind, "verification"] <- "Correct"
-      table_dats <- df
-      updateReactable("table", data = df)
-    })
-
+    table_selected <- reactive(getReactableState("table", "selected"))
 
     observeEvent(input$correctButton, {
       df <- rv$df
       ind <- table_selected()
       df[ind, "verification"] <- "Correct"
-
-      # Hier die "value" Spalte aktualisieren
-      df[ind, "value"] <- LETTERS[ind]
-
       rv$df <- df
       updateReactable("table", data = df)
     })
 
     observeEvent(input$incorrectButton, {
-      df <- table_dats
+      df <- rv$df
       ind <- table_selected()
       df[ind, "verification"] <- "Incorrect"
-      table_dats <- df
+      rv$df <- df
       updateReactable("table", data = df)
     })
 
     observeEvent(input$setToNAButton, {
-      df <- table_dats
+      df <- rv$df
       ind <- table_selected()
       df[ind, "verification"] <- "NA"
-      table_dats <- df
+      rv$df <- df
       updateReactable("table", data = df)
+    })
+
+    output$table <- renderReactable({
+      reactable(
+        #rv$df,
+        table_dats(),
+        defaultSorted = list(datetime_precise = "desc"),
+        filterable = TRUE,
+        resizable = TRUE,
+        highlight = TRUE,
+        selection = "single",
+        onClick = "select",
+        elementId = "detections-list",
+        showPageSizeOptions = TRUE,
+        pageSizeOptions = c(5, 10, 25),
+        defaultPageSize = 10
+      )
     })
 
 
   })
 }
 
-table <- data.frame(
-  id = 1:5000,
-  value = rep(c("A", "B", "C", "D", "E"), length.out = 5000),
-  verification = rep("false", 5000)
+data <- data.frame(
+  detections = data.frame(
+    id = 1:5000,
+    value = rep(c("A", "B", "C", "D", "E"), length.out = 5000)
+  )
 )
 
-## To be copied in the UI
-# mod_detections_table_ui("detections_table_1")
-
-## To be copied in the server
-# mod_detections_table_server("detections_table_1")
+# ui <- fluidPage(
+#   mod_detections_table_ui("detections_table_1")
+# )
+#
+# server <- function(input, output, session) {
+#   mod_detections_table_server("detections_table_1", data)
+# }
+#
+# shinyApp(ui, server)
