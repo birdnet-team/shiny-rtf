@@ -12,80 +12,97 @@
 #' @import dplyr lubridate
 #' @import av
 #' @import shinyWidgets reactable
+
+library(dplyr)
+
+
+
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
-  tagList(fluidRow(
-    column(
-      7,
-      shinyWidgets::panel(
-        extra = reactableOutput(ns(
-          "table"
-        )),
-        heading = "Detections"
+  tagList(
+    fluidRow(
+      column(
+        7,
+        shinyWidgets::panel(
+          extra = reactableOutput(ns("table")),
+          heading = "Detections"
+        )
       )
     ),
-    column(
-      5,
-      conditionalPanel(
-        ns = ns,
-        condition = "!output.show_spec_panel",
-        shinyWidgets::panel(
-          heading = "Spectrogram",
-          div(
-            p("No media selected or available"),
-            style = "margin-top: 5rem; margin-bottom: 5rem; text-align: center; font-size: larger;color: #b1b1b1;"
+    fluidRow(
+      column(
+        5,
+        conditionalPanel(
+          ns = ns,
+          condition = "!output.show_spec_panel",
+          shinyWidgets::panel(
+            heading = "Spectrogram",
+            div(
+              p("No media selected or available"),
+              style = "margin-top: 5rem; margin-bottom: 5rem; text-align: center; font-size: larger;color: #b1b1b1;"
+            )
           )
-        )
-      ),
-      conditionalPanel(
-        ns = ns,
-        condition = "output.show_spec_panel",
-        shinyWidgets::panel(
-          heading = "Spectrogram",
-          fluidRow(plotOutput(ns("spectrogram"))),
-          fluidRow(uiOutput(ns("audio_controls"))),
-          fluidRow(
-            column(
-              4,
-              sliderInput(
-                ns("max_freq"),
-                label = "max. frequency (kHz)",
-                ticks = FALSE,
-                value = 24,
-                max = 24,
-                min = 1,
-                step = 0.5
-              )
-            ),
-            column(
-              4,
-              selectInput(
-                inputId = ns("fft_window_length"),
-                label = "window length (FFT)",
-                choices = c("512", "1024", "2048"),
-                multiple = FALSE,
-                selectize = TRUE,
-                selected = "1024"
-              )
-            ),
-            column(
-              4,
-              sliderInput(
-                ns("fft_overlap"),
-                label = "overlap (FFT)",
-                ticks = FALSE,
-                value = 0.75,
-                min = 0.60,
-                max = 0.98,
-                step = 0.01
+        ),
+        conditionalPanel(
+          ns = ns,
+          condition = "output.show_spec_panel",
+          shinyWidgets::panel(
+            heading = "Spectrogram",
+            fluidRow(plotOutput(ns("spectrogram"))),
+            fluidRow(uiOutput(ns("audio_controls"))),
+            fluidRow(
+              column(
+                4,
+                sliderInput(
+                  ns("max_freq"),
+                  label = "max. frequency (kHz)",
+                  ticks = FALSE,
+                  value = 24,
+                  max = 24,
+                  min = 1,
+                  step = 0.5
+                )
+              ),
+              column(
+                4,
+                selectInput(
+                  inputId = ns("fft_window_length"),
+                  label = "window length (FFT)",
+                  choices = c("512", "1024", "2048"),
+                  multiple = FALSE,
+                  selectize = TRUE,
+                  selected = "1024"
+                )
+              ),
+              column(
+                4,
+                sliderInput(
+                  ns("fft_overlap"),
+                  label = "overlap (FFT)",
+                  ticks = FALSE,
+                  value = 0.75,
+                  min = 0.60,
+                  max = 0.98,
+                  step = 0.01
+                )
               )
             )
           )
         )
       )
-    )
-  ))
+  ),
+  titlePanel("Verification Option"),
+  reactableOutput("table"),
+  actionButton("correctButton", "Correct"),
+  actionButton("incorrectButton", "Incorrect"),
+  actionButton("setToNAButton", "Set to NA")
+
+  )
 }
+
+
+
+
 
 #' detections_table Server Functions
 #'
@@ -93,9 +110,12 @@ mod_detections_table_ui <- function(id) {
 #' @param detections reactive
 #'
 #' @noRd
-mod_detections_table_server <- function(id, data) {
+mod_detections_table_server <- function(id, data = rv) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    rv <- reactiveValues(df = data)
+
+
 
     # detection data to be displayed in table
     table_dats <- reactive({
@@ -104,6 +124,10 @@ mod_detections_table_server <- function(id, data) {
         mutate(datetime_precise = datetime + seconds(start), ) %>%
         mutate(
           datetime_precise = strftime(datetime_precise, "%F %T", tz = lubridate::tz(datetime)),
+          verification = row_number(),  # Add a unique row ID
+          id = row_number(),
+          value = rep(c("A", "B", "C", "D", "E"), length.out = 1852),
+          #value
           sound_play = paste0(
             "https://reco.birdnet.tucmi.de/reco/det/",
             uid,
@@ -165,6 +189,8 @@ mod_detections_table_server <- function(id, data) {
       )
     })
 
+
+
     # update input$max_freq to half the sample rate
     observe({
       spec_sr <- attr(fft_data(), "sample_rate") / 1000 / 2
@@ -200,15 +226,16 @@ mod_detections_table_server <- function(id, data) {
 
     output$table <- renderReactable({
       reactable(
-        table_dats(),
+        table_dats(),# &
+        #rv$df,
         defaultSorted = list(datetime_precise = "desc"),
         filterable = TRUE,
         resizable = TRUE,
         highlight = TRUE,
         #outlined = TRUE,
         borderless = TRUE,
-        selection = "single",
-        onClick = "select",
+        #selection = "single",
+        #onClick = "select",
         elementId = "detections-list",
         showPageSizeOptions = TRUE,
         pageSizeOptions = c(5, 10, 25),
@@ -222,6 +249,12 @@ mod_detections_table_server <- function(id, data) {
             name = "Recorder ID",
             filterInput = dataListFilter("detections-list")
           ),
+          id = colDef(show = TRUE,
+                        name = "ID"),
+          value = colDef(name = "Value"),
+          verification = colDef(show = TRUE,
+                                name = "Verification",
+                                html = TRUE),
           datetime = colDef(show = FALSE),
           datetime_precise = colDef(name = "Datetime"),
           start = colDef(show = FALSE),
@@ -251,11 +284,62 @@ mod_detections_table_server <- function(id, data) {
               }"
             )
           )
-        )
+        ),
+        selection = "single",
+        onClick = "select",
       )
     })
+
+    table_selected <- reactive({
+      getReactableState("table_dats", "selected")
+    })
+
+    observeEvent(input$correctButton, {
+      df <- table_dats
+      ind <- table_selected()
+      df[ind, "verification"] <- "Correct"
+      table_dats <- df
+      updateReactable("table", data = df)
+    })
+
+
+    observeEvent(input$correctButton, {
+      df <- rv$df
+      ind <- table_selected()
+      df[ind, "verification"] <- "Correct"
+
+      # Hier die "value" Spalte aktualisieren
+      df[ind, "value"] <- LETTERS[ind]
+
+      rv$df <- df
+      updateReactable("table", data = df)
+    })
+
+    observeEvent(input$incorrectButton, {
+      df <- table_dats
+      ind <- table_selected()
+      df[ind, "verification"] <- "Incorrect"
+      table_dats <- df
+      updateReactable("table", data = df)
+    })
+
+    observeEvent(input$setToNAButton, {
+      df <- table_dats
+      ind <- table_selected()
+      df[ind, "verification"] <- "NA"
+      table_dats <- df
+      updateReactable("table", data = df)
+    })
+
+
   })
 }
+
+table <- data.frame(
+  id = 1:5000,
+  value = rep(c("A", "B", "C", "D", "E"), length.out = 5000),
+  verification = rep("false", 5000)
+)
 
 ## To be copied in the UI
 # mod_detections_table_ui("detections_table_1")
