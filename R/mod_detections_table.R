@@ -294,8 +294,6 @@ mod_detections_table_server <- function(id, data) {
   })
 }
 
-#is needed for combining 2 tables as a empty placeholder
-xxx <- data.frame(
-
-)
+#is needed for combining 2 tables as a empty placeholder for a data frame to realize the function, it will lose function without it
+xxx <- data.frame()
 
