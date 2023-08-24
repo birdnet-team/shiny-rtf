@@ -106,12 +106,11 @@ mod_detections_table_server <- function(id, data) {
     table_dats <- reactive({
       req(data$detections)
       data$detections %>%
-        mutate(datetime_precise = datetime + seconds(start), ) %>%
+        #mutate(datetime_precise = datetime + seconds(start), ) %>%
         mutate(
+          #datetime_precise = strftime(datetime_precise, "%F %T", tz = lubridate::tz(datetime)),
+          datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime)),
           verification = c("unproved"), #set to not proofed
-          #value = c(""),
-          #id = row_number(),
-          datetime_precise = strftime(datetime_precise, "%F %T", tz = lubridate::tz(datetime)),
           sound_play = paste0(
             "https://reco.birdnet.tucmi.de/reco/det/",
             uid,
@@ -255,18 +254,21 @@ mod_detections_table_server <- function(id, data) {
                   .selection = colDef(show = TRUE),
                   recorder_id = colDef(
                     name = "Recorder ID",
-                    filterInput = dataListFilter("detections-list")
+                    filterInput = dataListFilter("detections-list"),
+                    filterable = TRUE
                   ),
                   verification = colDef(
                     name = "Verification",
-                    html = TRUE
+                    html = TRUE,
+                    filterable = TRUE
                   ),
-                  datetime_precise = colDef(name = "Datetime"),
+                  datetime = colDef(name = "Datetime", filterable = TRUE),
                   start = colDef(show = FALSE),
                   end = colDef(show = FALSE),
                   common = colDef(
                     name = "Species",
-                    filterInput = dataListFilter("detections-list")
+                    filterInput = dataListFilter("detections-list"),
+                    filterable = TRUE
                   ),
                   snippet_path = colDef(show = FALSE),
                   scientific = colDef(show = FALSE),
@@ -275,9 +277,10 @@ mod_detections_table_server <- function(id, data) {
                   sound_play = colDef(show = FALSE),
                   lat = colDef(show = FALSE),
                   lon = colDef(show = FALSE),
-                  confirmed = colDef(show = FALSE),
+
                   confidence = colDef(
-                    format = colFormat(digits = 2, locales = "en-US"),
+                    name = "Confidence",
+                    #format = colFormat(digits = 2, locales = "en-US"),
                     maxWidth = 150,
                     filterable = TRUE,
                     filterMethod = JS(
@@ -286,12 +289,13 @@ mod_detections_table_server <- function(id, data) {
                       return row.values[columnId] >= filterValue
                     })
                   }"
+                    )
+                  ),
+                  confirmed = colDef(show = FALSE)
+               )
             )
-          )
-        )
-      )
+       })
     })
-  })
 }
 
 #is needed for combining 2 tables as a empty placeholder for a data frame to realize the function, it will lose function without it
