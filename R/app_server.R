@@ -38,6 +38,10 @@ app_server <- function(input, output, session) {
   mod_detections_table_server("detections_table_1", data_filtered)
 
 
+  # Phenology -------------------------------------------------------------------------------------------------------
+  mod_phenology_server("phenology_1", data = data_filtered, url = url)
+
+
   # Health ----------------------------------------------------------------------------------------------------------
   mod_health_server("health_1", data_filtered)
 
