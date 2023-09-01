@@ -18,8 +18,8 @@ recorders <- get_recorders(url = url)
 
 # Detections ------------------------------------------------------------------------------------------------------
 
-species <- c("hawama")
-# species <- "sheowl"
+# species <- c("hawama")
+species <- "afrsil1"
 # params <- list("datetime__gte" = "2023-07-28", "species_code" = species, "recorder_id" = recorders$recorder_id[1])
 # get_detections(url, params = params)
 
@@ -34,15 +34,19 @@ dets <- lapply(recorders$recorder_id[c(1,4)], function(x) {
 calendar_dats <-
   dets |>
   filter(confidence > 0.9) |>
-  dplyr::mutate(datetime = lubridate::force_tz(datetime, "US/Hawaii")) |>
-  mutate(agg_timeunit = lubridate::floor_date(datetime, unit = "10 mins")) |>
+  mutate(
+    datetime = lubridate::force_tz(datetime, "US/Hawaii"),
+    datetime_call = datetime + lubridate::seconds(start),
+    agg_timeunit = lubridate::floor_date(datetime_call, unit = "10 mins")
+  ) |>
   count(agg_timeunit) |>
-  #count(recorder_id, species_code, agg_timeunit) |>
   # fill in "time slots" that are missing in the sequence by recorder
-  #group_by(recorder_id) |>
-  #tidyr::complete(species_code, agg_timeunit = seq(min(agg_timeunit), max(agg_timeunit), by = "10 min"), fill = list(n = 0L)) |>
-  tidyr::complete(agg_timeunit = seq(ymd_hms("2023-01-01 00:00:00"), ymd_hms("2023-12-31 23:59:59"), by = "10 min"), fill = list(n = 0L)) |>
-  #ungroup() |>
+  tidyr::complete(agg_timeunit = seq(
+    ymd_hms("2023-01-01 00:00:00"),
+    ymd_hms("2023-12-31 23:59:59"),
+    by = "10 min"
+  ),
+  fill = list(n = 0L)) |>
   mutate(
     date = lubridate::date(agg_timeunit),
     time = hms::as_hms(agg_timeunit),
