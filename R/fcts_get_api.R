@@ -1,3 +1,19 @@
+#' Extract error message from JSON body of an HTTP response
+#'
+#' @param resp An HTTP response object.
+#' @return A named character vector representing the flattened JSON content of the HTTP response body.
+#' @examples
+#' \dontrun{
+#' # Assuming an HTTP response object 'response' with a JSON error body
+#' error_body <- ecopi_error_body(response)
+#' }
+#' @export
+api_error_body <- function(resp) {
+  resp |>
+    httr2::resp_body_json() |>
+    unlist()
+}
+
 #' Perform get request
 #'
 #' @param url base URL to api
@@ -14,6 +30,8 @@
 perform_get_request <- function(url, path, params = NULL) {
   api_response <-
     request(url) |>
+    req_user_agent("r-api") |>
+    req_error(body = api_error_body) |>
     req_url_path_append(path) |>
     (\(.) {
       if (is.null(params)) {
@@ -43,7 +61,8 @@ resp_body_json_to_df <- function(api_response) {
   api_response |>
     resp_body_json() |>
     data.table::rbindlist() |>
-    tibble::as_tibble()
+    tibble::as_tibble() |>
+    identity()
 }
 
 
@@ -69,20 +88,54 @@ get_detections <- function(url, params = NULL) {
 
   api_data <-
     api_response |>
-    resp_body_json_to_df() |>
-    rename(recorder_id = recorder_id_id) |>
-    mutate(
-      datetime = lubridate::ymd_hms(datetime),
-      start = as.numeric(start),
-      end = as.numeric(end),
-      confidence = as.numeric(confidence),
-      lat = as.numeric(lat),
-      lon = as.numeric(lon)
-    ) %>%
-    arrange(datetime)
+    resp_body_json_to_df()
+  # test if all columns are there
+  all_cols <- length(api_data) == length(expected_detections_response)
 
-  return(api_data)
+  # test variable names
+  all_names <- all(names(api_data) %in% names(expected_detections_response))
+
+  # test classes of variables
+  classes_api_data <- sapply(api_data, class)
+  classes_expected <- sapply(expected_detections_response, class)
+  all_classes <-  all(classes_api_data == classes_expected)
+
+  if (all(all_cols, all_names, all_classes)) {
+    dats <-
+      api_data |>
+      rename(recorder_id = recorder_id_id) |>
+      mutate(
+        datetime = lubridate::ymd_hms(datetime),
+        start = as.numeric(start),
+        end = as.numeric(end),
+        confidence = as.numeric(confidence),
+        lat = as.numeric(lat),
+        lon = as.numeric(lon)
+      ) %>%
+      arrange(datetime)
+    return(dats)
+  } else {
+    warning("Response data didnt match expected response")
+    expected_detections_response |>
+      rename(recorder_id = recorder_id_id)
+  }
 }
+
+expected_detections_response <-
+  data.frame(
+    uid = character(0),
+    recorder_id_id = character(0),
+    datetime = character(0),
+    start = numeric(0),
+    end = numeric(0),
+    species_code = character(0),
+    confidence = numeric(0),
+    confirmed = logical(0),
+    lat = numeric(0),
+    lon = numeric(0),
+    snippet_path = character(0)
+  )
+
 
 
 
