@@ -84,7 +84,7 @@ mod_status_overview_ui <- function(id) {
                 style = "height:45vh",
                 echarts4rOutput(ns("bubble_timeline"), width = "100%", height = "100%")
               ),
-          footer = "Detections per hour.\nCircle sizes are scaled within species and are not comparable between species."
+          footer = "Detections per 10 minutes.\nCircle sizes are scaled within species and are not comparable between species."
         )
         # div(
         #   class = "headless-box",
