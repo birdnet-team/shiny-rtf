@@ -9,9 +9,18 @@
 #' @importFrom shiny NS tagList
 #' @import suncalc
 #' @import echarts4r
+#' @import waiter
 mod_phenology_ui <- function(id) {
   ns <- NS(id)
   tagList(
+    waiter::use_waiter(),
+    # waiter::autoWaiter(
+    #   id = ns("phenology_plot_div"),
+    #   html = tagList(
+    #     waiter::spin_loaders(15, color = "gray")
+    #   ),
+    #   color = waiter::transparent(.5)
+    # ),
     fluidRow(column(
       6,
       shinyWidgets::panel(
@@ -43,6 +52,7 @@ mod_phenology_ui <- function(id) {
       8,
       shinyWidgets::panel(
         div(
+          id = ns("phenology_plot_div"),
           style = "height:70vh",
           echarts4rOutput(
             ns("phenology_plot"),
@@ -58,15 +68,36 @@ mod_phenology_ui <- function(id) {
 #' phenology Server Functions
 #'
 #' @noRd
+#' @import waiter
 mod_phenology_server <- function(id, data, url) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    input_confidence_d <- reactive({input$confidence}) |> debounce(500)
+
+    input_confidence_d <- reactive({
+      input$confidence
+    }) |> debounce(500)
+
+    # w <- waiter::Waiter$new(
+    #   id = c(ns("phenology_plot_div"), ns("phenology_plot_div")),
+    #   html = tagList(
+    #     waiter::spin_loaders(15, color = "gray")
+    #   ),
+    #   color = waiter::transparent(.5)
+    # )
 
     # download
     detections <- reactive({
       req(input$species_filter)
+
+      waiter::waiter_show(
+        id = c(ns("phenology_plot_div")),
+        html = tagList(
+          waiter::spin_loaders(15, color = "gray")
+        ),
+        color = waiter::transparent(.5)
+      )
+
       selected_species_code <-
         birdnames$code[birdnames$common == input$species_filter]
       golem::print_dev(selected_species_code)
@@ -77,6 +108,8 @@ mod_phenology_server <- function(id, data, url) {
       dets <- lapply(data$recorders$recorder_id, function(x) {
         get_detections(url, params = c(params, "recorder_id" = x))
       }) |> do.call(what = rbind, args = _)
+
+      waiter::waiter_hide(id = ns("phenology_plot_div"))
       return(dets)
     }) |>
       bindCache(input$species_filter) |>
