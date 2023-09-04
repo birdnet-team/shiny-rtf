@@ -34,6 +34,7 @@ app_ui <- function(request) {
       dashboardSidebar(
         sidebarMenu(
           menuItem("Overview", tabName = "overview", icon = icon("home")),
+          menuItem("Phenology", tabName = "phenology", icon = icon("chart-column")),
           menuItem("Detections", tabName = "detections", icon = icon("music")),
           menuItem("Health", tabName = "health", icon = icon("wave-square"))
         )
@@ -43,6 +44,11 @@ app_ui <- function(request) {
           tabItem(
             tabName = "overview",
             mod_status_overview_ui("status_overview_1"),
+          ),
+          tabItem(
+            tabName = "phenology",
+            mod_phenology_ui("phenology_1")
+
           ),
           tabItem(
             tabName = "detections",
