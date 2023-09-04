@@ -14,13 +14,6 @@ mod_phenology_ui <- function(id) {
   ns <- NS(id)
   tagList(
     waiter::use_waiter(),
-    # waiter::autoWaiter(
-    #   id = ns("phenology_plot_div"),
-    #   html = tagList(
-    #     waiter::spin_loaders(15, color = "gray")
-    #   ),
-    #   color = waiter::transparent(.5)
-    # ),
     fluidRow(column(
       6,
       shinyWidgets::panel(
@@ -77,14 +70,6 @@ mod_phenology_server <- function(id, data, url) {
     input_confidence_d <- reactive({
       input$confidence
     }) |> debounce(500)
-
-    # w <- waiter::Waiter$new(
-    #   id = c(ns("phenology_plot_div"), ns("phenology_plot_div")),
-    #   html = tagList(
-    #     waiter::spin_loaders(15, color = "gray")
-    #   ),
-    #   color = waiter::transparent(.5)
-    # )
 
     # download
     detections <- reactive({
