@@ -12,6 +12,7 @@
 #' @import dplyr lubridate
 #' @import av
 #' @import shinyWidgets reactable
+
 mod_detections_table_ui <- function(id) {
   ns <- NS(id)
   tagList(fluidRow(
@@ -21,6 +22,9 @@ mod_detections_table_ui <- function(id) {
         extra = reactableOutput(ns(
           "table"
         )),
+        actionButton(ns("correctButton"), "Correct"),
+        actionButton(ns("incorrectButton"), "Incorrect"),
+        actionButton(ns("setToNAButton"), "Set to NA"),
         heading = "Detections"
       )
     ),
@@ -96,14 +100,17 @@ mod_detections_table_ui <- function(id) {
 mod_detections_table_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    rv <- reactiveValues(df = xxx)
 
     # detection data to be displayed in table
     table_dats <- reactive({
       req(data$detections)
       data$detections %>%
-        mutate(datetime_precise = datetime + seconds(start), ) %>%
+        #mutate(datetime_precise = datetime + seconds(start), ) %>%
         mutate(
-          datetime_precise = strftime(datetime_precise, "%F %T", tz = lubridate::tz(datetime)),
+          #datetime_precise = strftime(datetime_precise, "%F %T", tz = lubridate::tz(datetime)),
+          datetime = strftime(datetime, "%F %T", tz = lubridate::tz(datetime)),
+          verification = c("unproved"), #set to not proofed
           sound_play = paste0(
             "https://reco.birdnet.tucmi.de/reco/det/",
             uid,
@@ -197,68 +204,100 @@ mod_detections_table_server <- function(id, data) {
     }) |>
       bindCache(audio_file_path())
 
+    #verification function (mwr changes)
+    table_selected <- reactive(getReactableState("table", "selected", session))
+
+    observeEvent(input$correctButton, {
+      print("clicked")
+      ind <- reactable::getReactableState("table", "selected", session)
+      if (!is.null(ind)) {
+        df <- table_dats()
+        df[ind, "verification"] <- "correct"
+        rv$df <- df
+        updateReactable("table", data = df)  # Corrected argument name here
+      }
+    })
+
+    observeEvent(input$incorrectButton, {
+      ind <- reactable::getReactableState("table", "selected", session)
+      if (!is.null(ind)) {
+        df <- table_dats()
+        df[ind, "verification"] <- "Incorrect"
+        rv$df <- df
+        updateReactable("table", data = df)
+      }
+    })
+
+    observeEvent(input$setToNAButton, {
+      ind <- reactable::getReactableState("table", "selected", session)
+      if (!is.null(ind)) {
+        df <- table_dats()
+        df[ind, "verification"] <- "NA"
+        rv$df <- df
+        updateReactable("table", data = df)
+      }
+    })
 
     output$table <- renderReactable({
-      reactable(
-        table_dats(),
-        defaultSorted = list(datetime_precise = "desc"),
-        filterable = TRUE,
-        resizable = TRUE,
-        highlight = TRUE,
-        #outlined = TRUE,
-        borderless = TRUE,
-        selection = "single",
-        onClick = "select",
-        elementId = "detections-list",
-        showPageSizeOptions = TRUE,
-        pageSizeOptions = c(5, 10, 25),
-        defaultPageSize = 10,
-        theme = reactableTheme(
-          rowSelectedStyle = list(backgroundColor = "#eee", boxShadow = "inset 2px 0 0 0 #ffa62d")
-        ),
-        columns = list(
-          .selection = colDef(show = FALSE),
-          recorder_id = colDef(
-            name = "Recorder ID",
-            filterInput = dataListFilter("detections-list")
-          ),
-          datetime = colDef(show = FALSE),
-          datetime_precise = colDef(name = "Datetime"),
-          start = colDef(show = FALSE),
-          end = colDef(show = FALSE),
-          common = colDef(
-            name = "Species",
-            filterInput = dataListFilter("detections-list")
-          ),
-          snippet_path = colDef(show = FALSE),
-          scientific = colDef(show = FALSE),
-          species_code = colDef(show = FALSE),
-          snippet_path = colDef(show = FALSE),
-          uid = colDef(show = FALSE),
-          sound_play = colDef(show = FALSE),
-          lat = colDef(show = FALSE),
-          lon = colDef(show = FALSE),
-          confirmed = colDef(show = FALSE),
-          confidence = colDef(
-            format = colFormat(digits = 2, locales = "en-US"),
-            maxWidth = 150,
-            filterable = TRUE,
-            filterMethod = JS(
-              "function(rows, columnId, filterValue) {
-                return rows.filter(function(row) {
-                  return row.values[columnId] >= filterValue
-                })
-              }"
-            )
-          )
-        )
+      combined_data <- bind_rows(rv$df, table_dats())
+      reactable(combined_data,
+                selection = "single",
+                onClick = "select",
+                elementId = "detections-list",
+                showPageSizeOptions = TRUE,
+                pageSizeOptions = c(5, 10, 25),
+                defaultPageSize = 10,
+                theme = reactableTheme(
+                  rowSelectedStyle = list(backgroundColor = "#eee", boxShadow = "inset 2px 0 0 0 #ffa62d")
+                ),
+                columns = list(
+                  .selection = colDef(show = TRUE),
+                  recorder_id = colDef(
+                    name = "Recorder ID",
+                    filterInput = dataListFilter("detections-list"),
+                    filterable = TRUE
+                  ),
+                  verification = colDef(
+                    name = "Verification",
+                    html = TRUE,
+                    filterable = TRUE
+                  ),
+                  datetime = colDef(name = "Datetime", filterable = TRUE),
+                  start = colDef(show = FALSE),
+                  end = colDef(show = FALSE),
+                  common = colDef(
+                    name = "Species",
+                    filterInput = dataListFilter("detections-list"),
+                    filterable = TRUE
+                  ),
+                  snippet_path = colDef(show = FALSE),
+                  scientific = colDef(show = FALSE),
+                  species_code = colDef(show = FALSE),
+                  uid = colDef(show = FALSE),
+                  sound_play = colDef(show = FALSE),
+                  lat = colDef(show = FALSE),
+                  lon = colDef(show = FALSE),
+
+                  confidence = colDef(
+                    name = "Confidence",
+                    #format = colFormat(digits = 2, locales = "en-US"),
+                    maxWidth = 150,
+                    filterable = TRUE,
+                    filterMethod = JS(
+                      "function(rows, columnId, filterValue) {
+                    return rows.filter(function(row) {
+                      return row.values[columnId] >= filterValue
+                    })
+                  }"
+                    )
+                  ),
+                  confirmed = colDef(show = FALSE)
+                )
       )
     })
   })
 }
 
-## To be copied in the UI
-# mod_detections_table_ui("detections_table_1")
+#is needed for combining 2 tables as a empty placeholder for a data frame to realize the function, it will lose function without it
+xxx <- data.frame()
 
-## To be copied in the server
-# mod_detections_table_server("detections_table_1")
