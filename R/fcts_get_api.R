@@ -11,6 +11,9 @@
 #' perform_get_request("https://reco.birdnet.tucmi.de/reco", "det", list("recorder_id_id" = "BirdNET-HI111"))
 #'
 #' @importFrom httr2 request req_cache req_url_path_append req_url_query req_perform
+
+
+
 perform_get_request <- function(url, path, params = NULL) {
   api_response <-
     request(url) |>
@@ -137,3 +140,40 @@ get_recorders <- function(url, params = NULL) {
   api_response %>%
     resp_body_json_to_df()
 }
+
+#' #################
+#' #' Retrieve images from a given URL
+#' #'
+#' #' @param url The base URL of the API
+#' #' @param folder The folder containing the image
+#' #' @param filename The name of the image file
+#' #'
+#' #' @return Response content (image)
+#' #' @export
+#' #'
+#' #' @examples
+#' #' get_image("https://reco.birdnet.tucmi.de/reco", "Camera/2023-08-23", "HI001_Cam1_2023-08-23_16-10-01.jpg")
+#' get_image <- function(url, folder, filename) {
+#'   full_url <- paste0(url, "/reco/images/", folder, "/", filename)
+#'   response <- httr::GET(full_url)
+#'
+#'   status <- httr::status_code(response)
+#'
+#'   if (status == 200) {
+#'     return(httr::content(response, type = "raw"))
+#'   } else {
+#'     message(paste("Failed to fetch image. Status code:", status))
+#'     content <- httr::content(response, as = "text")
+#'     if (length(content) > 0) {
+#'       message("Response content:", content)
+#'     }
+#'     stop("Failed to fetch image.")
+#'   }
+#' }
+#'
+#'
+#' base_url <- "https://reco.birdnet.tucmi.de/reco"
+#' folder <- "Camera/2023-08-23"
+#' filename <- "HI001_Cam1_2023-08-23_16-10-01.jpg"
+#'
+#' image_data <- get_image(base_url, folder, filename)

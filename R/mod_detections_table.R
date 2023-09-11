@@ -25,7 +25,11 @@ mod_detections_table_ui <- function(id) {
         actionButton(ns("correctButton"), "Correct"),
         actionButton(ns("incorrectButton"), "Incorrect"),
         actionButton(ns("setToNAButton"), "Set to NA"),
-        heading = "Detections"
+        heading = "Detections",
+        #textInput("date", "Gib das Datum ein (z.B. 2023-08-23):"),
+        #textInput("camera", "Gib den Kameranamen ein (z.B. HI001_Cam1):"),
+        actionButton(ns("show_images"), "Bilder anzeigen"),
+        uiOutput(ns("image_previews"))
       )
     ),
     column(
@@ -115,10 +119,52 @@ mod_detections_table_server <- function(id, data) {
             "https://reco.birdnet.tucmi.de/reco/det/",
             uid,
             "/audio"
-          )
+          ),
+          #test for 1 image
+          #camera_url = "https://reco.birdnet.tucmi.de/reco/rec/Camera/2023-08-23/HI001_Cam1_2023-08-23_16-10-01.jpg",
+        #  image_urls = Image_URL,
+          ###proof example
+          #camera path: /volume1/backup/seaweedfs/buckets/birdnet-reco/BirdNET-HI001/Camera/2023-08-23/HI001_Cam1_2023-08-23_16-10-01.jpg
+          #example: HI001_Cam1_2023-08-23_16-10-01.jpg
+#[1] "https://reco.birdnet.tucmi.de/reco/BirdNET-HI001/Camera/2023-08-23/HI001_Cam1"
+#/volume1/backup/seaweedfs/buckets/birdnet-reco/BirdNET-HI001/Camera/2023-08-23/HI001_Cam1_2023-08-23_171001.jpg
+
         ) %>%
         dplyr::relocate(common, .after = recorder_id)
     })
+
+
+    ###Display images
+
+    observeEvent(input$show_images, {
+      if (!is.null(input$show_images)) {
+        #image_urls <- generate_image_urls(input$date, input$camera)
+
+        images <- lapply(function(camera_url) {
+          img <- tags$img(src = camera_url, width = "100%")
+          return(img)
+        })
+
+        output$image_previews <- renderUI({
+          tagList(images)
+        })
+      }
+    })
+
+
+#     generate_image_urls <- function(date, camera) {
+#       base_url <- "https://reco.birdnet.tucmi.de/reco/BirdNET-HI001/Camera/"
+#       folder <- paste("23-08-23/") # get also timestamp
+# #https://reco.birdnet.tucmi.de/reco/BirdNET-HI001/Camera/2023-08-23/HI001_Cam1_2023-08-23_16-10-01.jpg
+#       # URLs der Bilder generieren
+#       image_filenames <- c("HI001_Cam1_2023-08-23_16-10-01.jpg")
+#
+#       image_urls <- file.path(base_url, folder, image_filenames)
+#       return(image_urls)
+#       print("got_image")
+#     }
+
+
 
 
     # Debounce Input --------------------------------------------------------------------------------------------------
@@ -257,6 +303,8 @@ mod_detections_table_server <- function(id, data) {
                     filterInput = dataListFilter("detections-list"),
                     filterable = TRUE
                   ),
+                 # camera_url = colDef(show = TRUE),##
+                 # Image_URL = colDef(show = TRUE),
                   verification = colDef(
                     name = "Verification",
                     html = TRUE,
@@ -274,7 +322,7 @@ mod_detections_table_server <- function(id, data) {
                   scientific = colDef(show = FALSE),
                   species_code = colDef(show = FALSE),
                   uid = colDef(show = FALSE),
-                  sound_play = colDef(show = FALSE),
+                  sound_play = colDef(show = TRUE),
                   lat = colDef(show = FALSE),
                   lon = colDef(show = FALSE),
 
@@ -295,6 +343,10 @@ mod_detections_table_server <- function(id, data) {
                )
             )
        })
+
+
+
+
     })
 }
 
