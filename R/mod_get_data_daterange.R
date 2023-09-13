@@ -25,7 +25,7 @@ mod_get_data_daterange_ui <- function(id) {
         "All" = NULL
       ),
       selected = 12,
-      options = list(`style`="btn-default")
+      options = list(`style` = "btn-default")
     )
   )
 }
