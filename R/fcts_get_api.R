@@ -31,7 +31,7 @@ perform_get_request <- function(url, path, params = NULL) {
   api_response <-
     request(url) |>
     req_user_agent("r-api") |>
-    req_error(body = api_error_body) |>
+    #req_error(body = api_error_body) |>
     req_url_path_append(path) |>
     (\(.) {
       if (is.null(params)) {
