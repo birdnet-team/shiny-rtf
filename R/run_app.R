@@ -7,43 +7,30 @@
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
-run_app <- function(
-    onStart = NULL,
-    options = list(),
-    enableBookmarking = NULL,
-    uiPattern = "/",
-    ...
-){
-
+run_app <- function(onStart = NULL,
+                    options = list(),
+                    enableBookmarking = NULL,
+                    uiPattern = "/",
+                    ...) {
   addResourcePath("www", system.file("app/www", package = "BirdNETmonitor"))
-
-  polished::polished_config(
-    app_name = "BirdNETmonitor",
-    api_key = "1AjI1zHTrL6k2C4qoTQg2aoN9DqcJRmTdc",
-    cookie_expires = 365L
-  )
-  my_custom_sign_in_page <- polished::sign_in_ui_default(
-    sign_in_module = polished::sign_in_module_ui("sign_in", register_link = NULL),
-    color = "#999999",
-    company_name = "BirdNET Monitoring",
-    logo_top = tags$img(
-      src = "www/logo-birdnet_monitoring_web_112x112-01.png",
-      alt = "Logo: BirdNET",
-      style = "width: 155px; margin-top: 30px; margin-bottom: 30px;"
-    ),
-    logo_bottom = tags$img(
-      src = "www/Logo-The CornellLab_KLYCCB-01.png",
-      alt = "Logo: The CornellLab_KLYCCB-01.png",
-      style = "width: 200px; margin-bottom: 15px; padding-top: 15px;"
-    ),
-    icon_href = "www/logo-birdnet_icon.png",
-    #background_image = "www/logo-birdnet_icon.png"
-  )
 
   with_golem_options(
     app = shinyApp(
-      ui = polished::secure_ui(app_ui,sign_in_page_ui = my_custom_sign_in_page),
-      server = polished::secure_server(app_server),
+      ui = shinymanager::secure_app(
+        app_ui,
+        background = "#999999",
+        tags_top = tags$img(
+          src = "www/logo-birdnet_monitoring_XX-03_ocean_blue_fonted-01-01.png",
+          alt = "Logo: BirdNET",
+          style = "width: 155px; margin-top: 30px; margin-bottom: 30px;"
+        ),
+        tags_bottom = div(style = "text-align: center;", tags$img(
+          src = "www/Logo-The CornellLab_KLYCCB-01.png",
+          alt = "Logo: The CornellLab_KLYCCB-01.png",
+          style = "width: 200px; margin-bottom: 15px; padding-top: 15px;"
+        ))
+      ),
+      server = app_server,
       onStart = onStart,
       options = options,
       enableBookmarking = enableBookmarking,
@@ -51,7 +38,4 @@ run_app <- function(
     ),
     golem_opts = list(...)
   )
-
 }
-
-
