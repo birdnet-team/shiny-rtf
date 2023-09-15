@@ -17,7 +17,7 @@ app_ui <- function(request) {
       dashboardHeader(
         title = dashboardBrand("Hawaii Monitoring", image = "www/logo-birdnet_icon.png"),
         compact = TRUE,
-        rightUi =  mod_sign_out_ui("sign_out_1"),
+        rightUi = NULL,
         div(
           mod_global_filter_ui("global_filter_1"),
           style = "margin-right: 12px"

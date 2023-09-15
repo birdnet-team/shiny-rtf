@@ -18,16 +18,65 @@ run_app <- function(onStart = NULL,
     app = shinyApp(
       ui = shinymanager::secure_app(
         app_ui,
-        background = "#999999",
-        tags_top = tags$img(
-          src = "www/logo-birdnet_monitoring_XX-03_ocean_blue_fonted-01-01.png",
-          alt = "Logo: BirdNET",
-          style = "width: 155px; margin-top: 30px; margin-bottom: 30px;"
+        # status = "primary btn-lg",
+        head_auth = tagList(
+          tags$style(
+            "* {
+              text-align: center;
+            }"
+          ),
+          tags$style(
+            ".panel {
+               -webkit-box-shadow:none;
+               box-shadow:2px 2px 8px 1px gray;
+            }"
+          ),
+          tags$style(
+            ".panel-primary {
+              border-color:#4582ec00;
+            }"
+          ),
+          # tags$style(
+          #   "#auth-shinymanager-auth-head {
+          #     visibility: hidden;
+          #     position: relative;
+          #     margin-top: 0px;
+          #     margin-botton: 0px;
+          #   }"
+          # ),
+          tags$style(
+            "#auth-shinymanager-auth-head {
+              display: none;
+            }"
+          ),
+          tags$style(
+            ".form-group.shiny-input-container {
+              width: 100%;
+              display: grid;
+              justify-content: center;
+            }"
+          ),
+          tags$style(
+            "#auth-go_auth {
+              width: 30% !important;
+            }"
+          )
         ),
-        tags_bottom = div(style = "text-align: center;", tags$img(
-          src = "www/Logo-The CornellLab_KLYCCB-01.png",
-          alt = "Logo: The CornellLab_KLYCCB-01.png",
-          style = "width: 200px; margin-bottom: 15px; padding-top: 15px;"
+        tags_top = tags$img(
+          src = "www/logo-birdnet_new.png",
+          alt = "Logo: BirdNET",
+          style = "width: 200px; margin-top: 15px; margin-bottom: 30px;"
+        ),
+        tags_bottom = div(style = "text-align: center;", tagList(
+          tags$img(
+            src = "www/Logo-The CornellLab_KLYCCB-01.png",
+            alt = "Logo: The CornellLab_KLYCCB-01.png",
+            style = "width: 200px; margin-bottom: 10px; padding-top: 10px;"
+          ),
+          tags$img(
+            src = "www/KHS TUC farbig eng.png",
+            style = "width: 200px; margin-bottom: 10px; padding-top: 10px"
+          )
         ))
       ),
       server = app_server,

@@ -10,21 +10,36 @@ app_server <- function(input, output, session) {
 
 
   # Authentication --------------------------------------------------------------------------------------------------
-  # mod_sign_out_server("sign_out_1")
+
+  # authorize <- function(user = NA, password = NA) {
+  #   list(
+  #     "result" = TRUE,
+  #     "expired" = FALSE,
+  #     "authorized" = TRUE,
+  #     "user_info" = user
+  #   )
+  # }
+  res_auth <- shinymanager::secure_server(
+    keep_token = TRUE,
+    check_credentials = function(user = "hans", password) {authorize(user, password)}
+  )
 
   res_auth <- shinymanager::secure_server(
+    keep_token = TRUE,
     check_credentials = shinymanager::check_credentials(
       data.frame(
-        user = c("shiny", "shinymanager"), # mandatory
-        password = c("azerty", "12345"), # mandatory
-        start = c("2019-04-15"), # optinal (all others)
-        expire = c(NA, "2024-12-31"),
-        admin = c(FALSE, TRUE),
+        user = c("Nene"), # mandatory
+        password = c("Branta"), # mandatory
+        #start = c("2019-04-15"), # optinal (all others)
+        #expire = c(NA, "2024-12-31"),
+        #admin = c(FALSE, TRUE),
         comment = "Simple and secure authentification mechanism for single ‘Shiny’ applications.",
         stringsAsFactors = FALSE
       )
     )
   )
+
+
 
   observe({
     golem::message_dev("AUTH")
