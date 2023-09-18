@@ -131,6 +131,7 @@ expected_detections_response <-
     species_code = character(0),
     confidence = numeric(0),
     confirmed = logical(0),
+    species_code_annotated = character(0),
     lat = numeric(0),
     lon = numeric(0),
     snippet_path = character(0)
