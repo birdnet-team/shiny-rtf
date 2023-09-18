@@ -233,6 +233,7 @@ mod_detections_table_server <- function(id, data) {
           snippet_path = colDef(show = FALSE),
           scientific = colDef(show = FALSE),
           species_code = colDef(show = FALSE),
+          species_code_annotated = colDef(show = FALSE),
           snippet_path = colDef(show = FALSE),
           uid = colDef(show = FALSE),
           sound_play = colDef(show = FALSE),
