@@ -18,9 +18,7 @@ mod_detections_table_ui <- function(id) {
     column(
       7,
       shinyWidgets::panel(
-        extra = reactableOutput(ns(
-          "table"
-        )),
+        extra = reactableOutput(ns("table")),
         heading = "Detections"
       )
     ),
@@ -31,8 +29,7 @@ mod_detections_table_ui <- function(id) {
         condition = "!output.show_spec_panel",
         shinyWidgets::panel(
           heading = "Spectrogram",
-          div(
-            p("No media selected or available"),
+          div(p("No media selected or available"),
             style = "margin-top: 5rem; margin-bottom: 5rem; text-align: center; font-size: larger;color: #b1b1b1;"
           )
         )
@@ -80,6 +77,24 @@ mod_detections_table_ui <- function(id) {
                 step = 0.01
               )
             )
+          ),
+          tags$hr(),
+          fluidRow(
+            column(
+              4,
+              selectizeInput(
+                ns("select_new_species_code"),
+                "New species",
+                choices = list(
+                  "birds" = setNames(birdnames$code, birdnames$common) |> (\(x) x[order(names(x))])(),
+                  "other" = setNames(other_categories$code, other_categories$common)
+                )
+              )
+            ),
+            column(
+              4,
+              actionButton(ns("confirm_species"), "save", style = "margin-top: 32px; padding-top: 3px; padding-bottom: 5px;")
+            )
           )
         )
       )
@@ -93,15 +108,27 @@ mod_detections_table_ui <- function(id) {
 #' @param detections reactive
 #'
 #' @noRd
-mod_detections_table_server <- function(id, data) {
+mod_detections_table_server <- function(id, data, url) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    # detection data to be displayed in table
-    table_dats <- reactive({
+
+    # Prepare Data Objects --------------------------------------------------------------------------------------------
+    # reactiveValues when data needs to be changed/overwritten
+    # reactives when its just to retrieve values without modifying the object
+
+    table <- reactiveValues(
+      data = NULL,
+      selected_recording = NULL,
+      init = NULL
+    )
+
+    # table data
+    observe({
       req(data$detections)
-      data$detections %>%
-        mutate(datetime_precise = datetime + seconds(start), ) %>%
+      table$data <-
+        data$detections %>%
+        mutate(datetime_precise = datetime + seconds(start)) %>%
         mutate(
           datetime_precise = strftime(datetime_precise, "%F %T", tz = lubridate::tz(datetime)),
           sound_play = paste0(
@@ -111,7 +138,18 @@ mod_detections_table_server <- function(id, data) {
           )
         ) %>%
         dplyr::relocate(common, .after = recorder_id)
-    })
+    }) |> bindEvent(data$detections)
+
+
+    # Get the table state and the selected row
+    table_state <-
+      reactive(getReactableState("table", session = session))
+    selected_row_nr <-
+      reactive(getReactableState("table", "selected", session = session))
+
+    observe({
+      table$selected_recording <- table$data |> slice(selected_row_nr())
+    }) |> bindEvent(selected_row_nr())
 
 
     # Debounce Input --------------------------------------------------------------------------------------------------
@@ -132,10 +170,9 @@ mod_detections_table_server <- function(id, data) {
 
     # url pointing to the audio file of the detection that is selected in the table
     selected_audio_url <- reactive({
-      selected_row_index <-
-        reactable::getReactableState("table", "selected", session)
-      table_dats() |>
-        slice(selected_row_index) |>
+      req(table$data)
+      table$data |>
+        slice(selected_row_nr()) |>
         pull("sound_play")
     })
 
@@ -198,14 +235,90 @@ mod_detections_table_server <- function(id, data) {
       bindCache(audio_file_path())
 
 
+    # Annotation ------------------------------------------------------------------------------------------------------
+    # observe({
+    #   golem::message_dev("TABLE STATE")
+    #   golem::print_dev(table_state())
+    #   golem::print_dev(selected_row_nr())
+    #   golem::print_dev(table$selected_recording)
+    # })
+
+
+    # initial input update of selected species to confitm
+    observe({
+      selected <-
+        ifelse(
+          table$selected_recording$species_code_annotated == "",
+          table$selected_recording$species_code,
+          table$selected_recording$species_code_annotated
+        )
+      updateSelectizeInput(
+        session = session,
+        inputId = "select_new_species_code",
+        # choices = sort(unique(table$data$common)),
+        selected = selected
+      )
+    }) |> bindEvent(table$selected_recording)
+
+    # patch api and update local data
+    observe({
+      uid <- table$selected_recording$uid
+      resp <- patch_species_annotation(
+        url = url,
+        uid = uid,
+        species_code_annotated = input$select_new_species_code
+      )
+      # resp <- response(418)
+      if (httr2::resp_is_error(resp)) {
+
+        shiny::showNotification(
+          sprintf("Error writting to database:\n %s %s", httr2::resp_status(resp), httr2::resp_status_desc(resp)),
+          type = "error"
+        )
+      } else {
+        table$selected_recording$species_code_annotated <-
+          input$select_new_species_code
+
+        table$selected_recording$common_annotated <-
+          all_categories$common[all_categories$code == input$select_new_species_code]
+
+        table$data <-
+          table$data |>
+          dplyr::rows_update(table$selected_recording, by = "uid")}
+    }) |> bindEvent(input$confirm_species)
+
+    # update table
+    observe({
+      updateReactable(
+        "table",
+        data = table$data,
+        selected = selected_row_nr(),
+        page = table_state()$page
+      )
+    }) |> bindEvent(table$data)
+
+    # Render Table ----------------------------------------------------------------------------------------------------
+    # first render table with empty data.
+    # then update data once. THis is necessary to update data, selection and page late so that we dont loose it when updating data
+    observe({
+      table$init <- table$data |> dplyr::slice(0)
+    }) |> bindEvent(table$data, once = TRUE)
+
+    observe({
+      req(table_state()$page)
+      updateReactable("table", data = table$data)
+    }) |> bindEvent(table_state(), once = TRUE)
+
+
     output$table <- renderReactable({
+      golem::message_dev("DRAWING TABLE")
       reactable(
-        table_dats(),
+        table$init,
         defaultSorted = list(datetime_precise = "desc"),
         filterable = TRUE,
         resizable = TRUE,
         highlight = TRUE,
-        #outlined = TRUE,
+        # outlined = TRUE,
         borderless = TRUE,
         selection = "single",
         onClick = "select",
@@ -232,8 +345,10 @@ mod_detections_table_server <- function(id, data) {
           ),
           snippet_path = colDef(show = FALSE),
           scientific = colDef(show = FALSE),
+          scientific_annotated = colDef(show = FALSE),
           species_code = colDef(show = FALSE),
           species_code_annotated = colDef(show = FALSE),
+          common_annotated = colDef(name = "Annotated", show = TRUE),
           snippet_path = colDef(show = FALSE),
           uid = colDef(show = FALSE),
           sound_play = colDef(show = FALSE),
