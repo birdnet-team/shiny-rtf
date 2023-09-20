@@ -89,7 +89,13 @@ mod_get_data_daterange_server <- function(id, url, tz_server = NULL, tz_out = NU
       data$detections <-
         get_detections(url, params) %>%
         dplyr::mutate(datetime = lubridate::force_tz(datetime, tz_server)) %>%
-        dplyr::left_join(birdnames, by = c("species_code" = "code"))
+        dplyr::left_join(all_categories, by = join_by(species_code == code)) |>
+        dplyr::left_join(
+          all_categories,
+          by = join_by(species_code_annotated == code),
+          suffix = c("", "_annotated")
+        ) |>
+        identity()
     }) %>% bindEvent(datetime_range$start)
 
     # LOGS

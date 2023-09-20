@@ -159,7 +159,7 @@ mod_phenology_server <- function(id, data, url) {
       calendar_dats() |>
         mutate(n = if_else(n == 0, NA, n)) |>
         e_charts(date) |>
-        e_heatmap(time, n, emphasis = list(disabled = TRUE)) |>
+        e_heatmap(time, n, emphasis = list(disabled = TRUE), progressive = 0, animation = FALSE) |>
         e_visual_map(
           n,
           type = "continuous",
@@ -177,8 +177,8 @@ mod_phenology_server <- function(id, data, url) {
               }
         ")) |>
         e_data(suntimes(), date) |>
-        e_line(time_sunset_seconds, symbol = "none", legend = FALSE, y_index = 1, x_index = 0) |>
-        e_line(time_sunrise_seconds, symbol = "none", legend = FALSE, y_index = 1, x_index = 0) |>
+        e_line(time_sunset_seconds, symbol = "none", legend = FALSE, y_index = 1, x_index = 0, animation = FALSE) |>
+        e_line(time_sunrise_seconds, symbol = "none", legend = FALSE, y_index = 1, x_index = 0, animation = FALSE) |>
         e_y_axis(index = 0, type = "category") |>
         e_y_axis(index = 1, type = "value", min = 0, max = 24 * 60 * 60, show = FALSE) |>
         e_x_axis(index = 0, offset = 5, type = "category", margin = 5) |>

@@ -35,7 +35,7 @@ app_server <- function(input, output, session) {
   mod_status_overview_server("status_overview_1", data_filtered)
   # detections_filtered <- mod_filter_detections_server("filter_detections_1", detections)
   #
-  mod_detections_table_server("detections_table_1", data_filtered)
+  mod_detections_table_server("detections_table_1", data_filtered, url = url)
 
 
   # Phenology -------------------------------------------------------------------------------------------------------

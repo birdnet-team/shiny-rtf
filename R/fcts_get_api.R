@@ -115,7 +115,11 @@ get_detections <- function(url, params = NULL) {
       arrange(datetime)
     return(dats)
   } else {
-    warning("Response data didnt match expected response")
+    warning(sprintf("Response data didnt match expected response:\n
+            Same number of cols: %s\n
+            Same col names: %s \n
+            Same classes: %s
+            ", all_cols, all_names, all_classes))
     expected_detections_response |>
       rename(recorder_id = recorder_id_id)
   }
@@ -191,3 +195,61 @@ get_recorders <- function(url, params = NULL) {
   api_response %>%
     resp_body_json_to_df()
 }
+
+
+#' Send a JSON Request to a Given URL with the Specified Data and Resource Template
+#'
+#' This function sends a JSON request to a specified URL, using a specified resource template.
+#' The function constructs the request by adding user-agent, resource template, and request body.
+#'
+#' @param url The target URL to which the request will be sent.
+#' @param data A list containing data to be sent in the request body in JSON format.
+#' @param resource A character string specifying the resource template for the request.
+#' @param ... Additional arguments passed to the `req_template` function.
+#'
+#' @return The result of the performed request.
+#' @export
+#'
+#' @examples
+#' send_json_request("http://example.com/api/", list(name="John"), "POST /users/")
+send_json_request <- function(url, data, resource, ...) {
+  request(url) |>
+    req_user_agent("r-api") |>
+    req_template(resource, ...) |>
+    req_body_json(data) |>
+    # req_dry_run()
+    req_perform(verbosity = 2)
+}
+
+#' Update Species Annotation via a PATCH Request
+#'
+#' This function sends a PATCH request to update the species annotation for a given UID.
+#'
+#' @param url The base URL of the API endpoint.
+#' @param uid A unique identifier for the species record to be updated.
+#' @param confirmed A logical value indicating whether the annotation is confirmed. Default is NULL.
+#' @param species_code_annotated A character string or NULL indicating the species code annotation. Default is NULL.
+#'
+#' @return The result of the performed request.
+#' @export
+#'
+#' @examples
+#' patch_species_annotation("https://reco.birdnet.tucmi.de/reco", "12345", TRUE, "SPEC123")
+#' # check if the recording was successfully updated and visit
+#' # "https://reco.birdnet.tucmi.de/reco/det/{uid}/"
+#'
+patch_species_annotation <-
+  function(url,
+           uid,
+           confirmed = NULL,
+           species_code_annotated = NULL) {
+    resource <- "PATCH /det/{uid}/update/"
+    data <-
+      list(confirmed = confirmed, species_code_annotated = species_code_annotated)
+    send_json_request(
+      url = url,
+      data = data,
+      resource = resource,
+      uid = uid
+    )
+  }
