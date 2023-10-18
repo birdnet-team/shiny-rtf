@@ -13,19 +13,21 @@
 #' @import lubridate
 #' @import av
 #' @import shinyWidgets
+install.packages("png")
 #' @import png
 
 Callcam <- function(id) {
   ns <- NS(id)
-  # title
-  tagList(
-    actionButton(ns("displayBtnUnit1"), "show Picture Unit 1"),
-    actionButton(ns("displayBtnUnit2"), "show Picture Unit 2"),
-    actionButton(ns("displayBtnUnit3"), "show Picture Unit 3"),
-    uiOutput("imageOutputUnit1"),
-    uiOutput("imageOutputUnit2"),
-    uiOutput("imageOutputUnit3")
-  )
+  titlePanel("Observation")
+
+  tagList(fluidRow(
+    actionButton(ns("displayBtnUnit1"), label = "show Picture Unit 1"),
+    actionButton(ns("displayBtnUnit2"), label = "show Picture Unit 2"),
+    actionButton(ns("displayBtnUnit3"), label = "show Picture Unit 3"),
+    uiOutput(ns("imageOutputUnit1")),
+    uiOutput(ns("imageOutputUnit2")),
+    uiOutput(ns("imageOutputUnit3"))
+  ))
 }
 
 Callcam_server <- function(id, data, url) {
