@@ -1,5 +1,3 @@
-#' detections_table UI Function
-#'
 #' @description A shiny Module.
 #'
 #' @param id, input, output, session Internal parameters for {shiny}.
@@ -16,7 +14,8 @@
 install.packages("png")
 #' @import png
 
-Callcam <- function(id) {
+
+callcam <- function(id) {
   ns <- NS(id)
   tagList(
     actionButton(ns("displayBtnUnit1"), "show Picture Unit 1"),
@@ -28,20 +27,18 @@ Callcam <- function(id) {
   )
 }
 
+
 CallcamServer <- function(id, data, url) {
   moduleServer(id, function(input, output, session) {
-    ns <- session$ns
-
     img_path1 <- "img1.png"
     img_path2 <- "img2.png"
-    img_path3 <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/img3.png"
+    img_path3 <- "img3.png"
 
     urlUnit1 <- "http://viewer:birdnet2023!@166.148.48.130:8001/cgi-bin/image.jpg?imgprof=BirdNET"
     urlUnit2 <- "http://viewer:birdnet2023!@166.143.21.131:8001/cgi-bin/image.jpg?imgprof=BirdNET"
     urlUnit3 <- "http://viewer:birdnet2023!@166.148.204.108:8001/cgi-bin/image.jpg?imgprof=BirdNET"
 
     observeEvent(input$displayBtnUnit1, {
-      print("button pressed")
       download.file(urlUnit1, img_path1, mode = "wb")
       output$imageOutputUnit1 <- renderUI({
         fluidRow(
@@ -69,29 +66,15 @@ CallcamServer <- function(id, data, url) {
     })
 
     output$imgOutput1 <- renderImage({
-      list(src = img_path1,
-           style = "max-width:100%",
-           alt = "Unit 1 nicht gefunden")
+      list(src = img_path1, style = "max-width:100%", alt = "Unit 1 nicht gefunden")
     }, deleteFile = FALSE)
 
     output$imgOutput2 <- renderImage({
-      list(src = img_path2,
-           style = "max-width:100%",
-           alt = "Unit 2 nicht gefunden")
+      list(src = img_path2, style = "max-width:100%", alt = "Unit 2 nicht gefunden")
     }, deleteFile = FALSE)
 
-    # set timeout to 2 min
     output$imgOutput3 <- renderImage({
-      list(src = img_path3,
-           style = "max-width:100%",
-           alt = "Unit 3 nicht gefunden")
+      list(src = img_path3, style = "max-width:100%", alt = "Unit 3 nicht gefunden")
     }, deleteFile = FALSE)
   })
-
-  server <- function(input, output, session) {
-    CallcamServer("cam1", data, url)  # Verwendung des Moduls
-    CallcamServer("cam2", data, url)
-    CallcamServer("cam3", data, url)
-  }
 }
-
