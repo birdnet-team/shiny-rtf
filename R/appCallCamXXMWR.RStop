@@ -1,10 +1,10 @@
 library(shiny)
-install.packages("png")
+#install.packages("png")
 library(png)
 
 Callcam <- function(id) {
   ns <- NS(id)
-  titlePanel("Download and display observation images")
+  #titlePanel("Real-Time Display of Observation Images from Units")
   tagList(
     actionButton(ns("displayBtnUnit1"), "show Picture Unit 1"),
     actionButton(ns("displayBtnUnit2"), "show Picture Unit 2"),
@@ -33,8 +33,15 @@ callcam_server <- function(id, data, url) {
             column(5, imageOutput("imgOutput1"))
           )
         })
+
+        output$imgOutput1 <- renderImage({
+          list(src = img_path1,
+               style = "max-width:100%",
+               alt = "Unit 1 nicht gefunden")
+        }, deleteFile = FALSE)
       }
     })
+
 
     observeEvent(input$displayBtnUnit2, {
       if (input$displayBtnUnit2) {
@@ -44,8 +51,16 @@ callcam_server <- function(id, data, url) {
             column(5, imageOutput("imgOutput2"))
           )
         })
-      }
+
+        output$imgOutput2 <- renderImage({
+          list(src = img_path2,
+               style = "max-width:100%",
+               alt = "Unit 2 nicht gefunden")
+        }, deleteFile = FALSE)
+
+        }
     })
+
 
     observeEvent(input$displayBtnUnit3, {
       if (input$displayBtnUnit3) {
@@ -55,32 +70,28 @@ callcam_server <- function(id, data, url) {
             column(5, imageOutput("imgOutput3"))
           )
         })
+
+        output$imgOutput3 <- renderImage({
+          list(src = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/img3.png",
+               style = "max-width:100%",
+               alt = "Unit 3 nicht gefunden")
+        }, deleteFile = FALSE)
       }
     })
 
 
-    output$imgOutput1 <- renderImage({
-      list(src = img_path1, style = "max-width:100%", alt = "Unit 1 nicht gefunden")
-    }, deleteFile = FALSE)
 
-    output$imgOutput2 <- renderImage({
-      list(src = img_path2, style = "max-width:100%", alt = "Unit 2 nicht gefunden")
-    }, deleteFile = FALSE)
-
-    output$imgOutput3 <- renderImage({
-      list(src = img_path3, style = "max-width:100%", alt = "Unit 3 nicht gefunden")
-    }, deleteFile = FALSE)
   })
 }
 
 
-ui <- fluidPage(
-  titlePanel("Real-Time Display of Observation Images from Units"),
-  Callcam("callcamXX")
-)
-
-server <- function(input, output, session) {
-  callcam_server("callcamXX", NULL, NULL)
-}
-
-shinyApp(ui = ui, server = server)
+# ui <- fluidPage(
+#   titlePanel("Real-Time Display of Observation Images from Units"),
+#   Callcam("callcamXX")
+# )
+#
+# server <- function(input, output, session) {
+#   callcam_server("callcamXX", NULL, NULL)
+# }
+#
+# shinyApp(ui = ui, server = server)

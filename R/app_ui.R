@@ -61,7 +61,6 @@ app_ui <- function(request) {
             title("Real-Time Display of Observation Images from Units"),
             tabName = "observations",
             Callcam("callcamXX")
-
           ),
 
           tabItem(
