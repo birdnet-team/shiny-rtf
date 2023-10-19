@@ -60,13 +60,34 @@ CallcamServer <- function(id, data, url) {
     })
 
     observeEvent(input$displayBtnUnit3, {
-      download.file(urlUnit3, img_path3, mode = "wb")
-      output$imageOutputUnit3 <- renderUI({
-        fluidRow(
-          column(5, imageOutput("imgOutput3"))
+      if (input$displayBtnUnit3) {
+        download_done <- FALSE
+        download.file(urlUnit3, img_path3, mode = "wb", quiet = TRUE,
+                      method = "libcurl",
+                      progress = function(e) {
+                        total <- e$total
+                        downloaded <- e$downloaded
+                        percent <- round(downloaded / total * 100, 2)
+                        cat(paste("Download progress: ", percent, "%\n"))
+                        flush.console()
+                      },
+                      done = function(file) {
+                        download_done <- TRUE
+                      }
         )
-      })
+
+        output$imageOutputUnit3 <- renderUI({
+          if (download_done) {
+            fluidRow(
+              column(5, imageOutput("imgOutput3"))
+            )
+          } else {
+            div("Download in Bearbeitung...")
+          }
+        })
+      }
     })
+
 
     output$imgOutput1 <- renderImage({
       list(src = img_path1,
@@ -80,13 +101,13 @@ CallcamServer <- function(id, data, url) {
            alt = "Unit 2 nicht gefunden")
     }, deleteFile = FALSE)
 
-    # set timeout to 2 min
-    output$imgOutput3 <- renderImage({
-      list(src = img_path3,
-           style = "max-width:100%",
-           alt = "Unit 3 nicht gefunden")
-    }, deleteFile = FALSE)
-  })
+  #   # set timeout to 2 min
+  #   output$imgOutput3 <- renderImage({
+  #     list(src = img_path3,
+  #          style = "max-width:100%",
+  #          alt = "Unit 3 nicht gefunden")
+  #   }, deleteFile = FALSE)
+ })
 
   server <- function(input, output, session) {
     CallcamServer("cam1", data, url)  # Verwendung des Moduls

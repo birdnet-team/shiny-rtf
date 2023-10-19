@@ -59,7 +59,7 @@ app_ui <- function(request) {
 
           tabItem(
             tabName = "observations",
-            Callcam("callcam")
+            Callcam("callcamXX")
 
           ),
 

@@ -45,4 +45,6 @@ app_server <- function(input, output, session) {
   # Health ----------------------------------------------------------------------------------------------------------
   mod_health_server("health_1", data_filtered)
 
+  # CallCamXXMWR
+  callcam_server("callcamXX")
 }

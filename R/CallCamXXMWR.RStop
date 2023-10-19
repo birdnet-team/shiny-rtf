@@ -48,21 +48,26 @@ CallcamServer <- function(id, data, url) {
     })
 
     observeEvent(input$displayBtnUnit2, {
+      if (input$displayBtnUnit3) {
       download.file(urlUnit2, img_path2, mode = "wb")
       output$imageOutputUnit2 <- renderUI({
         fluidRow(
           column(5, imageOutput("imgOutput2"))
-        )
-      })
+          )
+       })
+      }
     })
 
+
     observeEvent(input$displayBtnUnit3, {
-      download.file(urlUnit3, img_path3, mode = "wb")
-      output$imageOutputUnit3 <- renderUI({
-        fluidRow(
-          column(5, imageOutput("imgOutput3"))
-        )
-      })
+      if (input$displayBtnUnit3) {
+        download.file(urlUnit3, img_path3, mode = "wb")
+        output$imageOutputUnit3 <- renderUI({
+          fluidRow(
+            column(5, imageOutput("imgOutput3"))
+          )
+        })
+      }
     })
 
     output$imgOutput1 <- renderImage({
