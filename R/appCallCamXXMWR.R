@@ -4,6 +4,7 @@ library(png)
 
 Callcam <- function(id) {
   ns <- NS(id)
+  titlePanel("Download and display observation images")
   tagList(
     actionButton(ns("displayBtnUnit1"), "show Picture Unit 1"),
     actionButton(ns("displayBtnUnit2"), "show Picture Unit 2"),
@@ -16,9 +17,9 @@ Callcam <- function(id) {
 
 callcam_server <- function(id, data, url) {
   moduleServer(id, function(input, output, session) {
-    img_path1 <- "img1.png"
-    img_path2 <- "img2.png"
-    img_path3 <- "img3.png"
+    img_path1 <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/img1.png"
+    img_path2 <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/img2.png"
+    img_path3 <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/img3.png"
 
     urlUnit1 <- "http://viewer:birdnet2023!@166.148.48.130:8001/cgi-bin/image.jpg?imgprof=BirdNET"
     urlUnit2 <- "http://viewer:birdnet2023!@166.143.21.131:8001/cgi-bin/image.jpg?imgprof=BirdNET"
@@ -48,34 +49,14 @@ callcam_server <- function(id, data, url) {
 
     observeEvent(input$displayBtnUnit3, {
       if (input$displayBtnUnit3) {
-        download_done <- FALSE
-        download.file(urlUnit3, img_path3, mode = "wb", quiet = TRUE,
-                      method = "libcurl",
-                      progress = function(e) {
-                        total <- e$total
-                        downloaded <- e$downloaded
-                        percent <- round(downloaded / total * 100, 2)
-                        cat(paste("Download progress: ", percent, "%\n"))
-                        flush.console()
-                      },
-                      done = function(file) {
-                        download_done <- TRUE
-                      }
-        )
+        download.file(urlUnit3, img_path3, mode = "wb")
+        output$imageOutputUnit3 <- renderUI({
+          fluidRow(
+            column(5, imageOutput("imgOutput3"))
+          )
+        })
       }
     })
-
-    #     output$imageOutputUnit3 <- renderImage({
-    #       if (download_done) {
-    #         fluidRow(
-    #           column(5, imageOutput("imgOutput3"))
-    #         )
-    #       } else {
-    #         div("Download in Bearbeitung...")
-    #       }
-    #     })
-    #   }
-    # })
 
 
     output$imgOutput1 <- renderImage({
@@ -92,14 +73,14 @@ callcam_server <- function(id, data, url) {
   })
 }
 
-# ui <- fluidPage(
-#   titlePanel("Download and Display observation images"),
-#   callcam("cameraModule")
-#   #callcam("appCallCamXXMWR")
-# )
-#
-# server <- function(input, output, session) {
-#   CallcamServer("cameraModule", NULL, NULL)
-# }
-#
-# shinyApp(ui = ui, server = server)
+
+ui <- fluidPage(
+  titlePanel("Real-Time Display of Observation Images from Units"),
+  Callcam("callcamXX")
+)
+
+server <- function(input, output, session) {
+  callcam_server("callcamXX", NULL, NULL)
+}
+
+shinyApp(ui = ui, server = server)
