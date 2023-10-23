@@ -2,7 +2,7 @@ library(shiny)
 library(httr)
 library(png)
 
-ui <- fluidPage(
+Callcam <- fluidPage(
   titlePanel("show unit-images"),
 
   mainPanel(
@@ -15,7 +15,7 @@ ui <- fluidPage(
   )
 )
 
-server <- function(input, output) {
+callcam_server <- function(input, output) {
   img_path1 <- "img1.png"
   img_path2 <- "img2.png"
   img_path3 <- "img3.png"
