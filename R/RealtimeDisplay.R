@@ -73,4 +73,4 @@ callcam_server <- function(input, output) {
   }, deleteFile = FALSE)
 }
 
-#shinyApp(ui = ui, server = server)
+#shinyApp(Callcam, callcam_server)
