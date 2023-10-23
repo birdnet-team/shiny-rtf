@@ -3,7 +3,7 @@ library(httr)
 library(png)
 
 Callcam <- fluidPage(
-  titlePanel("show unit-images"),
+  titlePanel("Real-Time Display of Observation Images from Units"),
 
   mainPanel(
     actionButton("displayBtnUnit1", "show Picture Unit 1"),
