@@ -36,6 +36,7 @@ app_ui <- function(request) {
           menuItem("Overview", tabName = "overview", icon = icon("home")),
           menuItem("Phenology", tabName = "phenology", icon = icon("chart-column")),
           menuItem("Detections", tabName = "detections", icon = icon("music")),
+          menuItem("Observations", tabName = "observations", icon = icon("camera")),
           menuItem("Health", tabName = "health", icon = icon("wave-square"))
         )
       ),
@@ -55,6 +56,13 @@ app_ui <- function(request) {
             mod_detections_table_ui("detections_table_1")
 
           ),
+
+          tabItem(
+            title("Real-Time Display of Observation Images from Units"),
+            tabName = "observations",
+            Callcam("callcamXX")
+          ),
+
           tabItem(
             tabName = "health",
             mod_health_ui("health_1")
