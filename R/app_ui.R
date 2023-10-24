@@ -57,11 +57,11 @@ app_ui <- function(request) {
 
           ),
 
-          # tabItem(
-          #   title("Real-Time Display of Observation Images from Units"),
-          #   tabName = "observations",
-          #   Callcam("callcamXX")
-          # ),
+          tabItem(
+            title("Real-Time Display of Observation Images from Units"),
+            tabName = "observations",
+            Callcam("callcamXX")
+          ),
 
           tabItem(
             tabName = "health",
