@@ -7,9 +7,10 @@ Callcam <- function(id){
   titlePanel("Real-Time Display of Observation Images from Units")
 
   mainPanel(
-    actionButton("displayBtnUnit1", "show Picture Unit 1"),
-    actionButton("displayBtnUnit2", "show Picture Unit 2"),
-    actionButton("displayBtnUnit3", "show Picture Unit 3"),
+
+    actionButton(ns("displayBtnUnit1"), label = "show Picture Unit 1"),
+    actionButton(ns("displayBtnUnit2"), label = "show Picture Unit 2"),
+    actionButton(ns("displayBtnUnit3"), label = "show Picture Unit 3"),
 
     uiOutput(ns("imageOutputUnit1")),
     uiOutput(ns("imageOutputUnit2")),
@@ -21,6 +22,7 @@ Callcam <- function(id){
 
 callcam_server <- function(id, data) {
   moduleServer( id, function(input, output, session){
+    ns <- session$ns
 
     img_path1 <- "img1.png"
     img_path2 <- "img2.png"
