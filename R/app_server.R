@@ -46,5 +46,6 @@ app_server <- function(input, output, session) {
   mod_health_server("health_1", data_filtered)
 
   # CallCamXXMWR
-  callcam_server("callcamXX", data = data_filtered, url = url)
+  #callcam_server("callcamXX", data = data_filtered, url = url)
+  callcam_server("callcamXX", data = data_filtered)
 }

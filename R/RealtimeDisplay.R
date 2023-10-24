@@ -6,15 +6,16 @@ Callcam <- function(id){
   ns <- NS(id)
   titlePanel("Real-Time Display of Observation Images from Units")
 
-mainPanel(
-actionButton(ns("displayBtnUnit1", "show Picture Unit 1")),
-actionButton(ns("displayBtnUnit2", "show Picture Unit 2")),
-actionButton(ns("displayBtnUnit3", "show Picture Unit 3")),
+  mainPanel(
+    actionButton("displayBtnUnit1", "show Picture Unit 1"),
+    actionButton("displayBtnUnit2", "show Picture Unit 2"),
+    actionButton("displayBtnUnit3", "show Picture Unit 3"),
 
-uiOutput(ns("imageOutputUnit1")),
-uiOutput(ns("imageOutputUnit2")),
-uiOutput(ns("imageOutputUnit3"))
-)
+    uiOutput(ns("imageOutputUnit1")),
+    uiOutput(ns("imageOutputUnit2")),
+    uiOutput(ns("imageOutputUnit3"))
+  )
+
 
 }
 
