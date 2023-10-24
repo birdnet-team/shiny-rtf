@@ -1,6 +1,6 @@
-library(shiny)
-library(httr)
-library(png)
+#' @importFrom shiny NS tagList
+#' @import httr
+#' @import png
 
 Callcam <- fluidPage(
   titlePanel("Real-Time Display of Observation Images from Units"),
