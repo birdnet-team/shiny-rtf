@@ -23,10 +23,10 @@ Callcam <- function(id){
 callcam_server <- function(id, data) {
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-#TODO: pfad BirdNETmonitor angeben
-    img_path1 <- "img1.png"
-    img_path2 <- "img2.png"
-    img_path3 <- "img3.png"
+
+    img_path1 <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/img1.png"
+    img_path2 <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/img2.png"
+    img_path3 <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/img3.png"
 
     urlUnit1 <- "http://viewer:birdnet2023!@166.148.48.130:8001/cgi-bin/image.jpg?imgprof=BirdNET"
     urlUnit2 <- "http://viewer:birdnet2023!@166.143.21.131:8001/cgi-bin/image.jpg?imgprof=BirdNET"
