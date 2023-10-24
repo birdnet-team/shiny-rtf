@@ -23,7 +23,7 @@ Callcam <- function(id){
 callcam_server <- function(id, data) {
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-
+#TODO: pfad BirdNETmonitor angeben
     img_path1 <- "img1.png"
     img_path2 <- "img2.png"
     img_path3 <- "img3.png"
@@ -80,6 +80,3 @@ callcam_server <- function(id, data) {
 
  })
 }
-
-#shiny::runApp('R/RealtimeDisplay.R')
-#shinyApp(Callcam, callcam_server)
