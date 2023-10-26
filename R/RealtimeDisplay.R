@@ -23,17 +23,17 @@ Callcam <- function(id){
 callcam_server <- function(id, data) {
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-
-    img_path1 <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/img1.png"
-    img_path2 <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/img2.png"
-    img_path3 <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/img3.png"
+#
+#     img_path1 <- "img1.png"
+#     img_path2 <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/R/img2.png"
+#     img_path3 <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/img3.png"
 
     urlUnit1 <- "http://viewer:birdnet2023!@166.148.48.130:8001/cgi-bin/image.jpg?imgprof=BirdNET"
     urlUnit2 <- "http://viewer:birdnet2023!@166.143.21.131:8001/cgi-bin/image.jpg?imgprof=BirdNET"
     urlUnit3 <- "http://viewer:birdnet2023!@166.148.204.108:8001/cgi-bin/image.jpg?imgprof=BirdNET"
 
     observeEvent(input$displayBtnUnit1, {
-      download.file(urlUnit1, "img1.png", mode = "wb")
+      download.file(urlUnit1, "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/R/img1.png", mode = "wb")
       output$imageOutputUnit1 <- renderUI({
         fluidRow(
           column(5, imageOutput("imgOutput1"))
@@ -42,7 +42,7 @@ callcam_server <- function(id, data) {
     })
 
     observeEvent(input$displayBtnUnit2, {
-      download.file(urlUnit2, "img2.png", mode = "wb")
+      download.file(urlUnit2, "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/R/img2.png", mode = "wb")
       output$imageOutputUnit2 <- renderUI({
         fluidRow(
           column(5, imageOutput("imgOutput2"))
@@ -51,7 +51,7 @@ callcam_server <- function(id, data) {
     })
 
     observeEvent(input$displayBtnUnit3, {
-      download.file(urlUnit3, "img3.png", mode = "wb")
+      download.file(urlUnit3, "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/R/img3.png", mode = "wb")
       output$imageOutputUnit3 <- renderUI({
         fluidRow(
           column(5, imageOutput("imgOutput3"))
