@@ -6,10 +6,11 @@ Callcam <- function(id){
   ns <- NS(id)
 
 
+
   mainPanel(
 
     titlePanel("Real-Time Display of Observation Images from Units"),
-    titlePanel("function time info-box"),
+    titlePanel("Please note that the units are switched off between 6:00 pm and 7:00 am. No photo recording can be transmitted during this time."),
 
     actionButton(ns("displayBtnUnit1"), label = "show Picture Unit 1"),
     actionButton(ns("displayBtnUnit2"), label = "show Picture Unit 2"),
