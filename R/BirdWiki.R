@@ -25,7 +25,7 @@ server <- function(input, output) {
       tags$img(src = image$file_url, width = "300px", height = "300px")
     })
     tagList(bird_images)
-    # just do your own shit :D :D :D
+    # just do your own *** :D :D :D
   })
 }
 
