@@ -24,7 +24,8 @@ server <- function(input, output) {
     bird_images <- lapply(images, function(image) {
       tags$img(src = image$file_url, width = "300px", height = "300px")
     })
-    tagList(bird_images)  # Direkt tagList verwenden, um die Bilder anzuzeigen
+    tagList(bird_images)
+    # just do your own shit :D :D :D
   })
 }
 
