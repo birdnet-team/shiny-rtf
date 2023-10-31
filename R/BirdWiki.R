@@ -1,9 +1,7 @@
 library(shiny)
 
-# Verzeichnis, in dem sich die Bilder befinden
 imagePath <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/wiki_img"
 
-# Funktion zum Laden aller Bilder im Verzeichnis
 loadImages <- function(directory) {
   images <- list.files(directory, full.names = TRUE)
   images <- lapply(images, function(path) {
@@ -13,7 +11,7 @@ loadImages <- function(directory) {
 }
 
 ui <- fluidPage(
-  titlePanel("Bird Image Viewer"),
+  titlePanel("Hawaiian Bird Directory"),
   mainPanel(
     uiOutput("birdImages")
   )
