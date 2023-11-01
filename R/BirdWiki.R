@@ -1,39 +1,25 @@
-#' @importFrom shiny NS tagList
+#' @importFrom shiny NS tagList fluidPage titlePanel fluidRow column uiOutput
 #' @import httr
 #' @import png
 
-ui <- fluidPage(
-  titlePanel("Hawaiianisches BirdWiki"),
-  mainPanel(
-    fluidRow(
-      lapply(1:174, function(i) {
-        column(4, uiOutput(paste0("imageDisplay", i)))
-      })
-    )
+Wiki <- function(id){
+
+titlePanel("Hawaiianisches BirdWiki")
+mainPanel(
+fluidRow(lapply(1:174, function(i) {column(4, uiOutput(ns(paste0("imageDisplay", i))))})))
+}
+
+
+
+wiki_server <- function(input, output, session) {
+
+  output$imageDisplay1 <- renderUI({
+  tags$img(
+    src = "file:///C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor.Rcheck/00_pkg_src/BirdNETmonitor/inst/app/www/birds/Amandava_amandava_Red_Avadavat.png",
+    height = "300px",
+  onclick = "window.open('https://ebird.org/species/hawgoo', '_blank')"
   )
-)
-
-
-
-
-
-server <- function(input, output, session) {
-
-
-
-  output$imageDisplay1 <- renderImage({
-    list(src = "www/Amandava_amandava_Red_Avadavat.png", alt = "Unit 2 nicht gefunden")
-  }, deleteFile = FALSE)
-
-
-  # output$imageDisplay1 <- renderUI({
-  # tags$img(
-  #   src = "C:///Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/inst/app/www/Amandava_amandava_Red_Avadavat.png",
-  #   width = "300px",
-  #   height = "300px",
-  # onclick = "window.open('https://ebird.org/species/hawgoo', '_blank')"
-  # )
-  # })
+  })
 
   output$imageDisplay2 <- renderUI({
   tags$img(
@@ -1402,4 +1388,4 @@ server <- function(input, output, session) {
 
 }
 
-shinyApp(ui, server)
+#shinyApp(ui, server)
