@@ -1,6 +1,6 @@
 library(shiny)
 
-imagePath <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/wiki_img"
+imagePath <- "BirdNETmonitor/inst/app/www/wiki"
 
 loadImages <- function(directory) {
   images <- list.files(directory, full.names = TRUE)
