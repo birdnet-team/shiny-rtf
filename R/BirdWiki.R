@@ -3,19 +3,23 @@
 #' @import png
 
 Wiki <- function(id){
-
+  ns <- NS(id)
 
 mainPanel(
   titlePanel("Hawaiianisches BirdWiki"),
-  fluidRow(lapply(1:174, function(i) {column(4, uiOutput(ns(paste0("imageDisplay", i))))}))
+  #fluidRow(lapply(1:174, function(i) {column(4, uiOutput(ns(paste0("imageDisplay", i))))}))
+  uiOutput(ns("imageDisplay1"))
          )
 }
 
 
 
-wiki_server <- function(input, output, session) {
+wiki_server <- function(id, data) {
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
+
 #file:///C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor.Rcheck/00_pkg_src/BirdNETmonitor/inst/app/www/9_GBHfish5.png
-  output$imageDisplay1 <- renderUI({
+  output$imageDisplay1 <- renderImage({
   tags$img(
     src = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor.Rcheck/00_pkg_src/BirdNETmonitor/inst/app/www/Amandava_amandava_Red_Avadavat.png",
     height = "300px",
@@ -1387,7 +1391,8 @@ wiki_server <- function(input, output, session) {
       onclick = "window.open('https://en.wikipedia.org/wiki/Warbling_white-eye', '_blank')")
   })
 
+   })
 
 }
 
-#shinyApp(ui, server)
+shinyApp(Wiki, wiki_server)
