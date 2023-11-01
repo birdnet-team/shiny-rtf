@@ -1,31 +1,23 @@
 library(shiny)
 
-imagePath <- "BirdNETmonitor/inst/app/www/wiki"
-
-loadImages <- function(directory) {
-  images <- list.files(directory, full.names = TRUE)
-  images <- lapply(images, function(path) {
-    list(file_path = path, file_url = tools::file_path_as_absolute(path))
-  })
-  images
-}
+targetURL <- "https://ebird.org/species/hawgoo"
 
 ui <- fluidPage(
-  titlePanel("Hawaiian Bird Directory"),
+  titlePanel("BirdWiki-App"),
   mainPanel(
-    uiOutput("birdImages")
+    uiOutput("imageDisplay")
   )
 )
 
-server <- function(input, output) {
-  images <- loadImages(imagePath)
+server <- function(input, output, session) {
+  output$imageDisplay <- renderUI({
+    path <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/inst/app/www/wiki/1_A_pair_of_Red_avadavat_(Amandava_amandava)_Photograph_by_Shantanu_Kuveskar.png"
+    img(src = path, width = "300px", height = "300px", click = "openLink")
+  })
 
-  output$birdImages <- renderUI({
-    bird_images <- lapply(images, function(image) {
-      tags$img(src = image$file_url, width = "300px", height = "300px")
-    })
-    tagList(bird_images)
-    # just do your own *** :D :D :D
+  observeEvent(input$openLink, {
+    jscode <- sprintf("window.open('%s', '_blank');", targetURL)
+    session$sendCustomMessage("jsCode", list(code = jscode))
   })
 }
 
