@@ -4,9 +4,11 @@
 
 Wiki <- function(id){
 
-titlePanel("Hawaiianisches BirdWiki")
+
 mainPanel(
-fluidRow(lapply(1:174, function(i) {column(4, uiOutput(ns(paste0("imageDisplay", i))))})))
+  titlePanel("Hawaiianisches BirdWiki"),
+  fluidRow(lapply(1:174, function(i) {column(4, uiOutput(ns(paste0("imageDisplay", i))))}))
+         )
 }
 
 
