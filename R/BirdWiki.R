@@ -11,8 +11,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   output$imageDisplay <- renderUI({
-    path <- "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/inst/app/www/wiki/1_A_pair_of_Red_avadavat_(Amandava_amandava)_Photograph_by_Shantanu_Kuveskar.png"
-    img(src = path, width = "300px", height = "300px", click = "openLink")
+    img(src = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/inst/app/www/1_A_pair_of_Red_avadavat_(Amandava_amandava)_Photograph_by_Shantanu_Kuveskar.png", width = "300px", height = "300px", click = "openLink")
   })
 
   observeEvent(input$openLink, {
