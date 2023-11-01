@@ -1,13 +1,13 @@
 library(shiny)
-
-library(shiny)
+install.packages("png")
+library(png)
 
 ui <- fluidPage(
   titlePanel("Hawaiianisches BirdWiki"),
   mainPanel(
     fluidRow(
       lapply(1:174, function(i) {
-        column(3, uiOutput(paste0("imageDisplay", i)))
+        column(4, uiOutput(paste0("imageDisplay", i)))
       })
     )
   )
@@ -16,21 +16,34 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
+
+  img_path1 <- "www/1.png"
+
   output$imageDisplay1 <- renderUI({
-  tags$img(
-  src = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/inst/app/www/Amandava_amandava_Red_Avadavat.png",
-  width = "300px",
-  height = "300px",
-  onclick = "window.open('https://ebird.org/species/hawgoo', '_blank')"
-  )
-  })
+
+
+      tags$img(src = img_path1,
+           style = "max-width:100%",
+           alt = "Unit 2 nicht gefunden",
+      onclick = "window.open('https://ebird.org/species/hawgoo', '_blank')")
+    })
+
+
+  # output$imageDisplay1 <- renderUI({
+  # tags$img(
+  #   src = "C:///Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/inst/app/www/Amandava_amandava_Red_Avadavat.png",
+  #   width = "300px",
+  #   height = "300px",
+  # onclick = "window.open('https://ebird.org/species/hawgoo', '_blank')"
+  # )
+  # })
 
   output$imageDisplay2 <- renderUI({
   tags$img(
   src = "Anas_acuta_Northern_Pintail",
   width = "300px",
   height = "300px",
-  onclick = "window.open('https://ebird.org/species/hawgoo', '_blank')"
+  onclick = "window.open('https://ebird.org/species/norpin', '_blank')"
   )
   })
 
