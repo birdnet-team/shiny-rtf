@@ -112,7 +112,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   output$imageDisplay1 <- renderUI({
     tags$img(
-      src = "Amandava_amandava_Red_Avadavat.png",
+      src = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/inst/app/www/Amandava_amandava_Red_Avadavat.png",
       width = "300px",
       height = "300px",
       onclick = "window.open('https://ebird.org/species/hawgoo', '_blank')"
