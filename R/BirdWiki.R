@@ -1,6 +1,6 @@
-library(shiny)
-install.packages("png")
-library(png)
+#' @importFrom shiny NS tagList
+#' @import httr
+#' @import png
 
 ui <- fluidPage(
   titlePanel("Hawaiianisches BirdWiki"),
@@ -15,18 +15,15 @@ ui <- fluidPage(
 
 
 
+
+
 server <- function(input, output, session) {
 
-  img_path1 <- "www/1.png"
-
-  output$imageDisplay1 <- renderUI({
 
 
-      tags$img(src = img_path1,
-           style = "max-width:100%",
-           alt = "Unit 2 nicht gefunden",
-      onclick = "window.open('https://ebird.org/species/hawgoo', '_blank')")
-    })
+  output$imageDisplay1 <- renderImage({
+    list(src = "www/Amandava_amandava_Red_Avadavat.png", alt = "Unit 2 nicht gefunden")
+  }, deleteFile = FALSE)
 
 
   # output$imageDisplay1 <- renderUI({
@@ -41,8 +38,8 @@ server <- function(input, output, session) {
   output$imageDisplay2 <- renderUI({
   tags$img(
   src = "Anas_acuta_Northern_Pintail",
-  width = "300px",
-  height = "300px",
+  width = "auto",
+  height = "auto",
   onclick = "window.open('https://ebird.org/species/norpin', '_blank')"
   )
   })
