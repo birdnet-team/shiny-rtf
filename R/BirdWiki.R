@@ -7,8 +7,9 @@ Wiki <- function(id){
 
 mainPanel(
   titlePanel("Hawaiianisches BirdWiki"),
+  #check paste function
   #fluidRow(lapply(1:174, function(i) {column(4, uiOutput(ns(paste0("imageDisplay", i))))}))
-  uiOutput(ns("imageDisplay1"))
+  uiOutput("imageDisplay1")
          )
 }
 
@@ -21,7 +22,7 @@ wiki_server <- function(id, data) {
 #file:///C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor.Rcheck/00_pkg_src/BirdNETmonitor/inst/app/www/9_GBHfish5.png
   output$imageDisplay1 <- renderImage({
   tags$img(
-    src = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor.Rcheck/00_pkg_src/BirdNETmonitor/inst/app/www/Amandava_amandava_Red_Avadavat.png",
+    src = "C:/Users/ElementXX/Desktop/eBirdconnectionXX999/Amandava_amandava_Red_Avadavat.png",
     height = "300px",
   onclick = "window.open('https://ebird.org/species/hawgoo', '_blank')"
   )
@@ -29,7 +30,7 @@ wiki_server <- function(id, data) {
 
   output$imageDisplay2 <- renderUI({
   tags$img(
-  src = "Anas_acuta_Northern_Pintail",
+    src = "C:/Users/ElementXX/Desktop/eBirdconnectionXX999/Anas_acuta_Northern_Pintail.png",
   width = "auto",
   height = "auto",
   onclick = "window.open('https://ebird.org/species/norpin', '_blank')"
