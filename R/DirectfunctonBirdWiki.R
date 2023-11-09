@@ -24,6 +24,7 @@ wiki_server <- function(input, output, session) {
     # Change the image source to a different image
     new_image_path <- "Neuer/Pfad/Zum/Bild.png"
     image_path(new_image_path)
+    onclick = "window.open('https://ebird.org/species/hawgoo', '_blank')"
   })
 }
 
