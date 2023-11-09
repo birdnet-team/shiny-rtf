@@ -5,36 +5,27 @@ Wiki <- function(id) {
   fluidPage(
     titlePanel("Hawaiianisches BirdWiki"),
     fluidRow(
-      column(4, uiOutput("imageDisplay1"))
+      column(4, imageOutput("imageDisplay1"))
     )
   )
 }
 
 # Define a server function for your Shiny app
-wiki_server <- function(id, data) {
-  moduleServer(id, function(input, output, session) {
-    # Define the path to your image file
-    image_path <- "C:/Users/ElementXX/Desktop/eBirdconnectionXX999/Amandava_amandava_Red_Avadavat.png"
+wiki_server <- function(input, output, session) {
+  # Define the path to your image file
+  image_path <- reactiveVal("C:/Users/ElementXX/Desktop/eBirdconnectionXX999/Amandava_amandava_Red_Avadavat.png")
 
-    # Create a reactiveVal to store the image source
-    image_source <- reactiveVal(image_path)
+  output$imageDisplay1 <- renderImage({
+    list(src = image_path(), height = 300)
+  }, deleteFile = FALSE)
 
-    # Render the image
-    output$imageDisplay1 <- renderUI({
-      tags$img(
-        src = image_source(),
-        height = "300px",
-        onclick = "window.open('https://ebird.org/species/hawgoo', '_blank')"
-      )
-    })
-
-    # Example of how you can change the image source based on an event
-    observeEvent(input$changeImage, {
-      # Change the image source to a different image
-      new_image_path <- "C:/Users/ElementXX/Desktop/eBirdconnectionXX999/Amandava_amandava_Red_Avadavat.png"
-      image_source(new_image_path)
-    })
+  # Example of how you can change the image source based on an event
+  observeEvent(input$changeImage, {
+    # Change the image source to a different image
+    new_image_path <- "Neuer/Pfad/Zum/Bild.png"
+    image_path(new_image_path)
   })
 }
 
-shinyApp(Wiki("my_app_id"), wiki_server)
+# Start the Shiny App
+shinyApp(ui = Wiki("my_app_id"), server = wiki_server)
