@@ -12,14 +12,17 @@ Wiki <- function(id) {
 }
 
 wiki_server <- function(input, output, session) {
-
   observeEvent(input$image_click1, {
-    shinyjs::runjs("window.open('https://de.wikipedia.org/wiki/Vogel', '_blank');") })
-  image_path1 <- reactiveVal("Amandava_amandava_Red_Avadavat.png")
+    shinyjs::runjs("window.open('https://de.wikipedia.org/wiki/Vogel', '_blank');")
+  })
+
+  # Verwenden Sie Schrägstriche in Pfadangaben und korrigieren Sie die paste0-Funktion
+  image_path1 <- reactiveVal("www/Amandava_amandava_Red_Avadavat.png")
+
   output$imageDisplay1 <- renderImage({
-    list(src = paste0("app/www/", image_path1()), height = 300)
+    list(src = image_path1(), height = 300)
   }, deleteFile = FALSE)
 }
 
-# Start the Shiny app
+# Starten Sie die Shiny-App
 shinyApp(ui = Wiki(), server = wiki_server)
