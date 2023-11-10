@@ -1,9 +1,9 @@
 library(shiny)
 library(shinyjs)
 
-Wiki <- function() {
+Wiki <- function(id) {
   fluidPage(
-    titlePanel("Hawaiian Birdwatching Wikipedia"),
+    titlePanel("Hawaiian Birdwatching Encyclopedia"),
     fluidRow(
       column(2, imageOutput("imageDisplay1", click = "image_click1")),
       column(2, imageOutput("imageDisplay2", click = "image_click2")),
@@ -17,7 +17,9 @@ Wiki <- function() {
   )
 }
 
-wiki_server <- function(input, output, session) {
+wiki_server <- function(id, data) {
+  moduleServer( id, function(input, output, session){
+
   image_data <- data.frame(
     image_path = c(
       "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/www/Amandava_amandava_Red_Avadavat.png",
@@ -50,6 +52,9 @@ wiki_server <- function(input, output, session) {
       list(src = image_data$image_path[i], height = 300)
     }, deleteFile = FALSE)
   }
+
+
+  })
 }
 
 #shinyApp(ui = Wiki(), server = wiki_server)

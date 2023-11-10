@@ -49,5 +49,5 @@ app_server <- function(input, output, session) {
   callcam_server("callcamXX", data = data_filtered)
 
   # BirdWikiXXMWR
-  wiki_server("BirdWiki", data = data_filtered)
+  wiki_server("birdwiki", data = data_filtered)
 }
