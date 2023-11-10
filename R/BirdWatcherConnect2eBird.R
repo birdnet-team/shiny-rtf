@@ -1,4 +1,7 @@
-library(shiny)
+#' @importFrom shiny NS tagList
+#' @import httr
+#' @import png
+
 library(shinyjs)
 
 Wiki <- function(id) {
@@ -7,11 +10,8 @@ Wiki <- function(id) {
     fluidRow(
       column(2, imageOutput("imageDisplay1", click = "image_click1")),
       column(2, imageOutput("imageDisplay2", click = "image_click2")),
-      column(2, imageOutput("imageDisplay3", click = "image_click3")),
-      column(2, imageOutput("imageDisplay4", click = "image_click4")),
-      column(2, imageOutput("imageDisplay5", click = "image_click5")),
-      column(2, imageOutput("imageDisplay6", click = "image_click6")),
-      column(2, imageOutput("imageDisplay7", click = "image_click7"))
+      column(2, imageOutput("imageDisplay3", click = "image_click3"))
+
     ),
     useShinyjs()
   )
@@ -22,26 +22,20 @@ wiki_server <- function(id, data) {
 
     image_data <- data.frame(
       image_path = c(
-        "BirdNETmonitor/BirdWatcherImages/1_Amandava_amandava_Red_Avadavat.png"
-        # "www/second_image.png",
-        # "www/third_image.png",
-        # "www/fourth_image.png",
-        # "www/fifth_image.png",
-        # "www/sixth_image.png",
-        # "www/seventh_image.png"
+        "BirdNETmonitor/BirdWatcherImages/1_Amandava_amandava_Red_Avadavat.png",
+        "BirdNETmonitor/BirdWatcherImages/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png",
+        "BirdNETmonitor/BirdWatcherImages/3_Green-winged_Teal,_Port_Aransas,_Texas.png"
+
       ),
       link = c(
-        "https://de.wikipedia.org/wiki/Vogel1",
+        "https://ebird.org/species/redava",
         "https://de.wikipedia.org/wiki/Vogel2",
-        "https://de.wikipedia.org/wiki/Vogel3",
-        "https://de.wikipedia.org/wiki/Vogel4",
-        "https://de.wikipedia.org/wiki/Vogel5",
-        "https://de.wikipedia.org/wiki/Vogel6",
-        "https://de.wikipedia.org/wiki/Vogel7"
+        "https://de.wikipedia.org/wiki/Vogel3"
+
       )
     )
 
-    for (i in 1:7) {
+    for (i in 1:3) {
       image_id <- paste0("imageDisplay", i)
       observeEvent(input[[paste0("image_click", i)]], {
         url <- image_data$link[i]
