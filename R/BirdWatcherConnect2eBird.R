@@ -52,4 +52,4 @@ wiki_server <- function(input, output, session) {
   }
 }
 
-shinyApp(ui = Wiki(), server = wiki_server)
+#shinyApp(ui = Wiki(), server = wiki_server)
