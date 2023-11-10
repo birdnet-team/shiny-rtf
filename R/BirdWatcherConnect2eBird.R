@@ -20,41 +20,41 @@ Wiki <- function(id) {
 wiki_server <- function(id, data) {
   moduleServer( id, function(input, output, session){
 
-  image_data <- data.frame(
-    image_path = c(
-      "inst/app/www/1_Amandava_amandava_Red_Avadavat.png",
-      "www/second_image.png",
-      "www/third_image.png",
-      "www/fourth_image.png",
-      "www/fifth_image.png",
-      "www/sixth_image.png",
-      "www/seventh_image.png"
-    ),
-    link = c(
-      "https://de.wikipedia.org/wiki/Vogel1",
-      "https://de.wikipedia.org/wiki/Vogel2",
-      "https://de.wikipedia.org/wiki/Vogel3",
-      "https://de.wikipedia.org/wiki/Vogel4",
-      "https://de.wikipedia.org/wiki/Vogel5",
-      "https://de.wikipedia.org/wiki/Vogel6",
-      "https://de.wikipedia.org/wiki/Vogel7"
+    image_data <- data.frame(
+      image_path = c(
+        "BirdNETmonitor/inst/app/www/1_Amandava_amandava_Red_Avadavat.png"
+        # "www/second_image.png",
+        # "www/third_image.png",
+        # "www/fourth_image.png",
+        # "www/fifth_image.png",
+        # "www/sixth_image.png",
+        # "www/seventh_image.png"
+      ),
+      link = c(
+        "https://de.wikipedia.org/wiki/Vogel1",
+        "https://de.wikipedia.org/wiki/Vogel2",
+        "https://de.wikipedia.org/wiki/Vogel3",
+        "https://de.wikipedia.org/wiki/Vogel4",
+        "https://de.wikipedia.org/wiki/Vogel5",
+        "https://de.wikipedia.org/wiki/Vogel6",
+        "https://de.wikipedia.org/wiki/Vogel7"
+      )
     )
-  )
 
-  for (i in 1:7) {
-    image_id <- paste0("imageDisplay", i)
-    observeEvent(input[[paste0("image_click", i)]], {
-      url <- image_data$link[i]
-      shinyjs::runjs(paste0("window.open('", url, "', '_blank');"))
-    })
+    for (i in 1:7) {
+      image_id <- paste0("imageDisplay", i)
+      observeEvent(input[[paste0("image_click", i)]], {
+        url <- image_data$link[i]
+        shinyjs::runjs(paste0("window.open('", url, "', '_blank');"))
+      })
 
-    output[[image_id]] <- renderImage({
-      list(src = image_data$image_path[i], height = 300)
-    }, deleteFile = FALSE)
-  }
+      output[[image_id]] <- renderImage({
+        list(src = image_data$image_path[i], height = 300)
+      }, deleteFile = FALSE)
+    }
 
 
   })
 }
 
-#shinyApp(ui = Wiki(), server = wiki_server)
+#shinyApp(Wiki, wiki_server)
