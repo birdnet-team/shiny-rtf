@@ -5,9 +5,7 @@ account: birdnet
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9119482
-bundleId: 7706072
+bundleId: 7910907
 url: https://birdnet.shinyapps.io/BirdNETmonitor_dev/
-when: 1695197328.08382
-lastSyncTime: 1695197328.08383
 asMultiple: FALSE
 asStatic: FALSE
