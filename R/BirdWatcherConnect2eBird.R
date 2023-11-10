@@ -22,7 +22,7 @@ wiki_server <- function(id, data) {
 
   image_data <- data.frame(
     image_path = c(
-      "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/www/Amandava_amandava_Red_Avadavat.png",
+      "inst/app/www/1_Amandava_amandava_Red_Avadavat.png",
       "www/second_image.png",
       "www/third_image.png",
       "www/fourth_image.png",
