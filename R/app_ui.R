@@ -64,7 +64,7 @@ app_ui <- function(request) {
           ),
 
           tabItem(
-            tabName = "observations",
+            tabName = "watcher",
             Wiki("BirdWiki")
           ),
 
