@@ -37,7 +37,7 @@ app_ui <- function(request) {
           menuItem("Phenology", tabName = "phenology", icon = icon("chart-column")),
           menuItem("Detections", tabName = "detections", icon = icon("music")),
           menuItem("Observations", tabName = "observations", icon = icon("camera")),
-          menuItem("Encyclopedia", tabName = "watcher", icon = icon("search")),
+          menuItem("Encyclopedia", tabName = "encyclopedia", icon = icon("search")),
           menuItem("Health", tabName = "health", icon = icon("wave-square"))
         )
       ),
@@ -64,7 +64,7 @@ app_ui <- function(request) {
           ),
 
           tabItem(
-            tabName = "watcher",
+            tabName = "encyclopedia",
             Wiki("birdwiki")
           ),
 
