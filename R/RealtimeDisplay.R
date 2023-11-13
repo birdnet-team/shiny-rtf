@@ -10,7 +10,7 @@ Callcam <- function(id){
   mainPanel(
 
     titlePanel("Real-Time Display of Observation Images from Units"),
-    titlePanel(h1("Please note that the units are switched off between 6:00 pm and 7:00 am. No photo recording can be transmitted during this time.", style = "color: black; font-size: 18px;")),
+    titlePanel(h1("Please note that the units are switched off between 6:00 pm and 8:00 am. No photo recording can be transmitted during this time.", style = "color: black; font-size: 18px;")),
     actionButton(ns("displayBtnUnit1"), label = "show Picture Unit 1"),
     actionButton(ns("displayBtnUnit2"), label = "show Picture Unit 2"),
     actionButton(ns("displayBtnUnit3"), label = "show Picture Unit 3"),
