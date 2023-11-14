@@ -259,7 +259,7 @@ wiki_server <- function(id, data) {
 
     for (i in 1:30) {
       image_id <- paste0("imageDisplay", i)
-      observeEvent(input[[paste0("image_click", i)]], {
+      observeEvent(input[[paste0("image_click1", i)]], {
         url <- image_data$link[i]
         shinyjs::runjs(paste0("window.open('", url, "', '_blank');"))
       })
