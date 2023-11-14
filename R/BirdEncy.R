@@ -5,19 +5,23 @@ Wiki <- function(id) {
   ns <- NS(id)
 
   fluidPage(
-    titlePanel("Hawaiian Birdwatching Encyclopedia"),
+    titlePanel("Hawaiian Birdwatching Encyclopedia -- work in progress mwrxx999"),
     fluidRow(
-      column(2, imageOutput1(ns("imageDisplay1"))),
-      column(2, imageOutput2(ns("imageDisplay2"))),
-      column(2, imageOutput3(ns("imageDisplay3"))),
-      column(2, imageOutput4(ns("imageDisplay4"))),
-      column(2, imageOutput5(ns("imageDisplay5"))),
-      column(2, imageOutput6(ns("imageDisplay6"))),
-      column(2, imageOutput7(ns("imageDisplay7"))),
-      column(2, imageOutput8(ns("imageDisplay8"))),
-      column(2, imageOutput9(ns("imageDisplay9"))),
-      column(2, imageOutput10(ns("imageDisplay10"))),
-      column(2, imageOutput11(ns("imageDisplay11")))
+      column(2,(ns("displayBtnUnit1"))),
+      column(2,(ns("displayBtnUnit2"))),
+      column(2,(ns("displayBtnUnit3"))),
+      column(2,(ns("displayBtnUnit4"))),
+      column(2,(ns("displayBtnUnit5"))),
+      column(2,(ns("displayBtnUnit6"))),
+      column(2,(ns("displayBtnUnit7"))),
+      column(2,(ns("displayBtnUnit8"))),
+      column(2,(ns("displayBtnUnit9"))),
+      column(2,(ns("displayBtnUnit10"))),
+      column(2,(ns("displayBtnUnit11"))),
+
+    ),
+    fluidPage(
+      column(11, uiOutput(ns("imageOutput1")))
     ),
     useShinyjs()
   )
@@ -41,12 +45,14 @@ wiki_server <- function(id, data) {
 
 
 
-    observeEvent(input$imageDisplay1, {
+    observeEvent(input$displayBtnUnit1, {
+      output$imageOutput1 <- renderUI({
         output$imageOutput1 <- renderImage({
           list(src = img_path1,
                style = "max-width:100%",
-               alt = "image not found")
-        }, ignoreInit = TRUE)
+               alt = "Bild 1 nicht gefunden")
+        }, deleteFile = FALSE)
+      })
     })
 
 
