@@ -5,37 +5,18 @@ Wiki <- function(id) {
   fluidPage(
     titlePanel("Hawaiian Birdwatching Encyclopedia"),
     fluidRow(
-      column(2, imageOutput("imageDisplay1", click = "image_click1")),
-      column(2, imageOutput("imageDisplay2", click = "image_click2")),
-      column(2, imageOutput("imageDisplay3", click = "image_click3")),
-      column(2, imageOutput("imageDisplay4", click = "image_click4")),
-      column(2, imageOutput("imageDisplay5", click = "image_click5")),
-      column(2, imageOutput("imageDisplay6", click = "image_click6")),
-      column(2, imageOutput("imageDisplay7", click = "image_click7")),
-      column(2, imageOutput("imageDisplay8", click = "image_click8")),
-      column(2, imageOutput("imageDisplay9", click = "image_click9")),
-      column(2, imageOutput("imageDisplay10", click = "image_click10")),
-      column(2, imageOutput("imageDisplay11", click = "image_click11")),
-      column(2, imageOutput("imageDisplay12", click = "image_click12")),
-      column(2, imageOutput("imageDisplay13", click = "image_click13")),
-      column(2, imageOutput("imageDisplay14", click = "image_click14")),
-      column(2, imageOutput("imageDisplay15", click = "image_click15")),
-      column(2, imageOutput("imageDisplay16", click = "image_click16")),
-      column(2, imageOutput("imageDisplay17", click = "image_click17")),
-      column(2, imageOutput("imageDisplay18", click = "image_click18")),
-      column(2, imageOutput("imageDisplay19", click = "image_click19")),
-      column(2, imageOutput("imageDisplay20", click = "image_click20")),
-      column(2, imageOutput("imageDisplay21", click = "image_click21")),
-      column(2, imageOutput("imageDisplay22", click = "image_click22")),
-      column(2, imageOutput("imageDisplay23", click = "image_click23")),
-      column(2, imageOutput("imageDisplay24", click = "image_click24")),
-      column(2, imageOutput("imageDisplay25", click = "image_click25")),
-      column(2, imageOutput("imageDisplay26", click = "image_click26")),
-      column(2, imageOutput("imageDisplay27", click = "image_click27")),
-      column(2, imageOutput("imageDisplay28", click = "image_click28")),
-      column(2, imageOutput("imageDisplay29", click = "image_click29")),
-      column(2, imageOutput("imageDisplay30", click = "image_click30"))
-    ),
+        column(2, imageOutput("imageDisplay1", click = "image_click1")),
+        column(2, imageOutput("imageDisplay2", click = "image_click2")),
+        column(2, imageOutput("imageDisplay2", click = "image_click3")),
+        column(2, imageOutput("imageDisplay2", click = "image_click4")),
+        column(2, imageOutput("imageDisplay2", click = "image_click5")),
+        column(2, imageOutput("imageDisplay2", click = "image_click6")),
+        column(2, imageOutput("imageDisplay2", click = "image_click7")),
+        column(2, imageOutput("imageDisplay2", click = "image_click8")),
+        column(2, imageOutput("imageDisplay2", click = "image_click9")),
+        column(2, imageOutput("imageDisplay2", click = "image_click10")),
+        column(2, imageOutput("imageDisplay2", click = "image_click11"))
+      ),
     useShinyjs()
   )
 }
@@ -43,51 +24,149 @@ Wiki <- function(id) {
 wiki_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
 
-    image_data <- data.frame(
-      image_path = c(
-        "BirdNETmonitor/BirdWatcherImages/1_Amandava_amandava_Red_Avadavat.png",
-        "BirdNETmonitor/BirdWatcherImages/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png",
-        "BirdNETmonitor/BirdWatcherImages/3_Green-winged_Teal,_Port_Aransas,_Texas.png",
-        "BirdNETmonitor/BirdWatcherImages/Anas platyrhynchos_Mallard.png",
-        "BirdNETmonitor/BirdWatcherImages/Anous minutus_Black Noddy.png",
-        "BirdNETmonitor/BirdWatcherImages/Anous stolidus_Brown Noddy.png",
-        "BirdNETmonitor/BirdWatcherImages/Anser albifrons_Greater White-fronted Goose.png",
-        "BirdNETmonitor/BirdWatcherImages/Anser caerulescens_Snow Goose.png",
-        "BirdNETmonitor/BirdWatcherImages/Ardea herodias_Great Blue Heron.png", #9
-        "BirdNETmonitor/BirdWatcherImages/Ardenna grisea_Sooty Shearwater.png",
-        "BirdNETmonitor/BirdWatcherImages/Ardenna pacifica_Wedge-tailed Shearwater.png", #11
-        # Add other image paths here...
-      ),
-      link = c(
-        "https://ebird.org/species/redava",
-        "https://ebird.org/species/norpin",
-        "https://ebird.org/species/gnwtea",
-        "https://ebird.org/species/mallar3/L2557088",
-        "https://ebird.org/species/blknod/L1657549",
-        "https://ebird.org/species/brnnod",
-        "https://ebird.org/species/gwfgoo",
-        "https://ebird.org/species/snogoo",
-        "https://ebird.org/species/grbher3", #9
-        "https://ebird.org/species/sooshe",
-        "https://ebird.org/species/wetshe", #11
-        # Add other links here...
-      )
-    )
+    image_path1 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/1_Amandava_amandava_Red_Avadavat.png")
+    image_path2 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png")
+    image_path3 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/3_Green-winged_Teal,_Port_Aransas,_Texas.png")
+    image_path4 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anas platyrhynchos_Mallard.png")
+    image_path5 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anous minutus_Black Noddy.png")
+    image_path6 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anous stolidus_Brown Noddy.png")
+    image_path7 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anser albifrons_Greater White-fronted Goose.png")#7
+    image_path8 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anser caerulescens_Snow Goose.png")
+    image_path9 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Ardea herodias_Great Blue Heron.png") #9
+    image_path10 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Ardenna grisea_Sooty Shearwater.png")
+    image_path11 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Ardenna pacifica_Wedge-tailed Shearwater.png") #11
 
-    for (i in 1:nrow(image_data)) {
-      image_id <- paste0("imageDisplay", i)
-      observeEvent(input[[paste0("image_click", i)]], {
-        url <- image_data$link[i]
-        shinyjs::runjs(paste0("window.open('", url, "', '_blank');"))
-      })
 
-      output[[image_id]] <- renderImage({
-        list(src = image_data$image_path[i], height = 300)
-      }, deleteFile = FALSE)
-    }
+    output$imageDisplay1 <- renderImage({
+      list(src = image_path1(), height = 300)
+    })
+
+    observeEvent(input$imageDisplay1, {
+      shinyjs::enable("imageDisplay1")
+      shinyjs::onclick(selector = "#imageDisplay1", code = 'window.open("https://ebird.org/species/redava", "_blank");')
+    })
+
+
+
+    output$imageDisplay2 <- renderImage({
+      list(src = image_path2(), height = 300)
+    })
+
+    observeEvent(input$imageDisplay2, {
+      shinyjs::enable("imageDisplay2")
+      shinyjs::onclick(selector = "#imageDisplay2", code = 'window.open("https://ebird.org/species/norpin", "_blank");')
+    })
+
+
+    output$imageDisplay3 <- renderImage({
+      list(src = image_path3(), height = 300)
+    })
+
+    observeEvent(input$imageDisplay3, {
+      shinyjs::enable("imageDisplay3")
+      shinyjs::onclick(selector = "#imageDisplay3", code = 'window.open("https://ebird.org/species/gnwtea", "_blank");')
+    })
+
+    output$imageDisplay3 <- renderImage({
+      list(src = image_path3(), height = 300)
+    })
+
+
+
+    observeEvent(input$imageDisplay4, {
+      shinyjs::enable("imageDisplay4")
+      shinyjs::onclick(selector = "#imageDisplay4", code = 'window.open("https://ebird.org/species/gnwtea", "_blank");')
+    })
+
+
+    output$imageDisplay4 <- renderImage({
+      list(src = image_path4(), height = 300)
+    })
+
+
+
+    observeEvent(input$imageDisplay5, {
+      shinyjs::enable("imageDisplay5")
+      shinyjs::onclick(selector = "#imageDisplay5", code = 'window.open("https://ebird.org/species/gnwtea", "_blank");')
+    })
+
+    output$imageDisplay5 <- renderImage({
+      list(src = image_path5(), height = 300)
+    })
+
+
+
+    observeEvent(input$imageDisplay6, {
+      shinyjs::enable("imageDisplay6")
+      shinyjs::onclick(selector = "#imageDisplay6", code = 'window.open("https://ebird.org/species/gnwtea", "_blank");')
+    })
+
+    output$imageDisplay6 <- renderImage({
+      list(src = image_path6(), height = 300)
+    })
+
+
+    observeEvent(input$imageDisplay7, {
+      shinyjs::enable("imageDisplay7")
+      shinyjs::onclick(selector = "#imageDisplay7", code = 'window.open("https://ebird.org/species/gnwtea", "_blank");')
+    })
+
+    output$imageDisplay7 <- renderImage({
+      list(src = image_path7(), height = 300)
+    })
+
+
+
+    observeEvent(input$imageDisplay8, {
+      shinyjs::enable("imageDisplay8")
+      shinyjs::onclick(selector = "#imageDisplay8", code = 'window.open("https://ebird.org/species/gnwtea", "_blank");')
+    })
+
+    output$imageDisplay8 <- renderImage({
+      list(src = image_path8(), height = 300)
+    })
+
+
+
+
+    observeEvent(input$imageDisplay9, {
+      shinyjs::enable("imageDisplay9")
+      shinyjs::onclick(selector = "#imageDisplay9", code = 'window.open("https://ebird.org/species/gnwtea", "_blank");')
+    })
+
+    output$imageDisplay9 <- renderImage({
+      list(src = image_path9(), height = 300)
+    })
+
+
+
+    observeEvent(input$imageDisplay10, {
+      shinyjs::enable("imageDisplay10")
+      shinyjs::onclick(selector = "#imageDisplay10", code = 'window.open("https://ebird.org/species/gnwtea", "_blank");')
+    })
+
+    output$imageDisplay10 <- renderImage({
+      list(src = image_path9(), height = 300)
+    })
+
+
+
+    observeEvent(input$imageDisplay11, {
+      shinyjs::enable("imageDisplay11")
+      shinyjs::onclick(selector = "#imageDisplay11", code = 'window.open("https://ebird.org/species/gnwtea", "_blank");')
+    })
+
+    output$imageDisplay11 <- renderImage({
+      list(src = image_path11(), height = 300)
+    })
+
+
+
 
 
   })
 }
+
+
 
 shinyApp(Wiki, wiki_server)
