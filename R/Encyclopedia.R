@@ -138,4 +138,4 @@ wiki_server <- function(id, data) {
   })
 }
 
-shinyApp(Wiki, wiki_server)
+#shinyApp(Wiki, wiki_server)
