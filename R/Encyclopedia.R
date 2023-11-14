@@ -9,15 +9,15 @@ Wiki <- function(id) {
     fluidRow(
       column(2, imageOutput(ns("imageDisplay1"))),
       column(2, imageOutput(ns("imageDisplay2"))),
-      column(2, imageOutput("#imageDisplay3", click = "image_click3")),
-      column(2, imageOutput("#imageDisplay4", click = "image_click4")),
-      column(2, imageOutput("#imageDisplay5", click = "image_click5")),
-      column(2, imageOutput("#imageDisplay6", click = "image_click6")),
-      column(2, imageOutput("#imageDisplay7", click = "image_click7")),
-      column(2, imageOutput("#imageDisplay8", click = "image_click8")),
-      column(2, imageOutput("#imageDisplay9", click = "image_click9")),
-      column(2, imageOutput("#imageDisplay10", click = "image_click10")),
-      column(2, imageOutput("#imageDisplay11", click = "image_click11"))
+      column(2, imageOutput(ns("imageDisplay3"))),
+      column(2, imageOutput(ns("imageDisplay4"))),
+      column(2, imageOutput(ns("imageDisplay5"))),
+      column(2, imageOutput(ns("imageDisplay6"))),
+      column(2, imageOutput(ns("imageDisplay7"))),
+      column(2, imageOutput(ns("imageDisplay8"))),
+      column(2, imageOutput(ns("imageDisplay9"))),
+      column(2, imageOutput(ns("imageDisplay10"))),
+      column(2, imageOutput(ns("imageDisplay11")))
     ),
     useShinyjs()
   )
@@ -27,32 +27,39 @@ wiki_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-
     image_path1 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/1_Amandava_amandava_Red_Avadavat.png")
     image_path2 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png")
-    image_path3 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/3_Green-winged_Teal,_Port_Aransas,_Texas.png")
-    image_path4 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anas platyrhynchos_Mallard.png")
-    image_path5 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anous minutus_Black Noddy.png")
-    image_path6 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anous stolidus_Brown Noddy.png")
-    image_path7 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anser albifrons_Greater White-fronted Goose.png")
-    image_path8 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anser caerulescens_Snow Goose.png")
-    image_path9 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Ardea herodias_Great Blue Heron.png")
-    image_path10 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Ardenna grisea_Sooty Shearwater.png")
-    image_path11 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Ardenna pacifica_Wedge-tailed Shearwater.png")
-
-    output$imageDisplay1 <- renderImage({
-      list(src = image_path1, height = 300)
-         #shinyjs::enable("imageDisplay1")
-         shinyjs::onclick(selector = "imageDisplay1", code = 'window.open("https://ebird.org/species/redava", "_blank");')
-       })
+    image_path3 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/3_Green-winged_Teal,_Port_Aransas,_Texas.png")
+    image_path4 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/Anas platyrhynchos_Mallard.png")
+    image_path5 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/Anous minutus_Black Noddy.png")
+    image_path6 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/Anous stolidus_Brown Noddy.png")
+    image_path7 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/Anser albifrons_Greater White-fronted Goose.png")
+    image_path8 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/Anser caerulescens_Snow Goose.png")
+    image_path9 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/Ardea herodias_Great Blue Heron.png")
+    image_path10 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/Ardenna grisea_Sooty Shearwater.png")
+    image_path11 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/Ardenna pacifica_Wedge-tailed Shearwater.png")
 
 
-    output$imageDisplay2 <- renderImage({
-      list(src = image_path2, height = 300)
-          #shinyjs::enable("#imageDisplay2")
-         shinyjs::onclick(selector = "#imageDisplay2", code = 'window.open("https://ebird.org/species/norpin", "_blank");')
-       })
 
+    observeEvent(input$imageDisplay1, {
+      list(src = image_path2(), height = 300)
+      shinyjs::enable("imageDisplay1")
+      shinyjs::onclick(
+        selector = paste0("#", ns("imageDisplay1")),
+        code = sprintf('window.open("https://ebird.org/species/redava", "_blank");')
+      )
+    }, delete_file = FALSE)
+
+
+
+    ##2
+
+    observeEvent(input$imageDisplay2, {
+      shinyjs::enable(ns("imageDisplay2"))
+      shinyjs::onclick(selector = paste0("#", ns("imageDisplay2")), code = 'window.open("https://ebird.org/species/norpin", "_blank");')
+    })
+
+#####
 
 
 
@@ -137,7 +144,11 @@ wiki_server <- function(id, data) {
       shinyjs::onclick(selector = "#imageDisplay11", code = 'window.open("https://ebird.org/species/wetshe", "_blank");')
     })
 
+
+
+
   })
 }
 
-#shinyApp(Wiki, wiki_server)
+
+shinyApp(Wiki, wiki_server)
