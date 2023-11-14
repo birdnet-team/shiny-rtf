@@ -2,20 +2,22 @@ library(shiny)
 library(shinyjs)
 
 Wiki <- function(id) {
+  ns <- NS(id)
+
   fluidPage(
     titlePanel("Hawaiian Birdwatching Encyclopedia"),
     fluidRow(
-      column(2, imageOutput("imageDisplay1", click = "image_click1")),
-      column(2, imageOutput("imageDisplay2", click = "image_click2")),
-      column(2, imageOutput("imageDisplay3", click = "image_click3")),
-      column(2, imageOutput("imageDisplay4", click = "image_click4")),
-      column(2, imageOutput("imageDisplay5", click = "image_click5")),
-      column(2, imageOutput("imageDisplay6", click = "image_click6")),
-      column(2, imageOutput("imageDisplay7", click = "image_click7")),
-      column(2, imageOutput("imageDisplay8", click = "image_click8")),
-      column(2, imageOutput("imageDisplay9", click = "image_click9")),
-      column(2, imageOutput("imageDisplay10", click = "image_click10")),
-      column(2, imageOutput("imageDisplay11", click = "image_click11"))
+      column(2, imageOutput(ns("imageDisplay1"))),
+      column(2, imageOutput(ns("imageDisplay2"))),
+      column(2, imageOutput("#imageDisplay3", click = "image_click3")),
+      column(2, imageOutput("#imageDisplay4", click = "image_click4")),
+      column(2, imageOutput("#imageDisplay5", click = "image_click5")),
+      column(2, imageOutput("#imageDisplay6", click = "image_click6")),
+      column(2, imageOutput("#imageDisplay7", click = "image_click7")),
+      column(2, imageOutput("#imageDisplay8", click = "image_click8")),
+      column(2, imageOutput("#imageDisplay9", click = "image_click9")),
+      column(2, imageOutput("#imageDisplay10", click = "image_click10")),
+      column(2, imageOutput("#imageDisplay11", click = "image_click11"))
     ),
     useShinyjs()
   )
@@ -23,9 +25,11 @@ Wiki <- function(id) {
 
 wiki_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
 
-    image_path1 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/1_Amandava_amandava_Red_Avadavat.png")
-    image_path2 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png")
+
+    image_path1 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/1_Amandava_amandava_Red_Avadavat.png")
+    image_path2 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png")
     image_path3 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/3_Green-winged_Teal,_Port_Aransas,_Texas.png")
     image_path4 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anas platyrhynchos_Mallard.png")
     image_path5 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anous minutus_Black Noddy.png")
@@ -38,21 +42,19 @@ wiki_server <- function(id, data) {
 
     output$imageDisplay1 <- renderImage({
       list(src = image_path1, height = 300)
-    })
+         #shinyjs::enable("imageDisplay1")
+         shinyjs::onclick(selector = "imageDisplay1", code = 'window.open("https://ebird.org/species/redava", "_blank");')
+       })
 
-    observeEvent(input$imageDisplay1, {
-      shinyjs::enable("imageDisplay1")
-      shinyjs::onclick(selector = "#imageDisplay1", code = 'window.open("https://ebird.org/species/redava", "_blank");')
-    })
 
     output$imageDisplay2 <- renderImage({
       list(src = image_path2, height = 300)
-    })
+          #shinyjs::enable("#imageDisplay2")
+         shinyjs::onclick(selector = "#imageDisplay2", code = 'window.open("https://ebird.org/species/norpin", "_blank");')
+       })
 
-    observeEvent(input$imageDisplay2, {
-      shinyjs::enable("imageDisplay2")
-      shinyjs::onclick(selector = "#imageDisplay2", code = 'window.open("https://ebird.org/species/norpin", "_blank");')
-    })
+
+
 
     output$imageDisplay3 <- renderImage({
       list(src = image_path3, height = 300)
