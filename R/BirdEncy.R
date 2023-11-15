@@ -1,27 +1,38 @@
 library(shiny)
 library(shinyjs)
 
+# Define custom img1 function
+img1 <- function(src, alt, style) {
+  tags$img(src = src, alt = alt, style = style)
+}
+
 Wiki <- function(id) {
   ns <- NS(id)
+
+    image_paths <- c(
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImagesXX/1_Amandava_amandava_Red_Avadavat.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImagesXX/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/3_Green-winged_Teal,_Port_Aransas,_Texas.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/Anas platyrhynchos_Mallard.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/Anous minutus_Black Noddy.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/Anous stolidus_Brown Noddy.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/Anser albifrons_Greater White-fronted Goose.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/Anser caerulescens_Snow Goose.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/Ardea herodias_Great Blue Heron.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/Ardenna grisea_Sooty Shearwater.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/Ardenna pacifica_Wedge-tailed Shearwater.png"
+    )
+
 
   fluidPage(
     titlePanel("Hawaiian Birdwatching Encyclopedia -- work in progress mwrxx999"),
     fluidRow(
-      column(2,(ns("displayBtnUnit1"))),
-      column(2,(ns("displayBtnUnit2"))),
-      column(2,(ns("displayBtnUnit3"))),
-      column(2,(ns("displayBtnUnit4"))),
-      column(2,(ns("displayBtnUnit5"))),
-      column(2,(ns("displayBtnUnit6"))),
-      column(2,(ns("displayBtnUnit7"))),
-      column(2,(ns("displayBtnUnit8"))),
-      column(2,(ns("displayBtnUnit9"))),
-      column(2,(ns("displayBtnUnit10"))),
-      column(2,(ns("displayBtnUnit11"))),
-
-    ),
-    fluidPage(
-      column(11, uiOutput(ns("imageOutput1")))
+      lapply(seq_along(image_paths), function(i) {
+        tagList(
+          img1(src = image_paths[i], alt = paste0("image", i), style = "width:300px;height:300px;"),
+          uiOutput(ns(paste0("image_output", i)))
+        )
+      })
     ),
     useShinyjs()
   )
@@ -31,30 +42,28 @@ wiki_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    image_path1 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/1_Amandava_amandava_Red_Avadavat.png")
-    image_path2 <- reactiveVal("BirdNETmonitor/BirdWatcherImagesXX/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png")
-    image_path3 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/3_Green-winged_Teal,_Port_Aransas,_Texas.png")
-    image_path4 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anas platyrhynchos_Mallard.png")
-    image_path5 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anous minutus_Black Noddy.png")
-    image_path6 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anous stolidus_Brown Noddy.png")
-    image_path7 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anser albifrons_Greater White-fronted Goose.png")
-    image_path8 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Anser caerulescens_Snow Goose.png")
-    image_path9 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Ardea herodias_Great Blue Heron.png")
-    image_path10 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Ardenna grisea_Sooty Shearwater.png")
-    image_path11 <- reactiveVal("BirdNETmonitor/BirdWatcherImages/Ardenna pacifica_Wedge-tailed Shearwater.png")
-
-
-
-    observeEvent(input$displayBtnUnit1, {
-      output$imageOutput1 <- renderUI({
-        output$imageOutput1 <- renderImage({
-          list(src = img_path1,
-               style = "max-width:100%",
-               alt = "Bild 1 nicht gefunden")
-        }, deleteFile = FALSE)
-      })
-    })
-
-
+    # Render images dynamically based on the number of images and their paths
+    for (i in seq_along(data$image_paths)) {
+      output[[ns(paste0("image_output", i))]] <- renderImage({
+        img1(src = data$image_paths[i], style = "max-width:100%", alt = paste0("Bild ", i, " nicht gefunden"))
+      }, deleteFile = FALSE)
+    }
   })
 }
+
+# Example usage
+image_paths <- c(
+  "BirdNETmonitor/BirdWatcherImagesXX/1_Amandava_amandava_Red_Avadavat.png",
+  "BirdNETmonitor/BirdWatcherImagesXX/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png",
+  "BirdNETmonitor/BirdWatcherImages/3_Green-winged_Teal,_Port_Aransas,_Texas.png",
+  "BirdNETmonitor/BirdWatcherImages/Anas platyrhynchos_Mallard.png",
+  "BirdNETmonitor/BirdWatcherImages/Anous minutus_Black Noddy.png",
+  "BirdNETmonitor/BirdWatcherImages/Anous stolidus_Brown Noddy.png",
+  "BirdNETmonitor/BirdWatcherImages/Anser albifrons_Greater White-fronted Goose.png",
+  "BirdNETmonitor/BirdWatcherImages/Anser caerulescens_Snow Goose.png",
+  "BirdNETmonitor/BirdWatcherImages/Ardea herodias_Great Blue Heron.png",
+  "BirdNETmonitor/BirdWatcherImages/Ardenna grisea_Sooty Shearwater.png",
+  "BirdNETmonitor/BirdWatcherImages/Ardenna pacifica_Wedge-tailed Shearwater.png"
+)
+
+
