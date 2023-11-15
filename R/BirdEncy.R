@@ -10,9 +10,9 @@ Wiki <- function(id) {
   ns <- NS(id)
 
     image_paths <- c(
-      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImagesXX/1_Amandava_amandava_Red_Avadavat.png",
-      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImagesXX/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png",
-      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/3_Green-winged_Teal,_Port_Aransas,_Texas.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor\\BirdWatcherImagesXX\\1_Amandava_amandava_Red_Avadavat.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor\\BirdWatcherImagesXX\\2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png",
+      "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor\\BirdWatcherImagesXX\\3_Green-winged_Teal,_Port_Aransas,_Texas.png",
       "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/Anas platyrhynchos_Mallard.png",
       "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/Anous minutus_Black Noddy.png",
       "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor/BirdWatcherImages/Anous stolidus_Brown Noddy.png",
@@ -27,7 +27,7 @@ Wiki <- function(id) {
   fluidPage(
     titlePanel("Hawaiian Birdwatching Encyclopedia -- work in progress mwrxx999"),
     fluidRow(
-      lapply(seq_along(image_paths), function(i) {
+      lapply(seq_along(image_path1), function(i) {#oder image paths
         tagList(
           img1(src = image_paths[i], alt = paste0("image", i), style = "width:300px;height:300px;"),
           uiOutput(ns(paste0("image_output", i)))
@@ -44,6 +44,8 @@ wiki_server <- function(id, data) {
 
     # Render images dynamically based on the number of images and their paths
     for (i in seq_along(data$image_paths)) {
+      print("ready for displaying")
+      #download.file(image_paths, "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor\\BirdWatcherImagesXX\\1_Amandava_amandava_Red_Avadavat.png", mode = "wb")
       output[[ns(paste0("image_output", i))]] <- renderImage({
         img1(src = data$image_paths[i], style = "max-width:100%", alt = paste0("Bild ", i, " nicht gefunden"))
       }, deleteFile = FALSE)
