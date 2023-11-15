@@ -1,5 +1,8 @@
-library(shiny)
-library(shinyjs)
+#' @importFrom shiny NS tagList
+#' @import httr
+#' @import png
+#' @import shinyjs
+#library(shinyjs)
 
 # Define custom img1 function
 img1 <- function(src, alt, style) {
@@ -27,7 +30,7 @@ Wiki <- function(id) {
   fluidPage(
     titlePanel("Hawaiian Birdwatching Encyclopedia -- work in progress mwrxx999"),
     fluidRow(
-      lapply(seq_along(image_path1), function(i) {#oder image paths
+      lapply(seq_along(image_paths), function(i) {#oder image paths
         tagList(
           img1(src = image_paths[i], alt = paste0("image", i), style = "width:300px;height:300px;"),
           uiOutput(ns(paste0("image_output", i)))
@@ -45,7 +48,7 @@ wiki_server <- function(id, data) {
     # Render images dynamically based on the number of images and their paths
     for (i in seq_along(data$image_paths)) {
       print("ready for displaying")
-      #download.file(image_paths, "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor\\BirdWatcherImagesXX\\1_Amandava_amandava_Red_Avadavat.png", mode = "wb")
+      download.file(image_path1, "C:\\Users\\ElementXX\\Desktop\\RSTudioNshinYXX888\\FrontEnd999XX\\MRWFrontE999XX\\BirdNETmonitor\\BirdWatcherImagesXX\\1_Amandava_amandava_Red_Avadavat.png", mode = "wb")
       output[[ns(paste0("image_output", i))]] <- renderImage({
         img1(src = data$image_paths[i], style = "max-width:100%", alt = paste0("Bild ", i, " nicht gefunden"))
       }, deleteFile = FALSE)
