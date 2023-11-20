@@ -1,4 +1,4 @@
-# Define custom img1 function
+# mwr xx999
 img1 <- function(src, alt, style) {
   tags$img(src = src, alt = alt, style = style)
 }
