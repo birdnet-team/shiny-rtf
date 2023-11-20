@@ -72,4 +72,4 @@ image_paths <- c(
   "BirdNETmonitor/BirdWatcherImages/Ardenna pacifica_Wedge-tailed Shearwater.png"
 )
 
-shinyApp(Wiki, wiki_server)
+#shinyApp(Wiki, wiki_server)
