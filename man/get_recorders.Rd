@@ -17,3 +17,9 @@ Dataframe.
 \description{
 Retrieve recorder configs from a given URL
 }
+\examples{
+#' params <- list(
+  "recorder_id" = "BirdNET-HI001"
+)
+get_recorders("https://reco.birdnet.tucmi.de/reco", params)
+}

@@ -14,6 +14,9 @@ run_app <- function(
     uiPattern = "/",
     ...
 ){
+
+  addResourcePath("www", system.file("app/www", package = "BirdNETmonitor"))
+
   polished::polished_config(
     app_name = "BirdNETmonitor",
     api_key = "1AjI1zHTrL6k2C4qoTQg2aoN9DqcJRmTdc",

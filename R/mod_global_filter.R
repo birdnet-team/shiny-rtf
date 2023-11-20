@@ -84,8 +84,9 @@ mod_global_filter_server <- function(id, data) {
         dplyr::filter(
           recorder_id %in% input$recorder_id,
         )
-      data_filtered$recorders <- data$recorders
-
+      data_filtered$recorders <-
+        data$recorders |>
+        dplyr::filter(recorder_id %in% input$recorder_id)
     })
 
     # # filter detections

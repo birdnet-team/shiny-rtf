@@ -34,7 +34,10 @@ app_ui <- function(request) {
       dashboardSidebar(
         sidebarMenu(
           menuItem("Overview", tabName = "overview", icon = icon("home")),
+          menuItem("Phenology", tabName = "phenology", icon = icon("chart-column")),
           menuItem("Detections", tabName = "detections", icon = icon("music")),
+          menuItem("Observations", tabName = "observations", icon = icon("camera")),
+          menuItem("Encyclopedia", tabName = "encyclopedia", icon = icon("search")),
           menuItem("Health", tabName = "health", icon = icon("wave-square"))
         )
       ),
@@ -45,10 +48,26 @@ app_ui <- function(request) {
             mod_status_overview_ui("status_overview_1"),
           ),
           tabItem(
+            tabName = "phenology",
+            mod_phenology_ui("phenology_1")
+
+          ),
+          tabItem(
             tabName = "detections",
             mod_detections_table_ui("detections_table_1")
 
           ),
+
+          tabItem(
+            tabName = "observations",
+            Callcam("callcamXX")
+          ),
+
+          tabItem(
+            tabName = "encyclopedia",
+            Wiki("birdwiki")
+          ),
+
           tabItem(
             tabName = "health",
             mod_health_ui("health_1")
