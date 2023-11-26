@@ -46,10 +46,21 @@ wiki_server <- function(id, data) {
 
     for (i in seq_along(data$image_paths)) {
       print("ready for displaying")
-      download.file(image_path1, "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/1_Amandava_amandava_Red_Avadavat.png", mode = "wb")
-      output[[ns(paste0("image_output", i))]] <- renderImage({
-        img1(src = data$image_paths[i], style = "max-width:100%", alt = paste0("Bild ", i, " nicht gefunden"))
-      }, deleteFile = FALSE)
+
+      # Set the local path for saving the image
+      local_path <- paste0("C:/path/to/save/image", i, ".png")
+
+      # Download the image
+      download.file(data$image_paths[i], local_path, mode = "wb", quiet = TRUE)
+
+      # Check if the download was successful
+      if (file.exists(local_path)) {
+        output[[ns(paste0("image_output", i))]] <- renderImage({
+          img1(src = local_path, style = "max-width:100%", alt = paste0("Bild ", i, " nicht gefunden"))
+        }, deleteFile = FALSE)
+      } else {
+        print(paste("Error downloading image", i))
+      }
     }
   })
 }
