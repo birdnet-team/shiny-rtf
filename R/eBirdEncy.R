@@ -56,20 +56,3 @@ wiki_server <- function(id, data) {
     }
   })
 }
-
-# Example usage
-image_paths <- c(
-  "BirdNETmonitor/BirdWatcherImagesXX/1_Amandava_amandava_Red_Avadavat.png",
-  "BirdNETmonitor/BirdWatcherImagesXX/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png",
-  "BirdNETmonitor/BirdWatcherImages/3_Green-winged_Teal,_Port_Aransas,_Texas.png",
-  "BirdNETmonitor/BirdWatcherImages/Anas platyrhynchos_Mallard.png",
-  "BirdNETmonitor/BirdWatcherImages/Anous minutus_Black Noddy.png",
-  "BirdNETmonitor/BirdWatcherImages/Anous stolidus_Brown Noddy.png",
-  "BirdNETmonitor/BirdWatcherImages/Anser albifrons_Greater White-fronted Goose.png",
-  "BirdNETmonitor/BirdWatcherImages/Anser caerulescens_Snow Goose.png",
-  "BirdNETmonitor/BirdWatcherImages/Ardea herodias_Great Blue Heron.png",
-  "BirdNETmonitor/BirdWatcherImages/Ardenna grisea_Sooty Shearwater.png",
-  "BirdNETmonitor/BirdWatcherImages/Ardenna pacifica_Wedge-tailed Shearwater.png"
-)
-
-#shinyApp(Wiki, wiki_server)
