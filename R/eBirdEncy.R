@@ -1,33 +1,23 @@
-# mwr xx999
+# Install and load required packages
+if (!require("shiny")) install.packages("shiny")
+if (!require("shinyjs")) install.packages("shinyjs")
+
+library(shiny)
+library(shinyjs)
+
+# Funktion zum Laden von Bildern
 img1 <- function(src, alt, style) {
   tags$img(src = src, alt = alt, style = style)
 }
 
-#' @importFrom shiny tags
-#' @import httr
-#' @import png
-#' @import shinyjs
-
-install.packages("shinyjs")
-library(shinyjs)
-
-
-
+# Shiny App Definition
 Wiki <- function(id) {
   ns <- NS(id)
 
   image_paths <- c(
     "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/1_Amandava_amandava_Red_Avadavat.png",
     "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png",
-    "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/3_Green-winged_Teal,_Port_Aransas,_Texas.png",
-    "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/Anas platyrhynchos_Mallard.png",
-    "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/Anous minutus_Black Noddy.png",
-    "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/Anous stolidus_Brown Noddy.png",
-    "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/Anser albifrons_Greater White-fronted Goose.png",
-    "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/Anser caerulescens_Snow Goose.png",
-    "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/Ardea herodias_Great Blue Heron.png",
-    "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/Ardenna grisea_Sooty Shearwater.png",
-    "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/Ardenna pacifica_Wedge-tailed Shearwater.png"
+    # ... (Weiterhin alle Bildpfade hinzufügen)
   )
 
   fluidPage(
@@ -44,6 +34,7 @@ Wiki <- function(id) {
   )
 }
 
+# Server-Funktion für die Shiny App
 wiki_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
