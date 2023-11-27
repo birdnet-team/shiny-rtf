@@ -10,7 +10,7 @@ img1 <- function(src, alt, style = "") {
 }
 
 # Shiny App Definition
-Wiki <- function(id, image_paths = character(0)) {
+Wiki <- function(id) {
   ns <- NS(id)
 
   fluidPage(
@@ -28,8 +28,8 @@ Wiki <- function(id, image_paths = character(0)) {
   )
 }
 
-# Server-Funktion für die Shiny App
-wiki_server <- function(id, image_paths = character(0)) {
+
+wiki_server <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -42,7 +42,7 @@ wiki_server <- function(id, image_paths = character(0)) {
   })
 }
 
-# Example usage
+
 image_paths <- c(
   "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/1_Amandava_amandava_Red_Avadavat.png",
   "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonitor/BirdWatcherImagesXX/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png",
