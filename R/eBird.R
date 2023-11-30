@@ -53,17 +53,17 @@ wiki_server <- function(id, image_paths) {
 }
 
 image_paths <- c(
-  "inst/app/www/1_Amandava_amandava_Red_Avadavat.png",
-  "inst/app/www/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png",
-  "inst/app/www/3_Green-winged_Teal,_Port_Aransas,_Texas.png",
-  "inst/app/www/Anas platyrhynchos_Mallard.png",
-  "inst/app/www/Anous minutus_Black Noddy.png",
-  "inst/app/www/Anous stolidus_Brown Noddy.png",
-  "inst/app/www/Anser albifrons_Greater White-fronted Goose.png",
-  "inst/app/www/Anser caerulescens_Snow Goose.png",
-  "inst/app/www/Ardea herodias_Great Blue Heron.png",
-  "inst/app/www/Ardenna grisea_Sooty Shearwater.png",
-  "inst/app/www/BirdNETmonitor/BirdWatcherImages/Ardenna pacifica_Wedge-tailed Shearwater.png"
+  "app/www/1_Amandava_amandava_Red_Avadavat.png",
+  "app/www/2_Northern_Pintails_(Male_&_Female)_I_IMG_0911.png",
+  "app/www/3_Green-winged_Teal,_Port_Aransas,_Texas.png",
+  "app/www/Anas platyrhynchos_Mallard.png",
+  "app/www/Anous minutus_Black Noddy.png",
+  "app/www/Anous stolidus_Brown Noddy.png",
+  "app/www/Anser albifrons_Greater White-fronted Goose.png",
+  "app/www/Anser caerulescens_Snow Goose.png",
+  "app/www/Ardea herodias_Great Blue Heron.png",
+  "app/www/Ardenna grisea_Sooty Shearwater.png",
+  "app/www/BirdNETmonitor/BirdWatcherImages/Ardenna pacifica_Wedge-tailed Shearwater.png"
 )
 
 # Create Shiny app
