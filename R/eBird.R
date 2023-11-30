@@ -4,6 +4,7 @@ if (!require("shinyjs")) install.packages("shinyjs")
 
 library(shiny)
 library(shinyjs)
+library(png)
 
 img1 <- function(src, alt, style = "") {
   tags$img(src = src, alt = alt, style = style)
