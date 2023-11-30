@@ -67,9 +67,9 @@ image_paths <- c(
 )
 
 # Create Shiny app
-shinyApp(
-  ui = Wiki("wiki", image_paths),
-  server = function(input, output, session) {
-    wiki_server("wiki", image_paths)
-  }
-)
+# shinyApp(
+#   ui = Wiki("wiki", image_paths),
+#   server = function(input, output, session) {
+#     wiki_server("wiki", image_paths)
+#   }
+# )
