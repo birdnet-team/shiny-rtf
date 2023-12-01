@@ -42,7 +42,7 @@ mod_ebird_server <- function(id){
       lapply(image_paths, function(x) {
         div(
           style = "margin-bottom: 10px; margin-top: 10px; margin-left: 10px; margin-right: 10px; display: inline-block",
-          shiny::img(src = x, height = "200px")
+          shiny::img(src = x, height = "200px", alt = basename(x))
         )
       })
     })
