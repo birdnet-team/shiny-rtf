@@ -66,10 +66,10 @@ image_paths <- c(
   "app/www/BirdNETmonitor/BirdWatcherImages/Ardenna pacifica_Wedge-tailed Shearwater.png"
 )
 
-# Create Shiny app
-# shinyApp(
-#   ui = Wiki("wiki", image_paths),
-#   server = function(input, output, session) {
-#     wiki_server("wiki", image_paths)
-#   }
-# )
+#Create Shiny app
+shinyApp(
+  ui = Wiki("wiki", image_paths),
+  server = function(input, output, session) {
+    wiki_server("wiki", image_paths)
+  }
+)
