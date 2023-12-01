@@ -65,7 +65,7 @@ app_ui <- function(request) {
 
           tabItem(
             tabName = "encyclopedia",
-            Wiki("birdwiki")
+            mod_ebird_ui("ebird_1")
           ),
 
           tabItem(
