@@ -31,12 +31,16 @@ callcam_server <- function(id, data) {
     urlUnit2 <- "http://viewer:birdnet2023!@166.143.21.131:8001/cgi-bin/image.jpg?imgprof=BirdNET"
     urlUnit3 <- "http://viewer:birdnet2023!@166.148.204.108:8001/cgi-bin/image.jpg?imgprof=BirdNET"
 
-    img_path1 = "/dev/shm/img1.png"
-    img_path2 = "/dev/shm/img2.png"
-    img_path3 = "/dev/shm/img3.png"
+
+    img_path1 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
+
+    img_path2 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
+
+    img_path3 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
+
 
     observeEvent(input$displayBtnUnit1, {
-      download.file(urlUnit1, "/dev/shm/img1.png", mode = "wb")
+      download.file(urlUnit1, "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R/img1.png", mode = "wb")
       output$imageOutputUnit1 <- renderUI({
         output$imgOutput1 <- renderImage({
           list(src = img_path1,
