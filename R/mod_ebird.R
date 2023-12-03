@@ -48,9 +48,3 @@ mod_ebird_server <- function(id){
     })
   })
 }
-
-## To be copied in the UI
-# mod_ebird_ui("ebird_1")
-
-## To be copied in the server
-# mod_ebird_server("ebird_1")

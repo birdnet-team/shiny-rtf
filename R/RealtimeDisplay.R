@@ -71,3 +71,7 @@ callcam_server <- function(id, data) {
 
   })
 }
+
+# Create Shiny app
+#shinyApp(ui = Callcam, server = callcam_server)
+
