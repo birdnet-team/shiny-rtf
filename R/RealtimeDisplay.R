@@ -32,15 +32,16 @@ callcam_server <- function(id, data) {
     urlUnit3 <- "http://viewer:birdnet2023!@166.148.204.108:8001/cgi-bin/image.jpg?imgprof=BirdNET"
 
 
-    img_path1 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
-
-    img_path2 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
-
-    img_path3 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
+    # img_path1 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
+    # img_path2 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
+    # img_path3 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
+    img_path1 = "/dev/shm/img1.png"
+    img_path2 = "/dev/shm/img2.png"
+    img_path3 = "/dev/shm/img3.png"
 
 
     observeEvent(input$displayBtnUnit1, {
-      download.file(urlUnit1, "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R/img1.png", mode = "wb")
+      download.file(urlUnit1, img_path1, mode = "wb")
       output$imageOutputUnit1 <- renderUI({
         output$imgOutput1 <- renderImage({
           list(src = img_path1,
@@ -51,7 +52,7 @@ callcam_server <- function(id, data) {
     })
 
     observeEvent(input$displayBtnUnit2, {
-      download.file(urlUnit2, "/dev/shm/img2.png", mode = "wb")
+      download.file(urlUnit2, img_path2, mode = "wb")
       output$imageOutputUnit2 <- renderUI({
         output$imgOutput2 <- renderImage({
           list(src = img_path2,
@@ -62,7 +63,7 @@ callcam_server <- function(id, data) {
     })
 
     observeEvent(input$displayBtnUnit3, {
-      download.file(urlUnit3, "/dev/shm/img3.png", mode = "wb")
+      download.file(urlUnit3, img_path1, mode = "wb")
       output$imageOutputUnit3 <- renderUI({
 #TODO: set timeout function to 2min
         output$imgOutput3 <- renderImage({
