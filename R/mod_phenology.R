@@ -19,7 +19,7 @@ mod_phenology_ui <- function(id) {
       shinyWidgets::panel(
         fluidRow(
           column(
-            5,
+            3,
             selectizeInput(
               ns("species_filter"),
               label = "Species",
@@ -28,7 +28,20 @@ mod_phenology_ui <- function(id) {
           ),
           column(1),
           column(
-            5,
+            3,
+            shinyWidgets::pickerInput(
+              ns("recorder_filter"),
+              label = "Recorder",
+              choices = c("None available" = ""),
+              multiple = TRUE,
+              options = pickerOptions(
+                style = "btn-default"
+              )
+            )
+          ),
+          column(1),
+          column(
+            3,
             sliderInput(
               ns("confidence"),
               label = "Confidence",
@@ -66,9 +79,24 @@ mod_phenology_server <- function(id, data, url) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
+    # update the recorder selecter
+    observe({
+      req(data$recorders$recorder_id)
+      shinyWidgets::updatePickerInput(
+        session = session,
+        inputId = "recorder_filter",
+        choices = data$recorders$recorder_id,
+        selected = data$recorders$recorder_id
+      )
+    })
+
 
     input_confidence_d <- reactive({
       input$confidence
+    }) |> debounce(500)
+
+    input_recorder_d <- reactive({
+      input$recorder_filter
     }) |> debounce(500)
 
     # download
@@ -109,7 +137,8 @@ mod_phenology_server <- function(id, data, url) {
     calendar_dats <- reactive({
       req(detections()) |>
         dplyr::filter(
-          dplyr::between(confidence, min(input_confidence_d()), max(input_confidence_d()))
+          dplyr::between(confidence, min(input_confidence_d()), max(input_confidence_d())),
+          recorder_id %in% input_recorder_d()
         ) |>
         mutate(
           datetime = lubridate::force_tz(datetime, "US/Hawaii"),

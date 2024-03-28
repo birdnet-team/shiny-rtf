@@ -32,18 +32,19 @@ callcam_server <- function(id, data) {
     urlUnit3 <- "http://viewer:birdnet2023!@166.148.204.108:8001/cgi-bin/image.jpg?imgprof=BirdNET"
 
 
-    img_path1 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
-
-    img_path2 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
-
-    img_path3 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
+    # img_path1 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
+    # img_path2 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
+    # img_path3 = "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R"
 
 
     observeEvent(input$displayBtnUnit1, {
-      download.file(urlUnit1, "C:/Users/ElementXX/Desktop/RSTudioNshinYXX888/FrontEnd999XX/MRWFrontE999XX/BirdNETmonito/R/img1.png", mode = "wb")
+      return_code <- download_png(urlUnit1)
       output$imageOutputUnit1 <- renderUI({
+        validate(
+          need(return_code$success, return_code$value)
+        )
         output$imgOutput1 <- renderImage({
-          list(src = img_path1,
+          list(src = return_code$value,
                style = "max-width:100%",
                alt = "Unit 1 nicht gefunden")
         }, deleteFile = FALSE)
@@ -51,8 +52,11 @@ callcam_server <- function(id, data) {
     })
 
     observeEvent(input$displayBtnUnit2, {
-      download.file(urlUnit2, "/dev/shm/img2.png", mode = "wb")
-      output$imageOutputUnit2 <- renderUI({
+      return_code <- download_png(urlUnit2)
+      output$imageOutputUnit1 <- renderUI({
+        validate(
+          need(return_code$success, return_code$value)
+        )
         output$imgOutput2 <- renderImage({
           list(src = img_path2,
                style = "max-width:100%",
@@ -62,9 +66,11 @@ callcam_server <- function(id, data) {
     })
 
     observeEvent(input$displayBtnUnit3, {
-      download.file(urlUnit3, "/dev/shm/img3.png", mode = "wb")
-      output$imageOutputUnit3 <- renderUI({
-#TODO: set timeout function to 2min
+      return_code <- download_png(urlUnit3)
+      output$imageOutputUnit1 <- renderUI({
+        validate(
+          need(return_code$success, return_code$value)
+        )
         output$imgOutput3 <- renderImage({
           list(src = img_path3,
                style = "max-width:100%",
