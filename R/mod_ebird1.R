@@ -16,8 +16,36 @@ mod_ebird_server <- function(id){
       "www/Anser caerulescens_Snow Goose.png",
       "www/Ardea herodias_Great Blue Heron.png",
       "www/Ardenna grisea_Sooty Shearwater.png",
-      "www/Ardenna pacifica_Wedge-tailed Shearwater.png"
-    )
+      "www/Ardenna pacifica_Wedge-tailed Shearwater.png",
+      "www/12_Puffinus_tenuirostris_-_SE_Tasmania.png",
+      "www/14_Short_Eared_Owl_on_the_Ground.png",
+      "www/15_Lesser_scaup_-_Aythya_affinis.png",
+      "www/Ardenna tenuirostris_Short-tailed Shearwater.jpeg",
+      "www/Arenaria interpres_Ruddy Turnstone.jpeg",
+      "www/Arenaria_interpres_Ruddy_Turnstone.png",
+      "www/Asio flammeus_Short-eared Owl.jpeg",
+      "www/Aythya affinis_Lesser Scaup.jpeg",
+      "www/Aythya collaris_Ring-necked Duck.jpeg",
+      "www/Aythya marila_Greater Scaup.jpeg",
+      "www/Aythya valisineria_Canvasback.jpeg",
+      "www/Branta bernicla_Brant.jpeg",
+      "www/Branta canadensis_Canada Goose.jpeg",
+      "www/Branta hutchinsii_Cackling Goose.jpeg",
+      "www/Branta sandvicensis_Hawaiian Goose.jpeg",
+      "www/Bubulcus ibis_Cattle Egret.jpeg",
+      "www/Bucephala albeola_Bufflehead.jpeg",
+      "www/Bulweria bulwerii_Bulwer's Petrel.jpeg",
+      "www/Buteo solitarius_Hawaiian Hawk.jpeg",
+      "www/Calidris acuminata_Sharp-tailed Sandpiper.jpeg",
+      "www/Calidris alba_Sanderling.jpeg",
+      "www/Calidris alba_Sanderling.jpeg",
+      "www/Calidris alpina_Dunlin.jpeg",
+      "www/Calidris alpina_Dunlin.jpeg"
+
+
+
+
+       )
 
     image_links <- c(
       "https://ebird.org/species/grnava",
