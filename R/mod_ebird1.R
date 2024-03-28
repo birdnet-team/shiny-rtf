@@ -48,7 +48,7 @@ mod_ebird_server <- function(id){
        )
 
     image_links <- c(
-      "https://ebird.org/species/grnava",
+      "https://ebird.org/species/zebwax2",
       "https://ebird.org/species/norpint",
       "https://ebird.org/species/grwtea",
       "https://ebird.org/species/mallar3",
