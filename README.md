@@ -44,16 +44,17 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Citation
 
-If you use this demo for exhibitions or other projects, please cite as:
+Feel free to use the code base or parts of it for your own projects. If you use the code for scientific publications, please cite the following paper:
 
 ```
-@article{kahl2021birdnet,
-  title={BirdNET: A deep learning solution for avian diversity monitoring},
-  author={Kahl, Stefan and Wood, Connor M and Eibl, Maximilian and Klinck, Holger},
+@article{weidlichrau2025continuous,
+  title={Continuous Real-Time Acoustic Monitoring of Endangered Bird Species in Hawai‘i},
+  author={Weidlich-Rau, Melissa and Navine, Amanda K. and Chaopricha, Patrick T. and G{\"u}nther, Felix and Kahl, Stefan and Wilhelm-Stein, Thomas and Mack, Raymond C. and Reers, Hendrik and Rice, Aaron N. and Eibl, Maximilian and Hart, Patrick J. and Wolff, Patrick and Klinck, Holger and Schnell, Lena D. and Doratt, Rogelio and Loquet, Michael and Lackey, Tiana},
+  year={2025},
   journal={Ecological Informatics},
-  volume={61},
-  pages={101236},
-  year={2021},
+  volume={XX},
+  number={X},
+  pages={XX-XX},
   publisher={Elsevier}
 }
 ```
