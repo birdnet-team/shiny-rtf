@@ -2,12 +2,13 @@ Package: BirdNETmonitor
 Title: BirdNETMonitor
 Version: 0.0.0.9000
 Authors@R: 
-    person("Felix", "Günther", , "felix.guenther@informatik.tu-chemnitz.de", role = c("cre", "aut"))
+    person("Felix", "Günther", , "felix.guenther@informatik.tu-chemnitz.de", role = c("cre", "aut")),
+    person("Melissa", "Weidlich-Rau", , "melissa.weidlich-rau@informatik.tu-chemnitz.de", role = c("cre", "aut"))
 Description: Shiny frontend to field recorders using BirdNET for live
     monitoring.
 License: What license is it under?
-URL: https://github.com/BirdNETPlus/BirdNETmonitor
-BugReports: https://github.com/BirdNETPlus/BirdNETmonitor/issues
+URL: https://github.com/birdnet-team/shiny-rtf
+BugReports: https://github.com/birdnet-team/shiny-rtf/issues
 Depends: 
     R (< 4.3)
 Imports: 
